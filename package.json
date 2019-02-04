@@ -19,6 +19,9 @@
     "lib:sub-form:build:watch": "yarn run lib:sub-form:build --watch"
   },
   "private": true,
+  "resolutions": {
+    "terser": "3.14.1"
+  },
   "dependencies": {
     "@angular/animations": "7.2.3",
     "@angular/common": "7.2.3",

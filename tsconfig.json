@@ -10,20 +10,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "sub-form": [
-        "dist/sub-form"
-      ],
-      "sub-form/*": [
-        "dist/sub-form/*"
-      ]
+      "sub-form": ["dist/sub-form"],
+      "sub-form/*": ["dist/sub-form/*"]
     }
   }
 }

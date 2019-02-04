@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  InjectionToken,
-  Input,
-  OnDestroy,
-  Type,
-} from '@angular/core';
+import { forwardRef, InjectionToken, Input, OnDestroy, Type } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -18,7 +12,7 @@ import { Subscription } from 'rxjs';
 import { delay, startWith, tap } from 'rxjs/operators';
 
 export function subformComponentProviders(
-  component: any
+  component: any,
 ): {
   provide: InjectionToken<ControlValueAccessor>;
   useExisting: Type<any>;
@@ -38,8 +32,7 @@ export function subformComponentProviders(
   ];
 }
 
-export abstract class SubFormComponent
-  implements ControlValueAccessor, Validator, OnDestroy {
+export abstract class SubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
   protected abstract formGroup: FormGroup;
 
   protected onChange: Function;
@@ -144,7 +137,7 @@ export abstract class SubFormComponent
         tap(changes => {
           this.onTouched();
           this.onChange(this.transformBeforeOnChange(changes));
-        })
+        }),
       )
       .subscribe();
   }

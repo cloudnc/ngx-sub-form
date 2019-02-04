@@ -8,9 +8,8 @@ describe('SubFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SubFormComponent ]
-    })
-    .compileComponents();
+      declarations: [SubFormComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

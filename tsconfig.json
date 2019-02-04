@@ -16,6 +16,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "sub-form": [
+        "dist/sub-form"
+      ],
+      "sub-form/*": [
+        "dist/sub-form/*"
+      ]
+    }
   }
 }

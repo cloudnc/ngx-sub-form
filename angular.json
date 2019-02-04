@@ -133,6 +133,41 @@
           }
         }
       }
+    },
+    "sub-form": {
+      "root": "projects/sub-form",
+      "sourceRoot": "projects/sub-form/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/sub-form/tsconfig.lib.json",
+            "project": "projects/sub-form/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/sub-form/src/test.ts",
+            "tsConfig": "projects/sub-form/tsconfig.spec.json",
+            "karmaConfig": "projects/sub-form/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/sub-form/tsconfig.lib.json",
+              "projects/sub-form/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "sub-form-demo"

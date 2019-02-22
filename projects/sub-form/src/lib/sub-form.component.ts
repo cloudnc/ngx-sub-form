@@ -11,6 +11,21 @@ import {
 import { Subscription } from 'rxjs';
 import { delay, startWith, tap } from 'rxjs/operators';
 
+export type Controls<T> = { [K in keyof T]: AbstractControl };
+
+export type ControlsNames<T> = { [K in keyof T]: K };
+
+export function getControlsNames<T>(controls: Controls<T>): ControlsNames<T> {
+  return Object.keys(controls).reduce<ControlsNames<T>>(
+    (acc, curr) => {
+      acc[curr] = curr;
+
+      return acc;
+    },
+    {} as ControlsNames<T>,
+  );
+}
+
 export function subformComponentProviders(
   component: any,
 ): {

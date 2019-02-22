@@ -1,0 +1,21 @@
+<mat-form-field>
+  <mat-select placeholder="Select sell type" [formControl]="selectSellType">
+    <mat-option *ngFor="let sellType of SellType | keyvalue" [value]="sellType.value">
+      {{ sellType.value }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<form [formGroup]="sellForm">
+  <div [ngSwitch]="selectSellType.value">
+    <app-droid-sell *ngSwitchCase="SellType.DROID" formControlName="sell"></app-droid-sell>
+
+    <app-vehicule-sell *ngSwitchCase="SellType.VEHICULE" formControlName="sell"></app-vehicule-sell>
+  </div>
+</form>
+
+<pre>{{sellForm.value | json}}</pre>
+
+<div *ngIf="sellForm.invalid">
+  Form's invalid
+</div>

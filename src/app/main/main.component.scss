@@ -1,0 +1,10 @@
+.container {
+  height: calc(100% - 64px);
+  display: flex;
+
+  app-sell,
+  app-sells {
+    flex-grow: 1;
+    height: 100%;
+  }
+}

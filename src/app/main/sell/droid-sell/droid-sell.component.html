@@ -1,0 +1,24 @@
+<fieldset [formGroup]="formGroup" class="container">
+  <mat-form-field>
+    <input matInput type="text" placeholder="ID" [formControlName]="controlsNames.id" autocomplete="off" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="number" placeholder="Price" [formControlName]="controlsNames.price" autocomplete="off" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Select sell type" [formControl]="selectDroidType">
+      <mat-option *ngFor="let droidType of (DroidType | keyvalue)" [value]="droidType.value">
+        {{ droidType.value }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div [ngSwitch]="selectDroidType.value">
+    <app-protocol-droid *ngSwitchCase="DroidType.PROTOCOL" [formControlName]="controlsNames.product"></app-protocol-droid>
+    <app-medical-droid *ngSwitchCase="DroidType.MEDICAL" [formControlName]="controlsNames.product"></app-medical-droid>
+    <app-astromech-droid *ngSwitchCase="DroidType.ASTROMECH" [formControlName]="controlsNames.product"></app-astromech-droid>
+    <app-assassin-droid *ngSwitchCase="DroidType.ASSASSIN" [formControlName]="controlsNames.product"></app-assassin-droid>
+  </div>
+</fieldset>

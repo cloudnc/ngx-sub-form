@@ -24,16 +24,19 @@
   },
   "dependencies": {
     "@angular/animations": "7.2.3",
+    "@angular/cdk": "7.3.3",
     "@angular/common": "7.2.3",
     "@angular/compiler": "7.2.3",
     "@angular/core": "7.2.3",
     "@angular/forms": "7.2.3",
     "@angular/http": "7.2.3",
+    "@angular/material": "7.3.3",
     "@angular/platform-browser": "7.2.3",
     "@angular/platform-browser-dynamic": "7.2.3",
     "@angular/router": "7.2.3",
     "core-js": "2.6.3",
     "rxjs": "6.4.0",
+    "uuid": "3.3.2",
     "zone.js": "0.8.29"
   },
   "devDependencies": {

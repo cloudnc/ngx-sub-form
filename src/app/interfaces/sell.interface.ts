@@ -17,7 +17,7 @@ export interface VehiculeSell extends BaseSell {
 }
 
 export interface DroidSell extends BaseSell {
-  sellType: SellType.VEHICULE;
+  sellType: SellType.DROID;
   product: OneDroid;
 }
 

@@ -1,3 +1,41 @@
-<p>
-  sells works!
-</p>
+<mat-list>
+  <mat-list-item *ngFor="let sell of sells">
+    <h4 mat-line>{{ sell.sellType }} £{{ sell.price | number }}</h4>
+    <p mat-line [ngSwitch]="sell.sellType">
+      <span *ngSwitchCase="SellType.DROID">
+        <span [style.background-color]="sell.product.color">{{ sell.product.droidType }}</span> -
+
+        <span [ngSwitch]="sell.product.droidType">
+          <span *ngSwitchCase="DroidType.ASSASSIN"> Weapons: {{ sell.product.weapons.join(', ') }} </span>
+
+          <span *ngSwitchCase="DroidType.ASTROMECH"> Number of tools: {{ sell.product.numberOfToolsCarried }} </span>
+
+          <span *ngSwitchCase="DroidType.MEDICAL">
+            {{ sell.product.canHealHumans ? 'Can' : "Can't" }} heal humans,
+            {{ sell.product.canFixRobots ? 'can' : "can't" }} fix robots
+          </span>
+
+          <span *ngSwitchCase="DroidType.PROTOCOL">
+            Spoken languages: {{ sell.product.spokenLanguages.join(', ') }}
+          </span>
+        </span>
+      </span>
+
+      <span *ngSwitchCase="SellType.VEHICULE">
+        <span [style.background-color]="sell.product.color">{{ sell.product.vehiculeType }}</span> -
+
+        <span [ngSwitch]="sell.product.vehiculeType"
+          >Maximum people on board: {{ sell.product.numberOfPeopleOnBoard }},
+          {{ sell.product.canFire ? 'can' : "can't" }} fire,
+
+          <span *ngSwitchCase="VehiculeType.LAND">number of wheels: {{ sell.product.numberOfWheels }} </span>
+
+          <span *ngSwitchCase="VehiculeType.SPACESHIP"
+            >number of wings:
+            {{ sell.product.numberOfWings }}
+          </span>
+        </span>
+      </span>
+    </p>
+  </mat-list-item>
+</mat-list>

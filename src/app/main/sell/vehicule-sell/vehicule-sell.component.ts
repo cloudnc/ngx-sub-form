@@ -32,4 +32,12 @@ export class VehiculeSellComponent extends SubFormComponent {
 
     this.controls.id.disable();
   }
+
+  public writeValue(vehiculeSell: VehiculeSell) {
+    super.writeValue(vehiculeSell);
+
+    if (!!vehiculeSell) {
+      this.selectVehiculeType.setValue(vehiculeSell.product.vehiculeType);
+    }
+  }
 }

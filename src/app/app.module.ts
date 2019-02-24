@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { MainComponent } from './main/main.component';
@@ -56,7 +57,17 @@ const MATERIAL_MODULES = [
     AstromechDroidComponent,
     AssassinDroidComponent,
   ],
-  imports: [BrowserModule, BrowserAnimationsModule, CommonModule, ReactiveFormsModule, ...MATERIAL_MODULES],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    CommonModule,
+    ReactiveFormsModule,
+    ...MATERIAL_MODULES,
+    RouterModule.forRoot([
+      { path: 'sells', children: [{ path: ':sellId', component: SellComponent }] },
+      { path: '**', pathMatch: 'full', redirectTo: '/' },
+    ]),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

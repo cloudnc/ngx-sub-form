@@ -1,5 +1,5 @@
-<mat-list>
-  <mat-list-item *ngFor="let sell of sells">
+<mat-nav-list>
+  <a mat-list-item *ngFor="let sell of sells" [routerLink]="['sells', sell.id]">
     <h4 mat-line>{{ sell.sellType }} £{{ sell.price | number }}</h4>
     <p mat-line [ngSwitch]="sell.sellType">
       <span *ngSwitchCase="SellType.DROID">
@@ -37,5 +37,5 @@
         </span>
       </span>
     </p>
-  </mat-list-item>
-</mat-list>
+  </a>
+</mat-nav-list>

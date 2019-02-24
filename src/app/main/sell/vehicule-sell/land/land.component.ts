@@ -17,7 +17,7 @@ export class LandComponent extends SubFormComponent {
     canFire: new FormControl(false, { validators: [Validators.required] }),
     numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
     vehiculeType: new FormControl(VehiculeType.LAND, { validators: [Validators.required] }),
-    handlebarLength: new FormControl(null, { validators: [Validators.required] }),
+    numberOfWheels: new FormControl(null, { validators: [Validators.required] }),
   };
 
   protected formGroup: FormGroup = new FormGroup(this.controls);

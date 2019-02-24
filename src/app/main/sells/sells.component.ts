@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { OneSell, SellType } from '../../interfaces/sell.interface';
+import { DroidType } from 'src/app/interfaces/droid.interface';
+import { VehiculeType } from 'src/app/interfaces/vehicule.interface';
 
 @Component({
   selector: 'app-sells',
   templateUrl: './sells.component.html',
-  styleUrls: ['./sells.component.scss']
+  styleUrls: ['./sells.component.scss'],
 })
-export class SellsComponent implements OnInit {
+export class SellsComponent {
+  @Input() sells: OneSell[];
 
-  constructor() { }
+  public SellType = SellType;
 
-  ngOnInit() {
-  }
+  public DroidType = DroidType;
 
+  public VehiculeType = VehiculeType;
 }

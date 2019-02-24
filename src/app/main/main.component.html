@@ -3,6 +3,7 @@
 </mat-toolbar>
 
 <div class="container">
-  <app-sells></app-sells>
-  <app-sell></app-sell>
+  <app-sells [sells]="sells$ | async"></app-sells>
+
+  <app-sell (upsert)="upsertSell($event)"></app-sell>
 </div>

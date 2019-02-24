@@ -1,6 +1,6 @@
 <mat-form-field>
   <mat-select placeholder="Select sell type" [formControl]="selectSellType">
-    <mat-option *ngFor="let sellType of SellType | keyvalue" [value]="sellType.value">
+    <mat-option *ngFor="let sellType of (SellType | keyvalue)" [value]="sellType.value">
       {{ sellType.value }}
     </mat-option>
   </mat-select>
@@ -12,9 +12,11 @@
 
     <app-vehicule-sell *ngSwitchCase="SellType.VEHICULE" formControlName="sell"></app-vehicule-sell>
   </div>
+
+  <button (click)="upsertSell(sellForm.get('sell').value)" [disabled]="sellForm.invalid">Upsert</button>
 </form>
 
-<pre>{{sellForm.value | json}}</pre>
+<pre>{{ sellForm.value | json }}</pre>
 
 <div *ngIf="sellForm.invalid">
   Form's invalid

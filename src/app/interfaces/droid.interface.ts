@@ -1,4 +1,3 @@
-
 export enum DroidType {
   PROTOCOL = 'Protocol',
   MEDICAL = 'Medical',

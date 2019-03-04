@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { subformComponentProviders, SubFormComponent, Controls, ControlsNames, getControlsNames } from 'sub-form';
+import { subformComponentProviders, NgxSubFormComponent, Controls, ControlsNames, getControlsNames } from 'sub-form';
 import { ProtocolDroid, DroidType, Languages } from '../../../../interfaces/droid.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from '../../../../services/uuid.service';
@@ -10,7 +10,7 @@ import { UuidService } from '../../../../services/uuid.service';
   styleUrls: ['./protocol-droid.component.scss'],
   providers: subformComponentProviders(ProtocolDroidComponent),
 })
-export class ProtocolDroidComponent extends SubFormComponent {
+export class ProtocolDroidComponent extends NgxSubFormComponent {
   private controls: Controls<ProtocolDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -28,6 +28,4 @@ export class ProtocolDroidComponent extends SubFormComponent {
   constructor(private uuidService: UuidService) {
     super();
   }
-
-  ngOnInit() {}
 }

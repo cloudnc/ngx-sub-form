@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { OneSell } from '../interfaces/sell.interface';
-import { sells } from './sells.data';
+import { hardCodedSells } from './sells.data';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SellService {
-  private sells$: BehaviorSubject<OneSell[]> = new BehaviorSubject(sells);
+  private sells$: BehaviorSubject<OneSell[]> = new BehaviorSubject(hardCodedSells);
 
   public getSells(): Observable<OneSell[]> {
     return this.sells$.asObservable().pipe(map(this.sellsDeepCopy.bind(this)));

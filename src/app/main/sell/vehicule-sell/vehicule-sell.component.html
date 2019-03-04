@@ -15,9 +15,13 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="selectVehiculeType.value">
-    <app-spaceship *ngSwitchCase="VehiculeType.SPACESHIP" [formControlName]="controlsNames.product"></app-spaceship>
+  <div [ngSwitch]="selectVehiculeType.value" [ngxSubFormOptions]="controlsNames.product">
+    <app-spaceship
+      *ngSwitchCase="VehiculeType.SPACESHIP"
+      ngxSubFormOption
+      [formControlName]="controlsNames.product"
+    ></app-spaceship>
 
-    <app-land *ngSwitchCase="VehiculeType.LAND" [formControlName]="controlsNames.product"></app-land>
+    <app-land *ngSwitchCase="VehiculeType.LAND" ngxSubFormOption [formControlName]="controlsNames.product"></app-land>
   </div>
 </fieldset>

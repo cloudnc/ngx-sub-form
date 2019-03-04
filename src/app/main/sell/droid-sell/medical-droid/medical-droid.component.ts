@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
-import { SubFormComponent, subformComponentProviders, Controls, ControlsNames, getControlsNames } from 'sub-form';
+import { NgxSubFormComponent, subformComponentProviders, Controls, ControlsNames, getControlsNames } from 'sub-form';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';
 
@@ -10,7 +10,7 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./medical-droid.component.scss'],
   providers: subformComponentProviders(MedicalDroidComponent),
 })
-export class MedicalDroidComponent extends SubFormComponent {
+export class MedicalDroidComponent extends NgxSubFormComponent {
   private controls: Controls<MedicalDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),

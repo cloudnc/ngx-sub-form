@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Controls, SubFormComponent, ControlsNames, getControlsNames, subformComponentProviders } from 'sub-form';
+import { Controls, NgxSubFormComponent, ControlsNames, getControlsNames, subformComponentProviders } from 'sub-form';
 import { Land, VehiculeType } from 'src/app/interfaces/vehicule.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from '../../../../services/uuid.service';
@@ -10,7 +10,7 @@ import { UuidService } from '../../../../services/uuid.service';
   styleUrls: ['./land.component.scss'],
   providers: subformComponentProviders(LandComponent),
 })
-export class LandComponent extends SubFormComponent {
+export class LandComponent extends NgxSubFormComponent {
   private controls: Controls<Land> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),

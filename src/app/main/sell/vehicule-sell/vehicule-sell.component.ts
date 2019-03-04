@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { VehiculeSell, SellType } from '../../../interfaces/sell.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { Controls, SubFormComponent, getControlsNames, subformComponentProviders, ControlsNames } from 'sub-form';
+import { Controls, NgxSubFormComponent, getControlsNames, subformComponentProviders, ControlsNames } from 'sub-form';
 import { VehiculeType } from 'src/app/interfaces/vehicule.interface';
 import { UuidService } from 'src/app/services/uuid.service';
 
@@ -11,7 +11,7 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./vehicule-sell.component.scss'],
   providers: subformComponentProviders(VehiculeSellComponent),
 })
-export class VehiculeSellComponent extends SubFormComponent {
+export class VehiculeSellComponent extends NgxSubFormComponent {
   private controls: Controls<VehiculeSell> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     price: new FormControl(null, { validators: [Validators.required] }),

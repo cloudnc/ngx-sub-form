@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Controls, subformComponentProviders, SubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
+import { Controls, subformComponentProviders, NgxSubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
 import { Spaceship, VehiculeType } from 'src/app/interfaces/vehicule.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';
@@ -10,7 +10,7 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./spaceship.component.scss'],
   providers: subformComponentProviders(SpaceshipComponent),
 })
-export class SpaceshipComponent extends SubFormComponent {
+export class SpaceshipComponent extends NgxSubFormComponent {
   private controls: Controls<Spaceship> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),

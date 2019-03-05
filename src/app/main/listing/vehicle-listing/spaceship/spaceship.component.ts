@@ -26,7 +26,7 @@ export class SpaceshipComponent extends NgxSubFormComponent {
     vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
   };
 
-  protected formGroup: FormGroup = new FormGroup(this.controls);
+  public formGroup: FormGroup = new FormGroup(this.controls);
 
   public controlsNames: ControlsNames<Spaceship> = getControlsNames(this.controls);
 

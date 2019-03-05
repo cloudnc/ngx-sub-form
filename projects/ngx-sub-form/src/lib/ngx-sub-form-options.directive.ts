@@ -15,8 +15,6 @@ export class NgxSubFormOptionsService {
   providers: [NgxSubFormOptionsService],
 })
 export class SubFormOptionsDirective {
-  @Input('ngxSubFormOptions') formControl: FormControl;
-
   constructor() {}
 
   // @todo should eventually clean up when directive is being destroyed

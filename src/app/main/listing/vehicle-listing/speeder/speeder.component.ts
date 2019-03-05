@@ -26,7 +26,7 @@ export class SpeederComponent extends NgxSubFormComponent {
     maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
   };
 
-  protected formGroup: FormGroup = new FormGroup(this.controls);
+  public formGroup: FormGroup = new FormGroup(this.controls);
 
   public controlsNames: ControlsNames<Land> = getControlsNames(this.controls);
 

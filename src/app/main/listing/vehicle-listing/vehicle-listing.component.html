@@ -23,7 +23,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="selectVehicleType.value" [ngxSubFormOptions]="controlsNames.product">
+  <div [ngSwitch]="selectVehicleType.value" ngxSubFormOptions>
     <app-spaceship
       *ngSwitchCase="VehicleType.SPACESHIP"
       ngxSubFormOption

@@ -26,7 +26,7 @@ export class MedicalDroidComponent extends NgxSubFormComponent {
     canFixRobots: new FormControl(false, { validators: [Validators.required] }),
   };
 
-  protected formGroup: FormGroup = new FormGroup(this.controls);
+  public formGroup: FormGroup = new FormGroup(this.controls);
 
   public controlsNames: ControlsNames<MedicalDroid> = getControlsNames(this.controls);
 

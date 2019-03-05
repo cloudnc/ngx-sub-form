@@ -15,7 +15,7 @@ script:
   - yarn run prettier:check
   # build
   - yarn run lib:build:prod
-  - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
+  - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form-demo/"
 
   # publish to npm
   - yarn global add cpy-cli --ignore-engines

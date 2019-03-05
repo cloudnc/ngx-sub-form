@@ -1,7 +1,7 @@
 import { Input, OnDestroy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { startWith, tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
 
 export abstract class NgxSubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
   protected abstract formGroup: FormGroup;
@@ -114,10 +114,10 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
 
     this.subscription = this.formGroup.valueChanges
       .pipe(
-        startWith(this.formGroup.value),
-        // without that delay 0 we might get an error
-        // really annoying but couldn't come up with a better solution
-        // delay(0),
+        // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
+        // this is due to the fact that parent component will define a given state for the form that might
+        // be changed once the children are being initialized
+        delay(0),
         tap(changes => {
           this.onTouched();
           this.onChange(this.transformBeforeOnChange(changes));
@@ -129,6 +129,4 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-
-  // setDisabledState(isDisabled: boolean): void {}
 }

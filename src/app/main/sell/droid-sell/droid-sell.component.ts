@@ -34,4 +34,12 @@ export class DroidSellComponent extends NgxSubFormComponent implements OnInit {
   public ngOnInit(): void {
     this.controls.id.disable();
   }
+
+  public writeValue(droidSell: DroidSell) {
+    super.writeValue(droidSell);
+
+    if (!!droidSell) {
+      this.selectDroidType.setValue(droidSell.product.droidType);
+    }
+  }
 }

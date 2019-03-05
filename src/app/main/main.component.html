@@ -3,7 +3,9 @@
 </mat-toolbar>
 
 <div class="container">
-  <app-sells [sells]="sells$ | async"></app-sells>
+  <app-sells class="left-part" [sells]="sells$ | async"></app-sells>
 
-  <app-sell (upsert)="upsertSell($event)"></app-sell>
+  <div class="right-part">
+    <router-outlet class="router-flex"></router-outlet>
+  </div>
 </div>

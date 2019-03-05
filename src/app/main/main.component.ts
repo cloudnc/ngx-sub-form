@@ -11,8 +11,4 @@ export class MainComponent {
   public sells$ = this.sellService.getSells();
 
   constructor(private sellService: SellService) {}
-
-  public upsertSell(sell: OneSell): void {
-    this.sellService.addSell(sell);
-  }
 }

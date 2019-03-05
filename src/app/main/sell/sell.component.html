@@ -13,7 +13,7 @@
     <app-vehicule-sell *ngSwitchCase="SellType.VEHICULE" formControlName="sell"></app-vehicule-sell>
   </div>
 
-  <button (click)="upsertSell(sellForm.get('sell').value)" [disabled]="sellForm.invalid">Upsert</button>
+  <button mat-raised-button (click)="upsertSell(sellForm.get('sell').value)" [disabled]="sellForm.invalid">Upsert</button>
 </form>
 
 <pre>{{ sellForm.value | json }}</pre>

@@ -2,7 +2,7 @@ import { SellType, OneSell } from '../interfaces/sell.interface';
 import { DroidType, Languages, AstromechDroidShape, AssassinDroidWeapon } from '../interfaces/droid.interface';
 import { VehiculeType } from '../interfaces/vehicule.interface';
 
-export const sells: OneSell[] = [
+export const hardCodedSells: OneSell[] = [
   {
     id: '3f71b7eb-4a4f-40e6-9fca-e8cc7c0199c3',
     price: 45000000,

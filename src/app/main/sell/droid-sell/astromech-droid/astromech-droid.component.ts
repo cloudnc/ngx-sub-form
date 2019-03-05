@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UuidService } from '../../../../services/uuid.service';
-import { subformComponentProviders, SubFormComponent, Controls, ControlsNames, getControlsNames } from 'sub-form';
+import { subformComponentProviders, NgxSubFormComponent, Controls, ControlsNames, getControlsNames } from 'sub-form';
 import { AstromechDroid, DroidType, AstromechDroidShape } from '../../../../interfaces/droid.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
   styleUrls: ['./astromech-droid.component.scss'],
   providers: subformComponentProviders(AstromechDroidComponent),
 })
-export class AstromechDroidComponent extends SubFormComponent {
+export class AstromechDroidComponent extends NgxSubFormComponent {
   private controls: Controls<AstromechDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),

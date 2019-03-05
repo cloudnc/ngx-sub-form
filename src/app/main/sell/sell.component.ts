@@ -44,6 +44,6 @@ export class SellComponent implements OnInit, OnDestroy {
   }
 
   public upsertSell(sell: OneSell): void {
-    this.sellService.addSell(sell);
+    this.sellService.upsertSell(sell);
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { subformComponentProviders, Controls, SubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
+import { subformComponentProviders, Controls, NgxSubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
 import { DroidSell, SellType } from 'src/app/interfaces/sell.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';
@@ -11,7 +11,7 @@ import { DroidType } from 'src/app/interfaces/droid.interface';
   styleUrls: ['./droid-sell.component.scss'],
   providers: subformComponentProviders(DroidSellComponent),
 })
-export class DroidSellComponent extends SubFormComponent {
+export class DroidSellComponent extends NgxSubFormComponent {
   private controls: Controls<DroidSell> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     price: new FormControl(null, { validators: [Validators.required] }),
@@ -29,7 +29,13 @@ export class DroidSellComponent extends SubFormComponent {
 
   constructor(private uuidService: UuidService) {
     super();
+  }
 
-    this.controls.id.disable();
+  public writeValue(droidSell: DroidSell) {
+    super.writeValue(droidSell);
+
+    if (!!droidSell) {
+      this.selectDroidType.setValue(droidSell.product.droidType);
+    }
   }
 }

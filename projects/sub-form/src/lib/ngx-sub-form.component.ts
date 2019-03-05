@@ -1,54 +1,14 @@
-import { forwardRef, InjectionToken, Input, OnDestroy, Type } from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  FormGroup,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ValidationErrors,
-  Validator,
-} from '@angular/forms';
+import { Input, OnDestroy } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { delay, startWith, tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
 
-export type Controls<T> = { [K in keyof T]: AbstractControl };
-
-export type ControlsNames<T> = { [K in keyof T]: K };
-
-export function getControlsNames<T>(controls: Controls<T>): ControlsNames<T> {
-  return Object.keys(controls).reduce<ControlsNames<T>>(
-    (acc, curr) => {
-      acc[curr] = curr;
-
-      return acc;
-    },
-    {} as ControlsNames<T>,
-  );
-}
-
-export function subformComponentProviders(
-  component: any,
-): {
-  provide: InjectionToken<ControlValueAccessor>;
-  useExisting: Type<any>;
-  multi: boolean;
-}[] {
-  return [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => component),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => component),
-      multi: true,
-    },
-  ];
-}
-
-export abstract class SubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
+export abstract class NgxSubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
   protected abstract formGroup: FormGroup;
+
+  // this should not be handled directly by the developer
+  // instead, please use the provided directives
+  public resetValueOnDestroy = true;
 
   protected onChange: Function;
   protected onTouched: Function;
@@ -89,18 +49,27 @@ export abstract class SubFormComponent implements ControlValueAccessor, Validato
       this.subscription.unsubscribe();
     }
 
-    if (this.onChange) {
+    // if we're in the case of a form where we need to choose between different types
+    // for ex with a switch case, we do not want to reset the value for the following reason
+    // form is patched at the root level (result of an API call for example)
+    // sub component handle what to display based on the type
+    // type1 was displayed before but type2 has just been patched instead
+    // component of type1 is being destroyed, and removing the new data we just patched into the form
+    // to avoid that we provide directives which are setting `resetValueOnDestroy` to false when needed
+    if (this.onChange && this.resetValueOnDestroy) {
       this.onChange(null);
     }
   }
 
   public writeValue(obj: any): void {
     if (obj) {
-      this.formGroup.patchValue(this.transformBeforeWrite(obj), {
-        // required to be true otherwise it's not possible
-        // to be warned when the form is updated
-        emitEvent: true,
-      });
+      if (!!this.formGroup) {
+        this.formGroup.patchValue(this.transformBeforeWrite(obj), {
+          // required to be true otherwise it's not possible
+          // to be warned when the form is updated
+          emitEvent: true,
+        });
+      }
     } else {
       // @todo clear form?
     }
@@ -145,9 +114,9 @@ export abstract class SubFormComponent implements ControlValueAccessor, Validato
 
     this.subscription = this.formGroup.valueChanges
       .pipe(
-        startWith(this.formGroup.value),
-        // without that delay 0 we might get an error
-        // really annoying but couldn't come up with a better solution
+        // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
+        // this is due to the fact that parent component will define a given state for the form that might
+        // be changed once the children are being initialized
         delay(0),
         tap(changes => {
           this.onTouched();
@@ -160,6 +129,4 @@ export abstract class SubFormComponent implements ControlValueAccessor, Validato
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-
-  // setDisabledState(isDisabled: boolean): void {}
 }

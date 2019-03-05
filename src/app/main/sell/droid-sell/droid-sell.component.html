@@ -15,10 +15,26 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="selectDroidType.value">
-    <app-protocol-droid *ngSwitchCase="DroidType.PROTOCOL" [formControlName]="controlsNames.product"></app-protocol-droid>
-    <app-medical-droid *ngSwitchCase="DroidType.MEDICAL" [formControlName]="controlsNames.product"></app-medical-droid>
-    <app-astromech-droid *ngSwitchCase="DroidType.ASTROMECH" [formControlName]="controlsNames.product"></app-astromech-droid>
-    <app-assassin-droid *ngSwitchCase="DroidType.ASSASSIN" [formControlName]="controlsNames.product"></app-assassin-droid>
+  <div [ngSwitch]="selectDroidType.value" [ngxSubFormOptions]="controlsNames.product">
+    <app-protocol-droid
+      *ngSwitchCase="DroidType.PROTOCOL"
+      ngxSubFormOption
+      [formControlName]="controlsNames.product"
+    ></app-protocol-droid>
+    <app-medical-droid
+      *ngSwitchCase="DroidType.MEDICAL"
+      ngxSubFormOption
+      [formControlName]="controlsNames.product"
+    ></app-medical-droid>
+    <app-astromech-droid
+      *ngSwitchCase="DroidType.ASTROMECH"
+      ngxSubFormOption
+      [formControlName]="controlsNames.product"
+    ></app-astromech-droid>
+    <app-assassin-droid
+      *ngSwitchCase="DroidType.ASSASSIN"
+      ngxSubFormOption
+      [formControlName]="controlsNames.product"
+    ></app-assassin-droid>
   </div>
 </fieldset>

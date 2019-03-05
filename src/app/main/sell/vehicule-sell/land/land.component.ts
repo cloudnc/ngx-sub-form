@@ -10,7 +10,7 @@ import { UuidService } from '../../../../services/uuid.service';
   styleUrls: ['./land.component.scss'],
   providers: subformComponentProviders(LandComponent),
 })
-export class LandComponent extends NgxSubFormComponent {
+export class LandComponent extends NgxSubFormComponent implements OnInit {
   private controls: Controls<Land> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -26,7 +26,9 @@ export class LandComponent extends NgxSubFormComponent {
 
   constructor(private uuidService: UuidService) {
     super();
+  }
 
+  public ngOnInit(): void {
     this.controls.id.disable();
   }
 }

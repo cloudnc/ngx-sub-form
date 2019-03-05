@@ -11,7 +11,7 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./vehicule-sell.component.scss'],
   providers: subformComponentProviders(VehiculeSellComponent),
 })
-export class VehiculeSellComponent extends NgxSubFormComponent {
+export class VehiculeSellComponent extends NgxSubFormComponent implements OnInit {
   private controls: Controls<VehiculeSell> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     price: new FormControl(null, { validators: [Validators.required] }),
@@ -29,7 +29,9 @@ export class VehiculeSellComponent extends NgxSubFormComponent {
 
   constructor(private uuidService: UuidService) {
     super();
+  }
 
+  public ngOnInit(): void {
     this.controls.id.disable();
   }
 

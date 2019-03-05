@@ -10,7 +10,7 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./spaceship.component.scss'],
   providers: subformComponentProviders(SpaceshipComponent),
 })
-export class SpaceshipComponent extends NgxSubFormComponent {
+export class SpaceshipComponent extends NgxSubFormComponent implements OnInit {
   private controls: Controls<Spaceship> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -26,7 +26,9 @@ export class SpaceshipComponent extends NgxSubFormComponent {
 
   constructor(private uuidService: UuidService) {
     super();
+  }
 
+  public ngOnInit(): void {
     this.controls.id.disable();
   }
 }

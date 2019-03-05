@@ -10,7 +10,7 @@ import { UuidService } from '../../../../services/uuid.service';
   styleUrls: ['./protocol-droid.component.scss'],
   providers: subformComponentProviders(ProtocolDroidComponent),
 })
-export class ProtocolDroidComponent extends NgxSubFormComponent {
+export class ProtocolDroidComponent extends NgxSubFormComponent implements OnInit {
   private controls: Controls<ProtocolDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -27,5 +27,9 @@ export class ProtocolDroidComponent extends NgxSubFormComponent {
 
   constructor(private uuidService: UuidService) {
     super();
+  }
+
+  public ngOnInit(): void {
+    this.controls.id.disable();
   }
 }

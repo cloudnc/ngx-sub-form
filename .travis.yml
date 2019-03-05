@@ -15,8 +15,17 @@ script:
   - yarn run prettier:check
   # build
   - yarn run lib:build:prod
-  - yarn run demo:build:prod
+  - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
+
   # publish to npm
   - yarn global add cpy-cli --ignore-engines
   - cpy README.md dist/ngx-sub-form
   - test $TRAVIS_BRANCH = "master" && yarn run semantic-release || echo "Skipping deploy"
+
+deploy:
+  skip_cleanup: true
+  provider: pages
+  github_token: $GITHUB_TOKEN
+  local_dir: dist/ngx-sub-form
+  on:
+    branch: master

@@ -1,0 +1,20 @@
+sudo: false
+
+language: node_js
+node_js:
+  - '10'
+
+cache: yarn
+
+install:
+  - yarn --frozen-lockfile --non-interactive --no-progress
+
+script:
+  # lint
+  - yarn run demo:lint:check
+  - yarn run prettier:check
+  # build
+  - yarn run lib:build:prod
+  - yarn run demo:build:prod
+  # publish to npm
+  - test $TRAVIS_BRANCH = "master" && yarn run semantic-release || echo "Skipping deploy"

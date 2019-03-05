@@ -27,7 +27,7 @@ export class DroidListingComponent extends NgxSubFormComponent {
     product: new FormControl(null, { validators: [Validators.required] }),
   };
 
-  protected formGroup: FormGroup = new FormGroup(this.controls);
+  public formGroup: FormGroup = new FormGroup(this.controls);
 
   public controlsNames: ControlsNames<DroidListing> = getControlsNames(this.controls);
 

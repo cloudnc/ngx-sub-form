@@ -10,7 +10,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
   styleUrls: ['./astromech-droid.component.scss'],
   providers: subformComponentProviders(AstromechDroidComponent),
 })
-export class AstromechDroidComponent extends NgxSubFormComponent implements OnInit {
+export class AstromechDroidComponent extends NgxSubFormComponent {
   private controls: Controls<AstromechDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -28,9 +28,5 @@ export class AstromechDroidComponent extends NgxSubFormComponent implements OnIn
 
   constructor(private uuidService: UuidService) {
     super();
-  }
-
-  public ngOnInit(): void {
-    this.controls.id.disable();
   }
 }

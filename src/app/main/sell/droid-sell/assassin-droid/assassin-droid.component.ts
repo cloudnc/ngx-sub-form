@@ -17,7 +17,7 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   styleUrls: ['./assassin-droid.component.scss'],
   providers: subformComponentProviders(AssassinDroidComponent),
 })
-export class AssassinDroidComponent extends NgxSubFormComponent implements OnInit {
+export class AssassinDroidComponent extends NgxSubFormComponent {
   private controls: Controls<AssassinDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -36,9 +36,5 @@ export class AssassinDroidComponent extends NgxSubFormComponent implements OnIni
 
   constructor(private uuidService: UuidService) {
     super();
-  }
-
-  public ngOnInit(): void {
-    this.controls.id.disable();
   }
 }

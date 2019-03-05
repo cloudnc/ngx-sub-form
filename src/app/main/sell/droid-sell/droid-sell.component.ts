@@ -11,7 +11,7 @@ import { DroidType } from 'src/app/interfaces/droid.interface';
   styleUrls: ['./droid-sell.component.scss'],
   providers: subformComponentProviders(DroidSellComponent),
 })
-export class DroidSellComponent extends NgxSubFormComponent implements OnInit {
+export class DroidSellComponent extends NgxSubFormComponent {
   private controls: Controls<DroidSell> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     price: new FormControl(null, { validators: [Validators.required] }),
@@ -29,10 +29,6 @@ export class DroidSellComponent extends NgxSubFormComponent implements OnInit {
 
   constructor(private uuidService: UuidService) {
     super();
-  }
-
-  public ngOnInit(): void {
-    this.controls.id.disable();
   }
 
   public writeValue(droidSell: DroidSell) {

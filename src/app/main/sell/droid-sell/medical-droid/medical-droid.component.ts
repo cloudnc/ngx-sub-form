@@ -10,7 +10,7 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./medical-droid.component.scss'],
   providers: subformComponentProviders(MedicalDroidComponent),
 })
-export class MedicalDroidComponent extends NgxSubFormComponent implements OnInit {
+export class MedicalDroidComponent extends NgxSubFormComponent {
   private controls: Controls<MedicalDroid> = {
     id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
     color: new FormControl(null, { validators: [Validators.required] }),
@@ -26,9 +26,5 @@ export class MedicalDroidComponent extends NgxSubFormComponent implements OnInit
 
   constructor(private uuidService: UuidService) {
     super();
-  }
-
-  public ngOnInit(): void {
-    this.controls.id.disable();
   }
 }

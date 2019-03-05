@@ -1,0 +1,14 @@
+img {
+  max-width: 300px;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+.img-container {
+  width: 100%;
+  text-align: center;
+}
+
+mat-card {
+  max-width: 500px;
+}

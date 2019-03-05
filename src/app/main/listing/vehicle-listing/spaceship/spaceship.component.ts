@@ -6,7 +6,7 @@ import {
   ControlsNames,
   getControlsNames,
 } from 'ngx-sub-form';
-import { Spaceship, VehiculeType } from 'src/app/interfaces/vehicule.interface';
+import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';
 
@@ -23,7 +23,7 @@ export class SpaceshipComponent extends NgxSubFormComponent {
     canFire: new FormControl(false, { validators: [Validators.required] }),
     numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
     numberOfWings: new FormControl(null, { validators: [Validators.required] }),
-    vehiculeType: new FormControl(VehiculeType.SPACESHIP, { validators: [Validators.required] }),
+    vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
   };
 
   protected formGroup: FormGroup = new FormGroup(this.controls);

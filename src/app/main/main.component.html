@@ -1,9 +1,9 @@
 <mat-toolbar color="primary">
-  eJawa
+  <img src="/assets/ewok-no-bg.png" alt="EWOK" class="logo" />
 </mat-toolbar>
 
 <div class="container">
-  <app-sells class="left-part" [sells]="sells$ | async"></app-sells>
+  <app-listings class="left-part" [listings]="listings$ | async"></app-listings>
 
   <div class="right-part">
     <router-outlet class="router-flex"></router-outlet>

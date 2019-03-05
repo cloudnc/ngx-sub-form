@@ -4,11 +4,19 @@
   </mat-form-field>
 
   <mat-form-field>
+    <input matInput type="text" placeholder="Title" [formControlName]="controlsNames.title" autocomplete="off" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" placeholder="Image Url" [formControlName]="controlsNames.imageUrl" autocomplete="off" />
+  </mat-form-field>
+
+  <mat-form-field>
     <input matInput type="number" placeholder="Price" [formControlName]="controlsNames.price" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <mat-select placeholder="Select sell type" [formControl]="selectDroidType">
+    <mat-select placeholder="Select listing type" [formControl]="selectDroidType">
       <mat-option *ngFor="let droidType of (DroidType | keyvalue)" [value]="droidType.value">
         {{ droidType.value }}
       </mat-option>

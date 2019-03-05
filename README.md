@@ -3,7 +3,7 @@
 ![ngx-sub-form logo](https://user-images.githubusercontent.com/4950209/53812385-45f48900-3f53-11e9-8687-b57cd335f26e.png)
 
 Utility library for breaking down a form into multiple components.  
-Works well with polymorphic data structures.  
+Works well with polymorphic data structures.
 
 `ngx-sub-form` is here to help you avoid passing your `formGroup` as inputs and tackle down the boilerplate of creating a custom [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor).
 

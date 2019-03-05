@@ -21,7 +21,7 @@
     </mat-form-field>
 
     <form [formGroup]="listingForm">
-      <div [ngSwitch]="selectListingType.value" [ngxSubFormOptions]="selectListingType">
+      <div [ngSwitch]="selectListingType.value" ngxSubFormOptions>
         <app-droid-listing
           *ngSwitchCase="ListingType.DROID"
           ngxSubFormOption

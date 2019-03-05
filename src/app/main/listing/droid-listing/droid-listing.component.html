@@ -23,7 +23,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="selectDroidType.value" [ngxSubFormOptions]="controlsNames.product">
+  <div [ngSwitch]="selectDroidType.value" ngxSubFormOptions>
     <app-protocol-droid
       *ngSwitchCase="DroidType.PROTOCOL"
       ngxSubFormOption

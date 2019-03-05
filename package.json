@@ -1,5 +1,5 @@
 {
-  "name": "sub-form-demo",
+  "name": "ngx-sub-form-demo",
   "version": "0.0.0",
   "scripts": {
     "------------------ BASE COMMANDS -----------------": "",
@@ -14,9 +14,9 @@
     "demo:build:prod": "yarn run demo:build:base --prod",
     "demo:test": "yarn run ng test",
     "demo:lint": "yarn run ng lint",
-    "------------------ LIB SUB-FORM ------------------": "",
-    "lib:sub-form:build": "yarn run ng build --project sub-form",
-    "lib:sub-form:build:watch": "yarn run lib:sub-form:build --watch"
+    "------------------ LIB ngx-sub-form ------------------": "",
+    "lib:ngx-sub-form:build": "yarn run ng build --project ngx-sub-form",
+    "lib:ngx-sub-form:build:watch": "yarn run lib:ngx-sub-form:build --watch"
   },
   "private": true,
   "resolutions": {

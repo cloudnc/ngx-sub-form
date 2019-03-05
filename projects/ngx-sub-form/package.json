@@ -1,5 +1,5 @@
 {
-  "name": "sub-form",
+  "name": "ngx-sub-form",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^7.0.0",

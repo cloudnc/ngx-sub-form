@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Controls, subformComponentProviders, NgxSubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
+import {
+  Controls,
+  subformComponentProviders,
+  NgxSubFormComponent,
+  ControlsNames,
+  getControlsNames,
+} from 'ngx-sub-form';
 import { Spaceship, VehiculeType } from 'src/app/interfaces/vehicule.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';

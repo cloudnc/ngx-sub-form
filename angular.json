@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sub-form-demo": {
+    "ngx-sub-form-demo": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/sub-form-demo",
+            "outputPath": "dist/ngx-sub-form-demo",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -56,18 +56,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "sub-form-demo:build"
+            "browserTarget": "ngx-sub-form-demo:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "sub-form-demo:build:production"
+              "browserTarget": "ngx-sub-form-demo:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sub-form-demo:build"
+            "browserTarget": "ngx-sub-form-demo:build"
           }
         },
         "test": {
@@ -91,7 +91,7 @@
         }
       }
     },
-    "sub-form-demo-e2e": {
+    "ngx-sub-form-demo-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -100,11 +100,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "sub-form-demo:serve"
+            "devServerTarget": "ngx-sub-form-demo:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "sub-form-demo:serve:production"
+              "devServerTarget": "ngx-sub-form-demo:serve:production"
             }
           }
         },
@@ -117,36 +117,36 @@
         }
       }
     },
-    "sub-form": {
-      "root": "projects/sub-form",
-      "sourceRoot": "projects/sub-form/src",
+    "ngx-sub-form": {
+      "root": "projects/ngx-sub-form",
+      "sourceRoot": "projects/ngx-sub-form/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/sub-form/tsconfig.lib.json",
-            "project": "projects/sub-form/ng-package.json"
+            "tsConfig": "projects/ngx-sub-form/tsconfig.lib.json",
+            "project": "projects/ngx-sub-form/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/sub-form/src/test.ts",
-            "tsConfig": "projects/sub-form/tsconfig.spec.json",
-            "karmaConfig": "projects/sub-form/karma.conf.js"
+            "main": "projects/ngx-sub-form/src/test.ts",
+            "tsConfig": "projects/ngx-sub-form/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-sub-form/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["projects/sub-form/tsconfig.lib.json", "projects/sub-form/tsconfig.spec.json"],
+            "tsConfig": ["projects/ngx-sub-form/tsconfig.lib.json", "projects/ngx-sub-form/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
         }
       }
     }
   },
-  "defaultProject": "sub-form-demo"
+  "defaultProject": "ngx-sub-form-demo"
 }

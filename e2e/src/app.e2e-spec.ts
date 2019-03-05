@@ -9,6 +9,6 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to sub-form-demo!');
+    expect(page.getParagraphText()).toEqual('Welcome to ngx-sub-form-demo!');
   });
 });

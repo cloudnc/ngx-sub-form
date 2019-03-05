@@ -14,8 +14,18 @@ export class SellService {
     return this.sells$.asObservable().pipe(map(this.sellsDeepCopy.bind(this)));
   }
 
-  public addSell(sell: OneSell): void {
-    this.sells$.next([sell, ...this.sells$.getValue()]);
+  public upsertSell(sell: OneSell): void {
+    const sells = this.sells$.getValue();
+
+    const existingSellIndex: number = sells.findIndex(s => s.id === sell.id);
+
+    if (existingSellIndex > -1) {
+      const sellsBefore = sells.slice(0, existingSellIndex);
+      const sellAfter = sells.slice(existingSellIndex + 1);
+      this.sells$.next([...sellsBefore, sell, ...sellAfter]);
+    } else {
+      this.sells$.next([sell, ...this.sells$.getValue()]);
+    }
   }
 
   public getOneSell(id: string): Observable<OneSell> {

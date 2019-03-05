@@ -14,14 +14,15 @@ export class SubFormOptionsService {
   selector: '[ngxSubFormOptions]',
   providers: [SubFormOptionsService],
 })
-export class SubFormOptionsDirective implements OnDestroy {
+export class SubFormOptionsDirective {
   @Input('ngxSubFormOptions') formControl: FormControl;
 
   constructor(@Self() private subFormOptionsService: SubFormOptionsService) {}
 
-  public ngOnDestroy(): void {
-    this.formControl.setValue(null);
-  }
+  // @todo should eventually clean up when directive is being destroyed
+  // but this might be an issue, especially when there's 2 level of choices
+  // if the form is patched and the main one changes, we don't want the nested ones to
+  // delete anything
 }
 
 @Directive({

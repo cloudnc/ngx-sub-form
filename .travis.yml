@@ -25,7 +25,7 @@ script:
 deploy:
   skip_cleanup: true
   provider: pages
-  github_token: $GITHUB_TOKEN
-  local_dir: dist/ngx-sub-form
+  github-token: $GITHUB_TOKEN
+  local-dir: dist/ngx-sub-form
   on:
     branch: master

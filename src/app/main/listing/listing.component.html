@@ -1,0 +1,54 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>{{ listingForm.value?.listing?.title }}</mat-card-title>
+    <mat-card-subtitle>{{ listingForm.value?.listing?.price }}</mat-card-subtitle>
+  </mat-card-header>
+  <div class="img-container">
+    <img
+      mat-card-image
+      [src]="listingForm.value?.listing?.imageUrl"
+      alt="Photo of {{ listingForm.value?.listing?.title }}"
+    />
+  </div>
+  <mat-card-content>
+    <mat-form-field>
+      <mat-select placeholder="Select listing type" [formControl]="selectListingType">
+        <mat-option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
+          {{ listingType.value }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <form [formGroup]="listingForm">
+      <div [ngSwitch]="selectListingType.value" [ngxSubFormOptions]="selectListingType">
+        <app-droid-listing
+          *ngSwitchCase="ListingType.DROID"
+          ngxSubFormOption
+          formControlName="listing"
+        ></app-droid-listing>
+
+        <app-vehicle-listing
+          *ngSwitchCase="ListingType.VEHICLE"
+          ngxSubFormOption
+          formControlName="listing"
+        ></app-vehicle-listing>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      (click)="upsertListing(listingForm.get('listing').value)"
+      [disabled]="listingForm.invalid"
+    >
+      Upsert
+    </button>
+
+    <div *ngIf="listingForm.invalid">
+      Form's invalid
+    </div>
+  </mat-card-actions>
+</mat-card>
+
+<pre>{{ listingForm.value | json }}</pre>

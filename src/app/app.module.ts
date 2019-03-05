@@ -15,20 +15,21 @@ import {
   MatInputModule,
   MatSelectModule,
   MatSlideToggleModule,
+  MatCardModule,
 } from '@angular/material';
-import { SellsComponent } from './main/sells/sells.component';
-import { SellComponent } from './main/sell/sell.component';
+import { ListingComponent } from './main/listing/listing.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { VehiculeSellComponent } from './main/sell/vehicule-sell/vehicule-sell.component';
-import { DroidSellComponent } from './main/sell/droid-sell/droid-sell.component';
+import { VehicleListingComponent } from './main/listing/vehicle-listing/vehicle-listing.component';
+import { DroidListingComponent } from './main/listing/droid-listing/droid-listing.component';
 import { CommonModule } from '@angular/common';
-import { SpaceshipComponent } from './main/sell/vehicule-sell/spaceship/spaceship.component';
-import { LandComponent } from './main/sell/vehicule-sell/land/land.component';
-import { ProtocolDroidComponent } from './main/sell/droid-sell/protocol-droid/protocol-droid.component';
-import { MedicalDroidComponent } from './main/sell/droid-sell/medical-droid/medical-droid.component';
-import { AstromechDroidComponent } from './main/sell/droid-sell/astromech-droid/astromech-droid.component';
-import { AssassinDroidComponent } from './main/sell/droid-sell/assassin-droid/assassin-droid.component';
+import { SpaceshipComponent } from './main/listing/vehicle-listing/spaceship/spaceship.component';
+import { SpeederComponent } from './main/listing/vehicle-listing/speeder/speeder.component';
+import { ProtocolDroidComponent } from './main/listing/droid-listing/protocol-droid/protocol-droid.component';
+import { MedicalDroidComponent } from './main/listing/droid-listing/medical-droid/medical-droid.component';
+import { AstromechDroidComponent } from './main/listing/droid-listing/astromech-droid/astromech-droid.component';
+import { AssassinDroidComponent } from './main/listing/droid-listing/assassin-droid/assassin-droid.component';
 import { NgxSubFormModule } from 'ngx-sub-form';
+import { ListingsComponent } from './main/listings/listings.component';
 
 const MATERIAL_MODULES = [
   LayoutModule,
@@ -41,18 +42,19 @@ const MATERIAL_MODULES = [
   MatInputModule,
   MatSelectModule,
   MatSlideToggleModule,
+  MatCardModule,
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    SellsComponent,
-    SellComponent,
-    VehiculeSellComponent,
-    DroidSellComponent,
+    ListingsComponent,
+    ListingComponent,
+    VehicleListingComponent,
+    DroidListingComponent,
     SpaceshipComponent,
-    LandComponent,
+    SpeederComponent,
     ProtocolDroidComponent,
     MedicalDroidComponent,
     AstromechDroidComponent,
@@ -65,7 +67,7 @@ const MATERIAL_MODULES = [
     ReactiveFormsModule,
     ...MATERIAL_MODULES,
     RouterModule.forRoot([
-      { path: 'sells', children: [{ path: ':sellId', component: SellComponent }] },
+      { path: 'listings', children: [{ path: ':listingId', component: ListingComponent }] },
       { path: '**', pathMatch: 'full', redirectTo: '/' },
     ]),
     NgxSubFormModule,

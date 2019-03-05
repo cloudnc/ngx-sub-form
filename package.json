@@ -16,7 +16,9 @@
     "demo:lint": "yarn run ng lint",
     "------------------ LIB ngx-sub-form ------------------": "",
     "lib:ngx-sub-form:build": "yarn run ng build --project ngx-sub-form",
-    "lib:ngx-sub-form:build:watch": "yarn run lib:ngx-sub-form:build --watch"
+    "lib:ngx-sub-form:build:watch": "yarn run lib:ngx-sub-form:build --watch",
+    "------------------ Quick Commands ------------------": "",
+    "lint:fix": "yarn demo:lint --fix && yarn prettier:write"
   },
   "private": true,
   "resolutions": {

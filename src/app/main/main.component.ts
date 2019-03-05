@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SellService } from '../services/sell.service';
+import { ListingService } from '../services/listing.service';
 
 @Component({
   selector: 'app-main',
@@ -7,7 +7,7 @@ import { SellService } from '../services/sell.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent {
-  public sells$ = this.sellService.getSells();
+  public listings$ = this.listingService.getListings();
 
-  constructor(private sellService: SellService) {}
+  constructor(private listingService: ListingService) {}
 }

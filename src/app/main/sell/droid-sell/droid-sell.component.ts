@@ -1,5 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { subformComponentProviders, Controls, NgxSubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
+import { Component } from '@angular/core';
+import {
+  subformComponentProviders,
+  Controls,
+  NgxSubFormComponent,
+  ControlsNames,
+  getControlsNames,
+} from 'ngx-sub-form';
 import { DroidSell, SellType } from 'src/app/interfaces/sell.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';

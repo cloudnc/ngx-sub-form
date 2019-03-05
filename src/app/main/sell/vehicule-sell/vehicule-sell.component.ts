@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { VehiculeSell, SellType } from '../../../interfaces/sell.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { Controls, NgxSubFormComponent, getControlsNames, subformComponentProviders, ControlsNames } from 'sub-form';
+import {
+  Controls,
+  NgxSubFormComponent,
+  getControlsNames,
+  subformComponentProviders,
+  ControlsNames,
+} from 'ngx-sub-form';
 import { VehiculeType } from 'src/app/interfaces/vehicule.interface';
 import { UuidService } from 'src/app/services/uuid.service';
 

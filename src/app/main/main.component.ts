@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { OneSell } from '../interfaces/sell.interface';
 import { SellService } from '../services/sell.service';
 
 @Component({

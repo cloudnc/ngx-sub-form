@@ -1,5 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Controls, subformComponentProviders, NgxSubFormComponent, ControlsNames, getControlsNames } from 'sub-form';
+import { Component } from '@angular/core';
+import {
+  Controls,
+  subformComponentProviders,
+  NgxSubFormComponent,
+  ControlsNames,
+  getControlsNames,
+} from 'ngx-sub-form';
 import { AssassinDroid, DroidType, AssassinDroidWeapon } from 'src/app/interfaces/droid.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';

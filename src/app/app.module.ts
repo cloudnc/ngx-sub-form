@@ -28,7 +28,7 @@ import { ProtocolDroidComponent } from './main/sell/droid-sell/protocol-droid/pr
 import { MedicalDroidComponent } from './main/sell/droid-sell/medical-droid/medical-droid.component';
 import { AstromechDroidComponent } from './main/sell/droid-sell/astromech-droid/astromech-droid.component';
 import { AssassinDroidComponent } from './main/sell/droid-sell/assassin-droid/assassin-droid.component';
-import { NgxSubFormModule } from 'sub-form';
+import { NgxSubFormModule } from 'ngx-sub-form';
 
 const MATERIAL_MODULES = [
   LayoutModule,

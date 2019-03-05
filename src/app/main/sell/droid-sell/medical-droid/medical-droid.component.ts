@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
-import { NgxSubFormComponent, subformComponentProviders, Controls, ControlsNames, getControlsNames } from 'sub-form';
+import {
+  NgxSubFormComponent,
+  subformComponentProviders,
+  Controls,
+  ControlsNames,
+  getControlsNames,
+} from 'ngx-sub-form';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UuidService } from 'src/app/services/uuid.service';
 

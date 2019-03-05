@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UuidService } from '../../../../services/uuid.service';
-import { subformComponentProviders, NgxSubFormComponent, Controls, ControlsNames, getControlsNames } from 'sub-form';
+import {
+  subformComponentProviders,
+  NgxSubFormComponent,
+  Controls,
+  ControlsNames,
+  getControlsNames,
+} from 'ngx-sub-form';
 import { AstromechDroid, DroidType, AstromechDroidShape } from '../../../../interfaces/droid.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 

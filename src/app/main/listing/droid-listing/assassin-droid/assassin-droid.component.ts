@@ -32,7 +32,7 @@ export class AssassinDroidComponent extends NgxSubFormComponent {
     weapons: new FormControl([], { validators: [Validators.required] }),
   };
 
-  protected formGroup: FormGroup = new FormGroup(this.controls);
+  public formGroup: FormGroup = new FormGroup(this.controls);
 
   public controlsNames: ControlsNames<AssassinDroid> = getControlsNames(this.controls);
 

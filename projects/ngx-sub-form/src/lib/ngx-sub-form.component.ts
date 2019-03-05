@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { tap, delay } from 'rxjs/operators';
 
 export abstract class NgxSubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
-  protected abstract formGroup: FormGroup;
+  public abstract formGroup: FormGroup;
 
   // this should not be handled directly by the developer
   // instead, please use the provided directives
@@ -92,7 +92,7 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
 
   // ***********************************************************************
   // EX of use when an array is needed
-  // protected formGroup = this.fb.group({ array: this.fb.array([]) });
+  // public formGroup = this.fb.group({ array: this.fb.array([]) });
 
   // protected transformBeforeWrite(obj: any): any {
   //   return { array: obj };

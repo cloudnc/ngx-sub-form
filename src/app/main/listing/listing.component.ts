@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
 import { ListingService } from 'src/app/services/listing.service';
 import { ActivatedRoute } from '@angular/router';
 import { map, takeUntil, tap, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { NEVER, of, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-listing',
@@ -16,11 +16,14 @@ export class ListingComponent implements OnInit, OnDestroy {
 
   public ListingType = ListingType;
 
-  public selectListingType: FormControl = new FormControl();
-
   public listingForm: FormGroup = new FormGroup({
     listing: new FormControl(null, { validators: [Validators.required] }),
+    listingType: new FormControl(),
   });
+
+  public get selectListingType(): AbstractControl {
+    return this.listingForm.get('listingType');
+  }
 
   constructor(private route: ActivatedRoute, private listingService: ListingService) {}
 
@@ -29,10 +32,15 @@ export class ListingComponent implements OnInit, OnDestroy {
       .pipe(
         map(params => params.get('listingId')),
         takeUntil(this.onDestroy$),
-        switchMap(listingId => this.listingService.getOneListing(listingId)),
+        switchMap(listingId => {
+          if (listingId === 'new') {
+            return of(null);
+          }
+          return this.listingService.getOneListing(listingId);
+        }),
         tap(listing => {
           this.listingForm.get('listing').patchValue(listing);
-          this.selectListingType.patchValue(listing.listingType);
+          this.listingForm.get('listingType').patchValue(listing ? listing.listingType : null);
         }),
       )
       .subscribe();

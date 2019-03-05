@@ -67,7 +67,13 @@ const MATERIAL_MODULES = [
     ReactiveFormsModule,
     ...MATERIAL_MODULES,
     RouterModule.forRoot([
-      { path: 'listings', children: [{ path: ':listingId', component: ListingComponent }] },
+      {
+        path: 'listings',
+        children: [
+          { path: ':listingId', component: ListingComponent },
+          { path: 'new', component: ListingComponent, pathMatch: 'full' },
+        ],
+      },
       { path: '**', pathMatch: 'full', redirectTo: '/' },
     ]),
     NgxSubFormModule,

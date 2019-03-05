@@ -6,21 +6,22 @@
   </mat-card-header>
   <div class="img-container">
     <img
+      *ngIf="listingForm.value?.listing?.imageUrl"
       mat-card-image
       [src]="listingForm.value?.listing?.imageUrl"
       alt="Photo of {{ listingForm.value?.listing?.title }}"
     />
   </div>
   <mat-card-content>
-    <mat-form-field>
-      <mat-select placeholder="Select listing type" [formControl]="selectListingType">
-        <mat-option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
-          {{ listingType.value }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
     <form [formGroup]="listingForm">
+      <mat-form-field>
+        <mat-select placeholder="Select listing type" formControlName="listingType">
+          <mat-option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
+            {{ listingType.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <div [ngSwitch]="selectListingType.value" ngxSubFormOptions>
         <app-droid-listing
           *ngSwitchCase="ListingType.DROID"

@@ -6,7 +6,6 @@ export enum DroidType {
 }
 
 export interface BaseDroid {
-  id: string;
   color: string;
   name: string;
 }

@@ -1,38 +1,53 @@
 <mat-card>
   <mat-card-header>
     <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{ listingForm.value?.listing?.title }}</mat-card-title>
-    <mat-card-subtitle>{{ listingForm.value?.listing?.price }}</mat-card-subtitle>
+    <mat-card-title>{{ formGroup.value?.title }}</mat-card-title>
+    <mat-card-subtitle>{{ formGroup.value?.listing?.price }}</mat-card-subtitle>
   </mat-card-header>
   <div class="img-container">
     <img
-      *ngIf="listingForm.value?.listing?.imageUrl"
+      *ngIf="formGroup.value?.imageUrl"
       mat-card-image
-      [src]="listingForm.value?.listing?.imageUrl"
-      alt="Photo of {{ listingForm.value?.listing?.title }}"
+      [src]="formGroup.value?.imageUrl"
+      alt="Photo of {{ formGroup.value?.title }}"
     />
   </div>
   <mat-card-content>
-    <form [formGroup]="listingForm">
+    <form [formGroup]="formGroup">
+
       <mat-form-field>
-        <mat-select placeholder="Select listing type" formControlName="listingType">
+        <input matInput type="text" placeholder="ID" [formControlName]="formControlNames.id" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="text" placeholder="Title" [formControlName]="formControlNames.title" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="text" placeholder="Image Url" [formControlName]="formControlNames.imageUrl" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="number" placeholder="Price" [formControlName]="formControlNames.price" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Select listing type" [formControlName]="formControlNames.listingType">
           <mat-option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
             {{ listingType.value }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <div [ngSwitch]="selectListingType.value" ngxSubFormOptions>
-        <app-droid-listing
+      <div [ngSwitch]="formGroup.get(formControlNames.listingType).value">
+        <app-droid-product
           *ngSwitchCase="ListingType.DROID"
-          ngxSubFormOption
-          formControlName="listing"
-        ></app-droid-listing>
+          [formControlName]="formControlNames.droidProduct"
+        ></app-droid-product>
 
         <app-vehicle-listing
           *ngSwitchCase="ListingType.VEHICLE"
-          ngxSubFormOption
-          formControlName="listing"
+          [formControlName]="formControlNames.vehicleProduct"
         ></app-vehicle-listing>
       </div>
     </form>
@@ -40,16 +55,17 @@
   <mat-card-actions>
     <button
       mat-raised-button
-      (click)="upsertListing(listingForm.get('listing').value)"
-      [disabled]="listingForm.invalid"
+      (click)="upsertListing(formGroup.get('listing').value)"
+      [disabled]="formGroup.invalid"
     >
       Upsert
     </button>
 
-    <div *ngIf="listingForm.invalid">
-      Form's invalid
+    <div *ngIf="formGroup.invalid">
+      Form is invalid
+      <pre highlight="">{{formGroup.errors|json}}</pre>
     </div>
   </mat-card-actions>
 </mat-card>
 
-<pre>{{ listingForm.value | json }}</pre>
+<pre>{{ formGroup.value | json }}</pre>

@@ -1,14 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  Controls,
-  subformComponentProviders,
-  NgxSubFormComponent,
-  ControlsNames,
-  getControlsNames,
-} from 'ngx-sub-form';
+import { Component } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { UuidService } from 'src/app/services/uuid.service';
 
 @Component({
   selector: 'app-spaceship',
@@ -16,21 +9,12 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./spaceship.component.scss'],
   providers: subformComponentProviders(SpaceshipComponent),
 })
-export class SpaceshipComponent extends NgxSubFormComponent {
-  private controls: Controls<Spaceship> = {
-    id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
+export class SpaceshipComponent extends NgxSubFormComponent<Spaceship> {
+  protected formControls: Controls<Spaceship> = {
     color: new FormControl(null, { validators: [Validators.required] }),
     canFire: new FormControl(false, { validators: [Validators.required] }),
     numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
     numberOfWings: new FormControl(null, { validators: [Validators.required] }),
     vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
   };
-
-  public formGroup: FormGroup = new FormGroup(this.controls);
-
-  public controlsNames: ControlsNames<Spaceship> = getControlsNames(this.controls);
-
-  constructor(private uuidService: UuidService) {
-    super();
-  }
 }

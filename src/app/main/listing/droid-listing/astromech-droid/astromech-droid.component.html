@@ -1,14 +1,11 @@
 <fieldset [formGroup]="formGroup" class="container">
+
   <mat-form-field>
-    <input matInput type="text" placeholder="ID" [formControlName]="controlsNames.id" autocomplete="off" />
+    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="controlsNames.color" autocomplete="off" />
-  </mat-form-field>
-
-  <mat-form-field>
-    <input matInput type="text" placeholder="Name" [formControlName]="controlsNames.name" autocomplete="off" />
+    <input matInput type="text" placeholder="Name" [formControlName]="formControlNames.name" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
@@ -16,13 +13,13 @@
       matInput
       type="number"
       placeholder="Number of tools carried"
-      [formControlName]="controlsNames.numberOfToolsCarried"
+      [formControlName]="formControlNames.numberOfToolsCarried"
       autocomplete="off"
     />
   </mat-form-field>
 
   <mat-form-field>
-    <mat-select placeholder="Select the droid shape" [formControlName]="controlsNames.shape">
+    <mat-select placeholder="Select the droid shape" [formControlName]="formControlNames.shape">
       <mat-option *ngFor="let shape of (AstromechDroidShape | keyvalue)" [value]="shape.value">
         {{ shape.value }}
       </mat-option>

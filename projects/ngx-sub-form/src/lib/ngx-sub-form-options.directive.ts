@@ -5,7 +5,7 @@ import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 
 @Injectable()
 export class NgxSubFormOptionsService {
-  public register(ngxSubFormComponent: NgxSubFormComponent): void {
+  public register(ngxSubFormComponent: NgxSubFormComponent<any>): void {
     ngxSubFormComponent.resetValueOnDestroy = false;
   }
 }
@@ -29,7 +29,7 @@ export class SubFormOptionsDirective {
 export class SubFormOptionDirective implements OnInit {
   constructor(
     private ngxSubFormOptionsService: NgxSubFormOptionsService,
-    @Inject(SUB_FORM_COMPONENT_TOKEN) @Self() @Optional() private component: NgxSubFormComponent,
+    @Inject(SUB_FORM_COMPONENT_TOKEN) @Self() @Optional() private component: NgxSubFormComponent<any>,
   ) {}
 
   public ngOnInit(): void {

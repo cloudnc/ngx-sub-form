@@ -1,31 +1,49 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Controls, NgxSubFormRemapComponent } from 'ngx-sub-form';
+import { of, Subject } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
 import { ListingService } from 'src/app/services/listing.service';
-import { ActivatedRoute } from '@angular/router';
-import { map, takeUntil, tap, switchMap } from 'rxjs/operators';
-import { NEVER, of, Subject } from 'rxjs';
+import { OneDroid } from '../../interfaces/droid.interface';
+import { OneVehicle } from '../../interfaces/vehicle.interface';
+import { UuidService } from '../../services/uuid.service';
+
+interface OneListingForm {
+  vehicleProduct: OneVehicle;
+  droidProduct: OneDroid;
+  listingType: ListingType;
+  id: string;
+  title: string;
+  imageUrl: string;
+  price: number;
+}
 
 @Component({
   selector: 'app-listing',
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss'],
 })
-export class ListingComponent implements OnInit, OnDestroy {
+export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneListingForm>
+  implements OnInit, OnDestroy {
   public onDestroy$ = new Subject<void>();
 
   public ListingType = ListingType;
 
-  public listingForm: FormGroup = new FormGroup({
-    listing: new FormControl(null, { validators: [Validators.required] }),
-    listingType: new FormControl(),
-  });
+  protected formControls: Controls<OneListingForm> = {
+    vehicleProduct: new FormControl(null),
+    droidProduct: new FormControl(null),
+    listingType: new FormControl(null, Validators.required),
+    id: new FormControl(this.uuidService.generate(), Validators.required),
+    title: new FormControl(null, Validators.required),
+    imageUrl: new FormControl(null, Validators.required),
+    price: new FormControl(null, Validators.required),
+  };
 
-  public get selectListingType(): AbstractControl {
-    return this.listingForm.get('listingType');
+  constructor(private route: ActivatedRoute, private listingService: ListingService, private uuidService: UuidService) {
+    super();
   }
-
-  constructor(private route: ActivatedRoute, private listingService: ListingService) {}
 
   public ngOnInit(): void {
     this.route.paramMap
@@ -39,8 +57,13 @@ export class ListingComponent implements OnInit, OnDestroy {
           return this.listingService.getOneListing(listingId);
         }),
         tap(listing => {
-          this.listingForm.get('listing').patchValue(listing);
-          this.listingForm.get('listingType').patchValue(listing ? listing.listingType : null);
+          if (listing) {
+            this.formGroup.setValue(this.transformToFormGroup(listing));
+          } else {
+            this.formGroup.reset({
+              id: this.uuidService.generate(),
+            });
+          }
         }),
       )
       .subscribe();
@@ -53,5 +76,31 @@ export class ListingComponent implements OnInit, OnDestroy {
 
   public upsertListing(listing: OneListing): void {
     this.listingService.upsertListing(listing);
+  }
+
+  protected transformFromFormGroup(formValue: OneListingForm): OneListing {
+    const { vehicleProduct, droidProduct, listingType, ...commonValues } = formValue;
+
+    switch (listingType) {
+      case ListingType.DROID:
+        return { product: droidProduct, listingType, ...commonValues };
+      case ListingType.VEHICLE:
+        return { product: vehicleProduct, listingType, ...commonValues };
+    }
+  }
+
+  protected transformToFormGroup(obj: OneListing): OneListingForm {
+    if (!obj) {
+      return null;
+    }
+
+    const { listingType, product, ...commonValues } = obj;
+
+    return {
+      vehicleProduct: obj.listingType === ListingType.VEHICLE ? obj.product : null,
+      droidProduct: obj.listingType === ListingType.DROID ? obj.product : null,
+      listingType: obj.listingType,
+      ...commonValues,
+    };
   }
 }

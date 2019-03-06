@@ -19,8 +19,8 @@ import {
 } from '@angular/material';
 import { ListingComponent } from './main/listing/listing.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { VehicleListingComponent } from './main/listing/vehicle-listing/vehicle-listing.component';
-import { DroidListingComponent } from './main/listing/droid-listing/droid-listing.component';
+import { VehicleProductComponent } from './main/listing/vehicle-listing/vehicle-product.component';
+import { DroidProductComponent } from './main/listing/droid-listing/droid-product.component';
 import { CommonModule } from '@angular/common';
 import { SpaceshipComponent } from './main/listing/vehicle-listing/spaceship/spaceship.component';
 import { SpeederComponent } from './main/listing/vehicle-listing/speeder/speeder.component';
@@ -51,8 +51,8 @@ const MATERIAL_MODULES = [
     MainComponent,
     ListingsComponent,
     ListingComponent,
-    VehicleListingComponent,
-    DroidListingComponent,
+    VehicleProductComponent,
+    DroidProductComponent,
     SpaceshipComponent,
     SpeederComponent,
     ProtocolDroidComponent,

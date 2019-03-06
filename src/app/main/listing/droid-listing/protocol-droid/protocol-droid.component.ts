@@ -1,14 +1,7 @@
 import { Component } from '@angular/core';
-import {
-  subformComponentProviders,
-  NgxSubFormComponent,
-  Controls,
-  ControlsNames,
-  getControlsNames,
-} from 'ngx-sub-form';
-import { ProtocolDroid, DroidType, Languages } from '../../../../interfaces/droid.interface';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { UuidService } from '../../../../services/uuid.service';
+import { FormControl, Validators } from '@angular/forms';
+import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { DroidType, Languages, ProtocolDroid } from '../../../../interfaces/droid.interface';
 
 @Component({
   selector: 'app-protocol-droid',
@@ -16,22 +9,14 @@ import { UuidService } from '../../../../services/uuid.service';
   styleUrls: ['./protocol-droid.component.scss'],
   providers: subformComponentProviders(ProtocolDroidComponent),
 })
-export class ProtocolDroidComponent extends NgxSubFormComponent {
-  private controls: Controls<ProtocolDroid> = {
-    id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
+export class ProtocolDroidComponent extends NgxSubFormComponent<ProtocolDroid> {
+  protected formControls: Controls<ProtocolDroid> = {
     color: new FormControl(null, { validators: [Validators.required] }),
     name: new FormControl(null, { validators: [Validators.required] }),
     droidType: new FormControl(DroidType.PROTOCOL, { validators: [Validators.required] }),
     spokenLanguages: new FormControl(null, { validators: [Validators.required] }),
   };
 
-  public formGroup: FormGroup = new FormGroup(this.controls);
-
-  public controlsNames: ControlsNames<ProtocolDroid> = getControlsNames(this.controls);
-
   public Languages = Languages;
 
-  constructor(private uuidService: UuidService) {
-    super();
-  }
 }

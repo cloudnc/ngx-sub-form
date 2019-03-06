@@ -1,18 +1,15 @@
 <fieldset [formGroup]="formGroup" class="container">
+
   <mat-form-field>
-    <input matInput type="text" placeholder="ID" [formControlName]="controlsNames.id" autocomplete="off" />
+    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="controlsNames.color" autocomplete="off" />
+    <input matInput type="text" placeholder="Name" [formControlName]="formControlNames.name" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="text" placeholder="Name" [formControlName]="controlsNames.name" autocomplete="off" />
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-select placeholder="Select spoken languages" multiple [formControlName]="controlsNames.spokenLanguages">
+    <mat-select placeholder="Select spoken languages" multiple [formControlName]="formControlNames.spokenLanguages">
       <mat-option *ngFor="let language of (Languages | keyvalue)" [value]="language.value">
         {{ language.value }}
       </mat-option>

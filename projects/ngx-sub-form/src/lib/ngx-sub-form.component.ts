@@ -1,10 +1,23 @@
 import { Input, OnDestroy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { tap, delay } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
+import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
 
-export abstract class NgxSubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
-  public abstract formGroup: FormGroup;
+export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface> implements ControlValueAccessor, Validator, OnDestroy {
+  protected formControls: Controls<FormInterface>;
+
+  public get formControlNames(): ControlsNames<FormInterface> {
+    return getControlsNames(this.formControls);
+  }
+
+  private fg: FormGroup;
+  public get formGroup(): FormGroup {
+    if (!this.fg) {
+      this.fg = new FormGroup(this.formControls);
+    }
+    return this.fg;
+  }
 
   // this should not be handled directly by the developer
   // instead, please use the provided directives
@@ -43,7 +56,7 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
     // @hack there's a memory leak within Angular and those components
     // are not correctly cleaned up which leads to error if a form is defined
     // with validators and then it's been removed, the validator would still fail
-    this.formGroup = null;
+    this.fg = null;
 
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -64,7 +77,7 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   public writeValue(obj: any): void {
     if (obj) {
       if (!!this.formGroup) {
-        this.formGroup.patchValue(this.transformBeforeWrite(obj), {
+        this.formGroup.patchValue(this.transformToFormGroup(obj), {
           // required to be true otherwise it's not possible
           // to be warned when the form is updated
           emitEvent: true,
@@ -78,33 +91,17 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   // ----------------------------------------------------
   // ----------------------------------------------------
   // ----------------------------------------------------
-  // that method can be overriden if the
+  // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformBeforeWrite(obj: any): any {
-    return obj;
+  protected transformToFormGroup(obj: ControlInterface): FormInterface {
+    return obj as any as FormInterface;
   }
 
   // that method can be overriden if the
   // shape of the form needs to be modified
-  protected transformBeforeOnChange(formValue: any): any {
-    return formValue;
+  protected transformFromFormGroup(formValue: FormInterface): ControlInterface {
+    return formValue as any as ControlInterface;
   }
-
-  // ***********************************************************************
-  // EX of use when an array is needed
-  // public formGroup = this.fb.group({ array: this.fb.array([]) });
-
-  // protected transformBeforeWrite(obj: any): any {
-  //   return { array: obj };
-  // }
-
-  // protected transformBeforeOnChange(formValue: any): any {
-  //   return formValue.array;
-  // }
-  // ***********************************************************************
-  // ----------------------------------------------------
-  // ----------------------------------------------------
-  // ----------------------------------------------------
 
   public registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -120,7 +117,7 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
         delay(0),
         tap(changes => {
           this.onTouched();
-          this.onChange(this.transformBeforeOnChange(changes));
+          this.onChange(this.transformFromFormGroup(changes));
         }),
       )
       .subscribe();
@@ -130,3 +127,10 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
     this.onTouched = fn;
   }
 }
+
+export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> extends NgxSubFormComponent<ControlInterface, FormInterface> {
+  protected abstract transformToFormGroup(obj: ControlInterface): FormInterface;
+  protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface;
+}
+
+

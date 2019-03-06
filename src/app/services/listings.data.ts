@@ -11,7 +11,6 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/4/43/MillenniumFalconTFA-Fathead.png/revision/latest/scale-to-width-down/1000?cb=20161110011442',
     listingType: ListingType.VEHICLE,
     product: {
-      id: 'f7c7493b-f5df-46c5-90b7-afb0ff44c2ec',
       color: '#cec80d',
       canFire: true,
       numberOfPeopleOnBoard: 6,
@@ -27,7 +26,6 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/5/54/X34-landspeeder.jpg/revision/latest?cb=20080316031428',
     listingType: ListingType.VEHICLE,
     product: {
-      id: 'fdf64083-aa13-4668-aa4c-5f68bddef683',
       color: '#2468f7',
       canFire: true,
       numberOfPeopleOnBoard: 2,
@@ -43,7 +41,6 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/5/51/C-3PO_EP3.png/revision/latest?cb=20131005124036',
     listingType: ListingType.DROID,
     product: {
-      id: 'c6723f9d-7e26-4c22-8545-dd29fe0fb34e',
       color: '#b38d03',
       name: 'Proto',
       droidType: DroidType.PROTOCOL,
@@ -58,7 +55,6 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/b/b6/2-1B_negtd.jpg/revision/latest/scale-to-width-down/200?cb=20100616170941',
     listingType: ListingType.DROID,
     product: {
-      id: '4fef91bb-97ae-4840-891e-178eb0a43727',
       color: '#07c911',
       name: 'Medic',
       droidType: DroidType.MEDICAL,
@@ -74,7 +70,6 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/e/eb/ArtooTFA2-Fathead.png/revision/latest/scale-to-width-down/1000?cb=20161108040914',
     listingType: ListingType.DROID,
     product: {
-      id: 'cc925c0d-0fa3-4f83-9826-6c41808f3ee7',
       color: '#ff0a0a',
       name: 'Test',
       droidType: DroidType.ASTROMECH,
@@ -90,7 +85,6 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/f/fd/K-2SO_Sideshow.png/revision/latest?cb=20170302003128',
     listingType: ListingType.DROID,
     product: {
-      id: 'bdbb865d-fb90-4e96-a8d0-be93d1b352a4',
       color: '#cc6969',
       name: 'acwer fg',
       droidType: DroidType.ASSASSIN,

@@ -1,18 +1,15 @@
 <fieldset [formGroup]="formGroup" class="container">
+
   <mat-form-field>
-    <input matInput type="text" placeholder="ID" [formControlName]="controlsNames.id" autocomplete="off" />
+    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="controlsNames.color" autocomplete="off" />
+    <input matInput type="text" placeholder="Name" [formControlName]="formControlNames.name" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="text" placeholder="Name" [formControlName]="controlsNames.name" autocomplete="off" />
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-select placeholder="Select weapons" multiple [formControlName]="controlsNames.weapons">
+    <mat-select placeholder="Select weapons" multiple [formControlName]="formControlNames.weapons">
       <mat-option *ngFor="let weapon of (AssassinDroidWeapon | keyvalue)" [value]="weapon.value">
         {{ assassinDroidWeaponText[weapon.value] }}
       </mat-option>

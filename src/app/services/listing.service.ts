@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { OneListing } from '../interfaces/listing.interface';
 import { hardCodedListings } from './listings.data';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +31,11 @@ export class ListingService {
   public getOneListing(id: string): Observable<OneListing> {
     return this.listings$.pipe(
       map(listings => listings.find(s => s.id === id)),
+      tap(listing => {
+        if (!listing) {
+          throw new Error('not found');
+        }
+      }),
       map(this.listingDeepCopy),
     );
   }

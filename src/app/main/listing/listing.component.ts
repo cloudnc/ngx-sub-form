@@ -74,8 +74,11 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
     this.onDestroy$.complete();
   }
 
-  public upsertListing(listing: OneListing): void {
-    this.listingService.upsertListing(listing);
+  public upsertListing(listing: OneListingForm): void {
+    this.listingService.upsertListing(this.transformFromFormGroup(listing));
+    this.formGroup.patchValue({
+      id: this.uuidService.generate(),
+    });
   }
 
   protected transformFromFormGroup(formValue: OneListingForm): OneListing {

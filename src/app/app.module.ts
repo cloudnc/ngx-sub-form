@@ -28,7 +28,6 @@ import { ProtocolDroidComponent } from './main/listing/droid-listing/protocol-dr
 import { MedicalDroidComponent } from './main/listing/droid-listing/medical-droid/medical-droid.component';
 import { AstromechDroidComponent } from './main/listing/droid-listing/astromech-droid/astromech-droid.component';
 import { AssassinDroidComponent } from './main/listing/droid-listing/assassin-droid/assassin-droid.component';
-import { NgxSubFormModule } from 'ngx-sub-form';
 import { ListingsComponent } from './main/listings/listings.component';
 
 const MATERIAL_MODULES = [
@@ -76,7 +75,6 @@ const MATERIAL_MODULES = [
       },
       { path: '**', pathMatch: 'full', redirectTo: '/' },
     ]),
-    NgxSubFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

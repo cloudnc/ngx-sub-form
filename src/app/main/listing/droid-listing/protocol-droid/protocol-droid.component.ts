@@ -18,5 +18,4 @@ export class ProtocolDroidComponent extends NgxSubFormComponent<ProtocolDroid> {
   };
 
   public Languages = Languages;
-
 }

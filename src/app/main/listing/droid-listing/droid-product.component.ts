@@ -36,19 +36,16 @@ export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, On
   public DroidType = DroidType;
 
   protected transformToFormGroup(obj: OneDroid): OneDroidForm {
-
     return {
       protocolDroid: obj.droidType === DroidType.PROTOCOL ? obj : null,
       medicalDroid: obj.droidType === DroidType.MEDICAL ? obj : null,
       astromechDroid: obj.droidType === DroidType.ASTROMECH ? obj : null,
       assassinDroid: obj.droidType === DroidType.ASSASSIN ? obj : null,
       droidType: obj.droidType,
-    }
-
+    };
   }
 
   protected transformFromFormGroup(formValue: OneDroidForm): OneDroid {
-
     switch (formValue.droidType) {
       case DroidType.PROTOCOL:
         return formValue.protocolDroid;
@@ -59,7 +56,5 @@ export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, On
       case DroidType.ASSASSIN:
         return formValue.assassinDroid;
     }
-
   }
-
 }

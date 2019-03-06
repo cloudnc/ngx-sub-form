@@ -9,5 +9,17 @@ app-root {
 }
 
 fieldset {
-  border: none;
+  border: 1px solid grey;
+  border-radius: 5px;
+
+
+  &.ng-invalid {
+    border-color: red;
+  }
+
+  legend {
+    padding: 0 5px;
+    color: grey;
+  }
+
 }

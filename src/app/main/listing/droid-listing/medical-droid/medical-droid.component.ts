@@ -17,5 +17,4 @@ export class MedicalDroidComponent extends NgxSubFormComponent<MedicalDroid> {
     canHealHumans: new FormControl(false, { validators: [Validators.required] }),
     canFixRobots: new FormControl(false, { validators: [Validators.required] }),
   };
-
 }

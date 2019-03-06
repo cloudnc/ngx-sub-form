@@ -19,5 +19,4 @@ export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid>
   };
 
   public AstromechDroidShape = AstromechDroidShape;
-
 }

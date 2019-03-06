@@ -17,5 +17,4 @@ export class SpeederComponent extends NgxSubFormComponent<Speeder> {
     vehicleType: new FormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
     maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
   };
-
 }

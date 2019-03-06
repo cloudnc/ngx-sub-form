@@ -14,7 +14,6 @@
   </div>
   <mat-card-content>
     <form [formGroup]="formGroup">
-
       <mat-form-field>
         <input matInput type="text" placeholder="ID" [formControlName]="formControlNames.id" autocomplete="off" />
       </mat-form-field>
@@ -24,11 +23,23 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput type="text" placeholder="Image Url" [formControlName]="formControlNames.imageUrl" autocomplete="off" />
+        <input
+          matInput
+          type="text"
+          placeholder="Image Url"
+          [formControlName]="formControlNames.imageUrl"
+          autocomplete="off"
+        />
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput type="number" placeholder="Price" [formControlName]="formControlNames.price" autocomplete="off" />
+        <input
+          matInput
+          type="number"
+          placeholder="Price"
+          [formControlName]="formControlNames.price"
+          autocomplete="off"
+        />
       </mat-form-field>
 
       <mat-form-field>
@@ -45,25 +56,21 @@
           [formControlName]="formControlNames.droidProduct"
         ></app-droid-product>
 
-        <app-vehicle-listing
+        <app-vehicle-product
           *ngSwitchCase="ListingType.VEHICLE"
           [formControlName]="formControlNames.vehicleProduct"
-        ></app-vehicle-listing>
+        ></app-vehicle-product>
       </div>
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button
-      mat-raised-button
-      (click)="upsertListing(formGroup.get('listing').value)"
-      [disabled]="formGroup.invalid"
-    >
+    <button mat-raised-button color="primary" (click)="upsertListing(formGroup.value)" [disabled]="formGroup.invalid">
       Upsert
     </button>
 
     <div *ngIf="formGroup.invalid">
       Form is invalid
-      <pre highlight="">{{formGroup.errors|json}}</pre>
+      <pre>{{ formGroup.controls.vehicleProduct.errors | json }}</pre>
     </div>
   </mat-card-actions>
 </mat-card>

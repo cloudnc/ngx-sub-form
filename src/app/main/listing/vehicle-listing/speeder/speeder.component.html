@@ -1,20 +1,18 @@
 <fieldset [formGroup]="formGroup" class="container">
-  <mat-form-field>
-    <input matInput type="text" placeholder="ID" [formControlName]="controlsNames.id" autocomplete="off" />
-  </mat-form-field>
+  <legend>Speeder Form</legend>
 
   <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="controlsNames.color" autocomplete="off" />
+    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
   </mat-form-field>
 
-  <mat-slide-toggle [formControlName]="controlsNames.canFire">Can fire</mat-slide-toggle>
+  <mat-slide-toggle [formControlName]="formControlNames.canFire">Can fire</mat-slide-toggle>
 
   <mat-form-field>
     <input
       matInput
       type="number"
       placeholder="Number of people on board"
-      [formControlName]="controlsNames.numberOfPeopleOnBoard"
+      [formControlName]="formControlNames.numberOfPeopleOnBoard"
       autocomplete="off"
     />
   </mat-form-field>
@@ -24,7 +22,7 @@
       matInput
       type="number"
       placeholder="Maximum speed"
-      [formControlName]="controlsNames.maximumSpeed"
+      [formControlName]="formControlNames.maximumSpeed"
       autocomplete="off"
     />
   </mat-form-field>

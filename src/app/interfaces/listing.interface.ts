@@ -1,5 +1,5 @@
-import { OneVehicle } from './vehicle.interface';
 import { OneDroid } from './droid.interface';
+import { OneVehicle } from './vehicle.interface';
 
 export enum ListingType {
   VEHICLE = 'Vehicle',

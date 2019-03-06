@@ -1,14 +1,7 @@
 import { Component } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
-import {
-  NgxSubFormComponent,
-  subformComponentProviders,
-  Controls,
-  ControlsNames,
-  getControlsNames,
-} from 'ngx-sub-form';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { UuidService } from 'src/app/services/uuid.service';
 
 @Component({
   selector: 'app-medical-droid',
@@ -16,21 +9,12 @@ import { UuidService } from 'src/app/services/uuid.service';
   styleUrls: ['./medical-droid.component.scss'],
   providers: subformComponentProviders(MedicalDroidComponent),
 })
-export class MedicalDroidComponent extends NgxSubFormComponent {
-  private controls: Controls<MedicalDroid> = {
-    id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
+export class MedicalDroidComponent extends NgxSubFormComponent<MedicalDroid> {
+  protected formControls: Controls<MedicalDroid> = {
     color: new FormControl(null, { validators: [Validators.required] }),
     name: new FormControl(null, { validators: [Validators.required] }),
     droidType: new FormControl(DroidType.MEDICAL, { validators: [Validators.required] }),
     canHealHumans: new FormControl(false, { validators: [Validators.required] }),
     canFixRobots: new FormControl(false, { validators: [Validators.required] }),
   };
-
-  public formGroup: FormGroup = new FormGroup(this.controls);
-
-  public controlsNames: ControlsNames<MedicalDroid> = getControlsNames(this.controls);
-
-  constructor(private uuidService: UuidService) {
-    super();
-  }
 }

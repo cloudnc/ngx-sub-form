@@ -1,14 +1,7 @@
 import { Component } from '@angular/core';
-import {
-  Controls,
-  subformComponentProviders,
-  NgxSubFormComponent,
-  ControlsNames,
-  getControlsNames,
-} from 'ngx-sub-form';
-import { AssassinDroid, DroidType, AssassinDroidWeapon } from 'src/app/interfaces/droid.interface';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { UuidService } from 'src/app/services/uuid.service';
+import { FormControl, Validators } from '@angular/forms';
+import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
 
 export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } = {
   [AssassinDroidWeapon.SABER]: 'Saber',
@@ -23,24 +16,15 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   styleUrls: ['./assassin-droid.component.scss'],
   providers: subformComponentProviders(AssassinDroidComponent),
 })
-export class AssassinDroidComponent extends NgxSubFormComponent {
-  private controls: Controls<AssassinDroid> = {
-    id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
+export class AssassinDroidComponent extends NgxSubFormComponent<AssassinDroid> {
+  protected formControls: Controls<AssassinDroid> = {
     color: new FormControl(null, { validators: [Validators.required] }),
     name: new FormControl(null, { validators: [Validators.required] }),
     droidType: new FormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
     weapons: new FormControl([], { validators: [Validators.required] }),
   };
 
-  public formGroup: FormGroup = new FormGroup(this.controls);
-
-  public controlsNames: ControlsNames<AssassinDroid> = getControlsNames(this.controls);
-
   public AssassinDroidWeapon = AssassinDroidWeapon;
 
   public assassinDroidWeaponText = ASSASSIN_DROID_WEAPON_TEXT;
-
-  constructor(private uuidService: UuidService) {
-    super();
-  }
 }

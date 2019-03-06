@@ -1,17 +1,15 @@
 <fieldset [formGroup]="formGroup" class="container">
+  <legend>Medical Droid Form</legend>
+
   <mat-form-field>
-    <input matInput type="text" placeholder="ID" [formControlName]="controlsNames.id" autocomplete="off" />
+    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="controlsNames.color" autocomplete="off" />
+    <input matInput type="text" placeholder="Name" [formControlName]="formControlNames.name" autocomplete="off" />
   </mat-form-field>
 
-  <mat-form-field>
-    <input matInput type="text" placeholder="Name" [formControlName]="controlsNames.name" autocomplete="off" />
-  </mat-form-field>
+  <mat-slide-toggle [formControlName]="formControlNames.canHealHumans">Can heal humans</mat-slide-toggle>
 
-  <mat-slide-toggle [formControlName]="controlsNames.canHealHumans">Can heal humans</mat-slide-toggle>
-
-  <mat-slide-toggle [formControlName]="controlsNames.canFixRobots">Can fix robots</mat-slide-toggle>
+  <mat-slide-toggle [formControlName]="formControlNames.canFixRobots">Can fix robots</mat-slide-toggle>
 </fieldset>

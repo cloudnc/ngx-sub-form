@@ -19,8 +19,8 @@ import {
 } from '@angular/material';
 import { ListingComponent } from './main/listing/listing.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { VehicleListingComponent } from './main/listing/vehicle-listing/vehicle-listing.component';
-import { DroidListingComponent } from './main/listing/droid-listing/droid-listing.component';
+import { VehicleProductComponent } from './main/listing/vehicle-listing/vehicle-product.component';
+import { DroidProductComponent } from './main/listing/droid-listing/droid-product.component';
 import { CommonModule } from '@angular/common';
 import { SpaceshipComponent } from './main/listing/vehicle-listing/spaceship/spaceship.component';
 import { SpeederComponent } from './main/listing/vehicle-listing/speeder/speeder.component';
@@ -28,7 +28,6 @@ import { ProtocolDroidComponent } from './main/listing/droid-listing/protocol-dr
 import { MedicalDroidComponent } from './main/listing/droid-listing/medical-droid/medical-droid.component';
 import { AstromechDroidComponent } from './main/listing/droid-listing/astromech-droid/astromech-droid.component';
 import { AssassinDroidComponent } from './main/listing/droid-listing/assassin-droid/assassin-droid.component';
-import { NgxSubFormModule } from 'ngx-sub-form';
 import { ListingsComponent } from './main/listings/listings.component';
 
 const MATERIAL_MODULES = [
@@ -51,8 +50,8 @@ const MATERIAL_MODULES = [
     MainComponent,
     ListingsComponent,
     ListingComponent,
-    VehicleListingComponent,
-    DroidListingComponent,
+    VehicleProductComponent,
+    DroidProductComponent,
     SpaceshipComponent,
     SpeederComponent,
     ProtocolDroidComponent,
@@ -76,7 +75,6 @@ const MATERIAL_MODULES = [
       },
       { path: '**', pathMatch: 'full', redirectTo: '/' },
     ]),
-    NgxSubFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

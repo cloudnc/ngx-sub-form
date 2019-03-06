@@ -1,14 +1,24 @@
 import { Input, OnDestroy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { tap, delay } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
+import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
 
-export abstract class NgxSubFormComponent implements ControlValueAccessor, Validator, OnDestroy {
-  public abstract formGroup: FormGroup;
+export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
+  implements ControlValueAccessor, Validator, OnDestroy {
+  protected formControls: Controls<FormInterface>;
 
-  // this should not be handled directly by the developer
-  // instead, please use the provided directives
-  public resetValueOnDestroy = true;
+  public get formControlNames(): ControlsNames<FormInterface> {
+    return getControlsNames(this.formControls);
+  }
+
+  private fg: FormGroup;
+  public get formGroup(): FormGroup {
+    if (!this.fg) {
+      this.fg = new FormGroup(this.formControls);
+    }
+    return this.fg;
+  }
 
   protected onChange: Function;
   protected onTouched: Function;
@@ -19,44 +29,25 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   public formControlName: string;
 
   public validate(ctrl: AbstractControl): ValidationErrors | null {
-    // @hack see bellow where defining this.formGroup to null
-    if (!this.formGroup || this.formGroup.valid) {
+    // @hack see below where defining this.formGroup to null
+    if (!this.formGroup || this.formGroup.valid || this.formGroup.pristine) {
       return null;
     }
 
-    const errors: ValidationErrors = {};
-
-    for (const key in this.formGroup.controls) {
-      if (this.formGroup.controls.hasOwnProperty(key)) {
-        const control = this.formGroup.controls[key];
-
-        if (!control.valid) {
-          errors[key] = control.errors;
-        }
-      }
-    }
-
-    return errors;
+    return { [this.formControlName]: true };
   }
 
   public ngOnDestroy(): void {
     // @hack there's a memory leak within Angular and those components
     // are not correctly cleaned up which leads to error if a form is defined
     // with validators and then it's been removed, the validator would still fail
-    this.formGroup = null;
+    this.fg = null;
 
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
 
-    // if we're in the case of a form where we need to choose between different types
-    // for ex with a switch case, we do not want to reset the value for the following reason
-    // form is patched at the root level (result of an API call for example)
-    // sub component handle what to display based on the type
-    // type1 was displayed before but type2 has just been patched instead
-    // component of type1 is being destroyed, and removing the new data we just patched into the form
-    // to avoid that we provide directives which are setting `resetValueOnDestroy` to false when needed
-    if (this.onChange && this.resetValueOnDestroy) {
+    if (this.onChange) {
       this.onChange(null);
     }
   }
@@ -64,11 +55,11 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   public writeValue(obj: any): void {
     if (obj) {
       if (!!this.formGroup) {
-        this.formGroup.patchValue(this.transformBeforeWrite(obj), {
-          // required to be true otherwise it's not possible
-          // to be warned when the form is updated
-          emitEvent: true,
+        this.formGroup.setValue(this.transformToFormGroup(obj), {
+          emitEvent: false,
         });
+
+        this.formGroup.markAsPristine();
       }
     } else {
       // @todo clear form?
@@ -78,33 +69,17 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   // ----------------------------------------------------
   // ----------------------------------------------------
   // ----------------------------------------------------
-  // that method can be overriden if the
+  // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformBeforeWrite(obj: any): any {
-    return obj;
+  protected transformToFormGroup(obj: ControlInterface): FormInterface {
+    return (obj as any) as FormInterface;
   }
 
-  // that method can be overriden if the
+  // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformBeforeOnChange(formValue: any): any {
-    return formValue;
+  protected transformFromFormGroup(formValue: FormInterface): ControlInterface {
+    return (formValue as any) as ControlInterface;
   }
-
-  // ***********************************************************************
-  // EX of use when an array is needed
-  // public formGroup = this.fb.group({ array: this.fb.array([]) });
-
-  // protected transformBeforeWrite(obj: any): any {
-  //   return { array: obj };
-  // }
-
-  // protected transformBeforeOnChange(formValue: any): any {
-  //   return formValue.array;
-  // }
-  // ***********************************************************************
-  // ----------------------------------------------------
-  // ----------------------------------------------------
-  // ----------------------------------------------------
 
   public registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -120,7 +95,7 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
         delay(0),
         tap(changes => {
           this.onTouched();
-          this.onChange(this.transformBeforeOnChange(changes));
+          this.onChange(this.transformFromFormGroup(changes));
         }),
       )
       .subscribe();
@@ -129,4 +104,12 @@ export abstract class NgxSubFormComponent implements ControlValueAccessor, Valid
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
+}
+
+export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> extends NgxSubFormComponent<
+  ControlInterface,
+  FormInterface
+> {
+  protected abstract transformToFormGroup(obj: ControlInterface): FormInterface;
+  protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface;
 }

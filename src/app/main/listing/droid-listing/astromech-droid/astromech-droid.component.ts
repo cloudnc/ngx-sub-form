@@ -1,14 +1,7 @@
 import { Component } from '@angular/core';
-import { UuidService } from '../../../../services/uuid.service';
-import {
-  subformComponentProviders,
-  NgxSubFormComponent,
-  Controls,
-  ControlsNames,
-  getControlsNames,
-} from 'ngx-sub-form';
-import { AstromechDroid, DroidType, AstromechDroidShape } from '../../../../interfaces/droid.interface';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../interfaces/droid.interface';
 
 @Component({
   selector: 'app-astromech-droid',
@@ -16,9 +9,8 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
   styleUrls: ['./astromech-droid.component.scss'],
   providers: subformComponentProviders(AstromechDroidComponent),
 })
-export class AstromechDroidComponent extends NgxSubFormComponent {
-  private controls: Controls<AstromechDroid> = {
-    id: new FormControl(this.uuidService.generate(), { validators: [Validators.required] }),
+export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid> {
+  protected formControls: Controls<AstromechDroid> = {
     color: new FormControl(null, { validators: [Validators.required] }),
     name: new FormControl(null, { validators: [Validators.required] }),
     droidType: new FormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
@@ -26,13 +18,5 @@ export class AstromechDroidComponent extends NgxSubFormComponent {
     shape: new FormControl(null, { validators: [Validators.required] }),
   };
 
-  public formGroup: FormGroup = new FormGroup(this.controls);
-
-  public controlsNames: ControlsNames<AstromechDroid> = getControlsNames(this.controls);
-
   public AstromechDroidShape = AstromechDroidShape;
-
-  constructor(private uuidService: UuidService) {
-    super();
-  }
 }

@@ -4,7 +4,6 @@ export enum VehicleType {
 }
 
 export interface BaseVehicle {
-  id: string;
   color: string;
   canFire: boolean;
   numberOfPeopleOnBoard: number;
@@ -15,9 +14,9 @@ export interface Spaceship extends BaseVehicle {
   numberOfWings: number;
 }
 
-export interface Land extends BaseVehicle {
+export interface Speeder extends BaseVehicle {
   vehicleType: VehicleType.SPEEDER;
   maximumSpeed: number;
 }
 
-export type OneVehicle = Spaceship | Land;
+export type OneVehicle = Spaceship | Speeder;

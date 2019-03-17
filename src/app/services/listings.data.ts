@@ -11,7 +11,7 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/4/43/MillenniumFalconTFA-Fathead.png/revision/latest/scale-to-width-down/1000?cb=20161110011442',
     listingType: ListingType.VEHICLE,
     product: {
-      color: '#cec80d',
+      colors: ['#cec80d', '#b224f7'],
       canFire: true,
       numberOfPeopleOnBoard: 6,
       numberOfWings: 0,
@@ -26,7 +26,7 @@ export const hardCodedListings: OneListing[] = [
       'https://vignette.wikia.nocookie.net/starwars/images/5/54/X34-landspeeder.jpg/revision/latest?cb=20080316031428',
     listingType: ListingType.VEHICLE,
     product: {
-      color: '#2468f7',
+      colors: ['#2468f7', '#c31010', '#c3b710'],
       canFire: true,
       numberOfPeopleOnBoard: 2,
       vehicleType: VehicleType.SPEEDER,

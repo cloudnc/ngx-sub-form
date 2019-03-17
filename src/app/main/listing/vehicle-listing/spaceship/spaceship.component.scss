@@ -1,3 +1,26 @@
 .container {
   display: flex;
+
+  .colors .color {
+    display: flex;
+    align-items: center;
+
+    mat-form-field,
+    input {
+      flex-grow: 1;
+    }
+
+    .delete-icon {
+      padding-left: 10px;
+
+      &:hover {
+        color: red;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .btn-add-color {
+    margin-bottom: 10px;
+  }
 }

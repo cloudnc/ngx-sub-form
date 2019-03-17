@@ -4,7 +4,7 @@ export enum VehicleType {
 }
 
 export interface BaseVehicle {
-  color: string;
+  colors: string[];
   canFire: boolean;
   numberOfPeopleOnBoard: number;
 }

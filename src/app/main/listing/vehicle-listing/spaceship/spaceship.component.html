@@ -1,9 +1,17 @@
 <fieldset [formGroup]="formGroup" class="container">
   <legend>Spaceship Form</legend>
 
-  <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
-  </mat-form-field>
+  <div class="colors" [formArrayName]="formControlNames.colors">
+    <div class="color" *ngFor="let colorControl of colors.controls; let i = index">
+      <mat-form-field>
+        <input matInput type="color" [placeholder]="'Color ' + (i + 1)" [formControlName]="i" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-icon class="delete-icon" (click)="deleteColor(i)">delete</mat-icon>
+    </div>
+  </div>
+
+  <button mat-stroked-button class="btn-add-color" (click)="addColor()">Add a color</button>
 
   <mat-slide-toggle [formControlName]="formControlNames.canFire">Can fire</mat-slide-toggle>
 

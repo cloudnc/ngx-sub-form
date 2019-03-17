@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormArray } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 
@@ -11,10 +11,22 @@ import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 })
 export class SpeederComponent extends NgxSubFormComponent<Speeder> {
   protected formControls: Controls<Speeder> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
+    colors: new FormArray([], { validators: [Validators.required] }),
     canFire: new FormControl(false, { validators: [Validators.required] }),
     numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
     vehicleType: new FormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
     maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
   };
+
+  public get colors(): FormArray {
+    return this.formGroup.get(this.formControlNames.colors) as FormArray;
+  }
+
+  public addColor(): void {
+    this.colors.push(new FormControl());
+  }
+
+  public deleteColor(index: number): void {
+    this.colors.removeAt(index);
+  }
 }

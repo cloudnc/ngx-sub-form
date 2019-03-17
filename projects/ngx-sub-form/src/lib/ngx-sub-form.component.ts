@@ -1,5 +1,13 @@
 import { Input, OnDestroy } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormGroup,
+  ValidationErrors,
+  Validator,
+  FormArray,
+  FormControl,
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
@@ -55,6 +63,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   public writeValue(obj: any): void {
     if (obj) {
       if (!!this.formGroup) {
+        this.handleFormArrayControls(obj);
+
         this.formGroup.setValue(this.transformToFormGroup(obj), {
           emitEvent: false,
         });
@@ -64,6 +74,21 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     } else {
       // @todo clear form?
     }
+  }
+
+  private handleFormArrayControls(obj: any) {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (this.formGroup.get(key) instanceof FormArray && Array.isArray(value)) {
+        const formArray: FormArray = this.formGroup.get(key) as FormArray;
+        // we need to empty the array before adding the new value
+        // otherwise after selecting another preset, if the number of values
+        // is different it will error
+        while (formArray.length !== 0) {
+          formArray.removeAt(0);
+        }
+        value.forEach(v => formArray.push(new FormControl()));
+      }
+    });
   }
 
   // ----------------------------------------------------

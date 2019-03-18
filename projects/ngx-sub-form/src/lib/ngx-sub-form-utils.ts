@@ -6,8 +6,8 @@ export type Controls<T> = { [K in keyof T]: AbstractControl };
 
 export type ControlsNames<T> = { [K in keyof T]: K };
 
-export function getControlsNames<T>(controls: Controls<T>): ControlsNames<T> {
-  return Object.keys(controls).reduce<ControlsNames<T>>(
+export function getControlsNames<T extends { [key: string]: any }>(controls: Controls<T>): ControlsNames<T> {
+  return Object.keys(controls).reduce(
     (acc, curr) => {
       acc[curr] = curr;
 

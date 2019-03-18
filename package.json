@@ -38,6 +38,7 @@
     "@angular/platform-browser": "7.2.3",
     "@angular/platform-browser-dynamic": "7.2.3",
     "@angular/router": "7.2.3",
+    "@types/uuid": "3.4.4",
     "core-js": "2.6.3",
     "rxjs": "6.4.0",
     "uuid": "3.3.2",
@@ -63,12 +64,12 @@
     "ng-packagr": "4.7.0",
     "prettier": "1.16.4",
     "protractor": "5.4.2",
+    "semantic-release": "15.13.3",
     "ts-node": "8.0.2",
     "tsickle": "0.34.3",
     "tslib": "1.9.3",
     "tslint": "5.12.1",
-    "typescript": "3.1.1",
-    "semantic-release": "15.13.3"
+    "typescript": "3.1.1"
   },
   "repository": {
     "type": "git",

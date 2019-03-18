@@ -50,7 +50,7 @@
         </mat-select>
       </mat-form-field>
 
-      <div [ngSwitch]="formGroup.get(formControlNames.listingType).value">
+      <div [ngSwitch]="formGroup.get(formControlNames.listingType)?.value">
         <app-droid-product
           *ngSwitchCase="ListingType.DROID"
           [formControlName]="formControlNames.droidProduct"

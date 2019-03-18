@@ -28,13 +28,14 @@ export class ListingService {
     }
   }
 
-  public getOneListing(id: string): Observable<OneListing> {
+  public getOneListing(id: string): Observable<OneListing | never> {
     return this.listings$.pipe(
-      map(listings => listings.find(s => s.id === id)),
-      tap(listing => {
+      map(listings => {
+        const listing = listings.find(s => s.id === id);
         if (!listing) {
           throw new Error('not found');
         }
+        return listing;
       }),
       map(this.listingDeepCopy),
     );

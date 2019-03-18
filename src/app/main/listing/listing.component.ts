@@ -3,17 +3,18 @@ import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Controls, NgxSubFormRemapComponent } from 'ngx-sub-form';
 import { of, Subject } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap, filter } from 'rxjs/operators';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
 import { ListingService } from 'src/app/services/listing.service';
 import { OneDroid } from '../../interfaces/droid.interface';
 import { OneVehicle } from '../../interfaces/vehicle.interface';
 import { UuidService } from '../../services/uuid.service';
+import { UnreachableCase } from '../../shared/utils';
 
 interface OneListingForm {
-  vehicleProduct: OneVehicle;
-  droidProduct: OneDroid;
-  listingType: ListingType;
+  vehicleProduct: OneVehicle | null;
+  droidProduct: OneDroid | null;
+  listingType: ListingType | null;
   id: string;
   title: string;
   imageUrl: string;
@@ -51,7 +52,7 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
         map(params => params.get('listingId')),
         takeUntil(this.onDestroy$),
         switchMap(listingId => {
-          if (listingId === 'new') {
+          if (listingId === 'new' || !listingId) {
             return of(null);
           }
           return this.listingService.getOneListing(listingId);
@@ -75,26 +76,42 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
   }
 
   public upsertListing(listing: OneListingForm): void {
-    this.listingService.upsertListing(this.transformFromFormGroup(listing));
+    const transformedListing = this.transformFromFormGroup(listing);
+    if (!transformedListing) {
+      throw new Error(`Couldn't transform the listing properly`);
+    }
+    this.listingService.upsertListing(transformedListing);
     this.formGroup.patchValue({
       id: this.uuidService.generate(),
     });
   }
 
-  protected transformFromFormGroup(formValue: OneListingForm): OneListing {
+  protected transformFromFormGroup(formValue: OneListingForm): OneListing | null {
     const { vehicleProduct, droidProduct, listingType, ...commonValues } = formValue;
 
     switch (listingType) {
       case ListingType.DROID:
-        return { product: droidProduct, listingType, ...commonValues };
+        return droidProduct ? { product: droidProduct, listingType, ...commonValues } : null;
       case ListingType.VEHICLE:
-        return { product: vehicleProduct, listingType, ...commonValues };
+        return vehicleProduct ? { product: vehicleProduct, listingType, ...commonValues } : null;
+      case null:
+        return null;
+      default:
+        throw new UnreachableCase(listingType);
     }
   }
 
-  protected transformToFormGroup(obj: OneListing): OneListingForm {
+  protected transformToFormGroup(obj: OneListing | null): OneListingForm {
     if (!obj) {
-      return null;
+      return {
+        vehicleProduct: null,
+        droidProduct: null,
+        listingType: null,
+        id: '',
+        title: '',
+        imageUrl: '',
+        price: 0,
+      };
     }
 
     const { listingType, product, ...commonValues } = obj;

@@ -2,9 +2,9 @@ import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS
 import { InjectionToken, Type, forwardRef } from '@angular/core';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 
-export type Controls<T> = { [K in keyof T]: AbstractControl };
+export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
-export type ControlsNames<T> = { [K in keyof T]: K };
+export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export function getControlsNames<T extends { [key: string]: any }>(controls: Controls<T>): ControlsNames<T> {
   return Object.keys(controls).reduce(

@@ -9,7 +9,7 @@ import { VehicleType } from 'src/app/interfaces/vehicle.interface';
   styleUrls: ['./listings.component.scss'],
 })
 export class ListingsComponent {
-  @Input() listings: OneListing[];
+  @Input() listings: OneListing[] = [];
 
   public ListingType = ListingType;
 

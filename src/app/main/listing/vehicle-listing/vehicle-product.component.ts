@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
+import { UnreachableCase } from 'src/app/shared/utils';
 
 interface OneVehicleForm {
-  speeder: Speeder;
-  spaceship: Spaceship;
-  vehicleType: VehicleType;
+  speeder: Speeder | null;
+  spaceship: Spaceship | null;
+  vehicleType: VehicleType | null;
 }
 
 @Component({
@@ -24,20 +25,24 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 
   public VehicleType = VehicleType;
 
-  protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
+  protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm {
     return {
-      speeder: obj.vehicleType === VehicleType.SPEEDER ? obj : null,
-      spaceship: obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
-      vehicleType: obj.vehicleType,
+      speeder: obj && obj.vehicleType === VehicleType.SPEEDER ? obj : null,
+      spaceship: obj && obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
+      vehicleType: obj ? obj.vehicleType : null,
     };
   }
 
-  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle {
+  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle | null {
     switch (formValue.vehicleType) {
       case VehicleType.SPEEDER:
         return formValue.speeder;
       case VehicleType.SPACESHIP:
         return formValue.spaceship;
+      case null:
+        return null;
+      default:
+        throw new UnreachableCase(formValue.vehicleType);
     }
   }
 }

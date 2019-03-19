@@ -85,7 +85,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onChange = fn;
 
     // this is required to correctly initialize the form value
-    this.onChange(this.formGroup.value);
+    this.onChange(this.transformFromFormGroup(this.formGroup.value));
 
     this.subscription = this.formGroup.valueChanges
       .pipe(

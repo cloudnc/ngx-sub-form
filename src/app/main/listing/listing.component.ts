@@ -81,6 +81,7 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
       throw new Error(`Couldn't transform the listing properly`);
     }
     this.listingService.upsertListing(transformedListing);
+
     this.formGroup.patchValue({
       id: this.uuidService.generate(),
     });

@@ -32,6 +32,11 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
 
   public ListingType = ListingType;
 
+  // it is required to define the formControlName as this is supposed to be a
+  // sub form but in that case we use NgxSubFormRemapComponent for convenience
+  // at the top level and easily create the form + get utilities
+  public formControlName = 'ListingComponent';
+
   protected formControls: Controls<OneListingForm> = {
     vehicleProduct: new FormControl(null),
     droidProduct: new FormControl(null),
@@ -47,6 +52,8 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
   }
 
   public ngOnInit(): void {
+    super.ngOnInit();
+
     this.route.paramMap
       .pipe(
         map(params => params.get('listingId')),
@@ -59,11 +66,12 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
         }),
         tap(listing => {
           if (listing) {
-            this.formGroup.setValue(this.transformToFormGroup(listing));
+            this.formGroup && this.formGroup.setValue(this.transformToFormGroup(listing));
           } else {
-            this.formGroup.reset({
-              id: this.uuidService.generate(),
-            });
+            this.formGroup &&
+              this.formGroup.reset({
+                id: this.uuidService.generate(),
+              });
           }
         }),
       )
@@ -81,9 +89,10 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
       throw new Error(`Couldn't transform the listing properly`);
     }
     this.listingService.upsertListing(transformedListing);
-    this.formGroup.patchValue({
-      id: this.uuidService.generate(),
-    });
+    this.formGroup &&
+      this.formGroup.patchValue({
+        id: this.uuidService.generate(),
+      });
   }
 
   protected transformFromFormGroup(formValue: OneListingForm): OneListing | null {

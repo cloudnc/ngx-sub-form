@@ -1,4 +1,4 @@
-<fieldset [formGroup]="formGroup" class="container">
+<fieldset *ngIf="formGroup" [formGroup]="formGroup" class="container">
   <legend>Astromech Droid Form</legend>
 
   <mat-form-field>

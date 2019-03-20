@@ -1,4 +1,4 @@
-<fieldset *ngIf="formGroup" [formGroup]="formGroup" class="container">
+<fieldset [formGroup]="formGroup" class="container">
   <legend>Droid Form</legend>
 
   <mat-form-field>
@@ -9,7 +9,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="formGroup?.get(formControlNames.droidType)?.value">
+  <div [ngSwitch]="formGroup.get(formControlNames.droidType)?.value">
     <app-protocol-droid
       *ngSwitchCase="DroidType.PROTOCOL"
       [formControlName]="formControlNames.protocolDroid"

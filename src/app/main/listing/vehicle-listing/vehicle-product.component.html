@@ -1,4 +1,4 @@
-<fieldset *ngIf="formGroup" [formGroup]="formGroup" class="container">
+<fieldset [formGroup]="formGroup" class="container">
   <legend>Vehicle Form</legend>
 
   <mat-form-field>
@@ -9,7 +9,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="formGroup?.get(formControlNames.vehicleType)?.value">
+  <div [ngSwitch]="formGroup.get(formControlNames.vehicleType)?.value">
     <app-spaceship *ngSwitchCase="VehicleType.SPACESHIP" [formControlName]="formControlNames.spaceship"></app-spaceship>
 
     <app-speeder *ngSwitchCase="VehicleType.SPEEDER" [formControlName]="formControlNames.speeder"></app-speeder>

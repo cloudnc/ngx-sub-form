@@ -101,8 +101,6 @@ Make your original class extend `NgxSubFormComponent` _or_ `NgxSubFormRemapCompo
 +export class VehicleListingComponent extends NgxSubFormComponent {}
 ```
 
-**Note: if you have to use `ngOnInit` don't forget to call super.ngOnInit()**
-
 Define the controls of your form:
 
 ```ts

@@ -1,19 +1,19 @@
 <mat-card>
   <mat-card-header>
     <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{ formGroup?.value?.title }}</mat-card-title>
-    <mat-card-subtitle>{{ formGroup?.value?.listing?.price }}</mat-card-subtitle>
+    <mat-card-title>{{ formGroup.value?.title }}</mat-card-title>
+    <mat-card-subtitle>{{ formGroup.value?.listing?.price }}</mat-card-subtitle>
   </mat-card-header>
   <div class="img-container">
     <img
-      *ngIf="formGroup?.value?.imageUrl"
+      *ngIf="formGroup.value?.imageUrl"
       mat-card-image
-      [src]="formGroup?.value?.imageUrl"
-      alt="Photo of {{ formGroup?.value?.title }}"
+      [src]="formGroup.value?.imageUrl"
+      alt="Photo of {{ formGroup.value?.title }}"
     />
   </div>
   <mat-card-content>
-    <form *ngIf="formGroup" [formGroup]="formGroup">
+    <form [formGroup]="formGroup">
       <mat-form-field>
         <input matInput type="text" placeholder="ID" [formControlName]="formControlNames.id" autocomplete="off" />
       </mat-form-field>
@@ -50,7 +50,7 @@
         </mat-select>
       </mat-form-field>
 
-      <div [ngSwitch]="formGroup?.get(formControlNames.listingType)?.value">
+      <div [ngSwitch]="formGroup.get(formControlNames.listingType)?.value">
         <app-droid-product
           *ngSwitchCase="ListingType.DROID"
           [formControlName]="formControlNames.droidProduct"
@@ -64,15 +64,15 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="upsertListing(formGroup?.value)" [disabled]="formGroup?.invalid">
+    <button mat-raised-button color="primary" (click)="upsertListing(formGroup.value)" [disabled]="formGroup.invalid">
       Upsert
     </button>
 
-    <div *ngIf="formGroup?.invalid">
+    <div *ngIf="formGroup.invalid">
       Form is invalid
-      <pre>{{ formGroup?.controls.vehicleProduct.errors | json }}</pre>
+      <pre>{{ formGroup.controls.vehicleProduct.errors | json }}</pre>
     </div>
   </mat-card-actions>
 </mat-card>
 
-<pre>{{ formGroup?.value | json }}</pre>
+<pre>{{ formGroup.value | json }}</pre>

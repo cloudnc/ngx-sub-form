@@ -1,10 +1,7 @@
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-import {
-  NgxSubFormComponent,
-  FormControlsRequiredError,
-  NgxSubFormRemapComponent,
-  FormControlNameRequiredError,
-} from './ngx-sub-form.component';
+/// <reference types="jasmine" />
+
+import { FormControl, Validators } from '@angular/forms';
+import { NgxSubFormComponent, NgxSubFormRemapComponent, FormControlsRequiredError } from './ngx-sub-form.component';
 
 interface Vehicle {
   color?: string | null;
@@ -36,31 +33,16 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
 describe(`NgxSubFormComponent`, () => {
   let subComponent: SubComponent;
 
-  const getSubForm = (): FormGroup | never => {
-    if (!subComponent.formGroup) {
-      throw new Error(`The FormGroup property is not defined`);
-    }
-
-    return subComponent.formGroup;
-  };
-
   beforeEach(() => {
     subComponent = new SubComponent();
     subComponent.formControlName = subComponent.formControlNames.color;
-    subComponent.ngOnInit();
   });
 
   describe(`created`, () => {
     it(`should throw an error if formControls is not defined`, () => {
       (subComponent as any).formControls = undefined;
 
-      expect(() => subComponent.ngOnInit()).toThrowError(new FormControlsRequiredError().message);
-    });
-
-    it(`should throw an error if formControlName is not defined`, () => {
-      subComponent.formControlName = undefined;
-
-      expect(() => subComponent.ngOnInit()).toThrowError(new FormControlNameRequiredError().message);
+      expect(() => subComponent.formGroup).toThrowError(new FormControlsRequiredError().message);
     });
 
     it(`should have the formControlNames defined, even for optional fields`, () => {
@@ -72,11 +54,11 @@ describe(`NgxSubFormComponent`, () => {
     });
 
     it(`should create a formGroup property with all the formControls`, () => {
-      expect(getSubForm().get('random')).toBeNull();
+      expect(subComponent.formGroup.get('random')).toBeNull();
 
-      expect(getSubForm().get(subComponent.formControlNames.canFire)).not.toBeNull();
-      expect(getSubForm().get(subComponent.formControlNames.color)).not.toBeNull();
-      expect(getSubForm().get(subComponent.formControlNames.numberOfPeopleOnBoard)).not.toBeNull();
+      expect(subComponent.formGroup.get(subComponent.formControlNames.canFire)).not.toBeNull();
+      expect(subComponent.formGroup.get(subComponent.formControlNames.color)).not.toBeNull();
+      expect(subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard)).not.toBeNull();
     });
   });
 
@@ -109,30 +91,32 @@ describe(`NgxSubFormComponent`, () => {
   });
 
   describe(`validation`, () => {
-    it(`should throw an error if formControlName is not defined`, () => {
-      subComponent.formControlName = undefined;
+    // when formControlName is not passed, it means that the component is being used
+    // on the top level to get utilities from the lib (type safety for e.g.) but validation should not run in that case
+    it(`should return null if formControlName is not defined`, () => {
       // set one of the control to be invalid
-      (getSubForm().get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
+      (subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
         MIN_NUMBER_OF_PEOPLE_ON_BOARD - 1,
       );
-      getSubForm().markAsDirty();
-      expect(() => subComponent.validate()).toThrowError(new FormControlNameRequiredError().message);
+      subComponent.formGroup.markAsDirty();
+      subComponent.formControlName = undefined;
+      expect(subComponent.validate()).toBeNull();
     });
 
     it(`should validate the field and return an object containing the formControlName set to true if the formGroup is defined, invalid and dirty`, () => {
       subComponent.formControlName = subComponent.formControlNames.color;
       // set one of the control to be invalid
-      (getSubForm().get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
+      (subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
         MIN_NUMBER_OF_PEOPLE_ON_BOARD - 1,
       );
-      getSubForm().markAsDirty();
-      getSubForm().updateValueAndValidity();
+      subComponent.formGroup.markAsDirty();
+      subComponent.formGroup.updateValueAndValidity();
       expect(subComponent.validate()).toEqual({ [subComponent.formControlNames.color]: true });
     });
 
     describe(`should validate the field and return null if the formGroup is`, () => {
       it(`not defined`, () => {
-        subComponent.formGroup = undefined;
+        subComponent.ngOnDestroy();
 
         expect(subComponent.validate()).toBeNull();
       });
@@ -155,26 +139,26 @@ describe(`NgxSubFormComponent`, () => {
     describe(`value is not null nor undefined`, () => {
       // we should be able to pass a value `false`, or an empty string for ex
       it(`should set the value even if the value is falsy`, () => {
-        getSubForm().setValue = jasmine.createSpy();
+        subComponent.formGroup.setValue = jasmine.createSpy();
         subComponent.writeValue(false as any);
-        expect(getSubForm().setValue).toHaveBeenCalledTimes(1);
+        expect(subComponent.formGroup.setValue).toHaveBeenCalledTimes(1);
 
         subComponent.writeValue('' as any);
-        expect(getSubForm().setValue).toHaveBeenCalledTimes(2);
+        expect(subComponent.formGroup.setValue).toHaveBeenCalledTimes(2);
       });
 
       // setValue will make sure the object matches the shape of the interface and will error otherwise
       it(`should use the setValue method instead of patchValue`, () => {
-        getSubForm().setValue = jasmine.createSpy();
+        subComponent.formGroup.setValue = jasmine.createSpy();
         subComponent.writeValue(false as any);
-        expect(getSubForm().setValue).toHaveBeenCalledTimes(1);
+        expect(subComponent.formGroup.setValue).toHaveBeenCalledTimes(1);
       });
 
       // when a parent set the form value, he's already aware of it and we do not want to update it upstream for no reason
       it(`should have the option "emitEvent" set to false`, () => {
-        getSubForm().setValue = jasmine.createSpy();
+        subComponent.formGroup.setValue = jasmine.createSpy();
         subComponent.writeValue('some value' as any);
-        expect(getSubForm().setValue).toHaveBeenCalledWith('some value', {
+        expect(subComponent.formGroup.setValue).toHaveBeenCalledWith('some value', {
           emitEvent: false,
         });
       });
@@ -182,11 +166,11 @@ describe(`NgxSubFormComponent`, () => {
       // if we create a new object using the form and at some point we decide to edit another one
       // we should have everything back to pristine
       it(`should mark the form as pristine`, () => {
-        getSubForm().markAsDirty();
-        expect(getSubForm().pristine).toBe(false);
+        subComponent.formGroup.markAsDirty();
+        expect(subComponent.formGroup.pristine).toBe(false);
 
         subComponent.writeValue({ canFire: true, color: '#ffffff', numberOfPeopleOnBoard: 10 });
-        expect(getSubForm().pristine).toBe(true);
+        expect(subComponent.formGroup.pristine).toBe(true);
       });
     });
   });
@@ -207,7 +191,7 @@ describe(`NgxSubFormComponent`, () => {
       subComponent.registerOnTouched(onTouchedSpy);
       subComponent.registerOnChange(onChangeSpy);
 
-      getSubForm().setValue(getDefaultValues());
+      subComponent.formGroup.setValue(getDefaultValues());
 
       setTimeout(() => {
         expect(onTouchedSpy).toHaveBeenCalledTimes(1);
@@ -254,27 +238,18 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehiculeForm> 
 describe(`NgxSubFormRemapComponent`, () => {
   let subRemapComponent: SubRemapComponent;
 
-  const getSubForm = (): FormGroup | never => {
-    if (!subRemapComponent.formGroup) {
-      throw new Error(`The FormGroup property is not defined`);
-    }
-
-    return subRemapComponent.formGroup;
-  };
-
   beforeEach(() => {
     subRemapComponent = new SubRemapComponent();
     subRemapComponent.formControlName = subRemapComponent.formControlNames.vehiculeColor;
-    subRemapComponent.ngOnInit();
   });
 
   describe(`value updated by the parent (write)`, () => {
     describe(`value is not null nor undefined`, () => {
       it(`should set the form value using the transformer method transformToFormGroup`, () => {
-        getSubForm().setValue = jasmine.createSpy();
+        subRemapComponent.formGroup.setValue = jasmine.createSpy();
         subRemapComponent.writeValue(getDefaultValues());
 
-        expect(getSubForm().setValue).toHaveBeenCalledWith(
+        expect(subRemapComponent.formGroup.setValue).toHaveBeenCalledWith(
           {
             vehiculeColor: getDefaultValues().color,
             vehiculeCanFire: getDefaultValues().canFire,
@@ -304,7 +279,7 @@ describe(`NgxSubFormRemapComponent`, () => {
 
       onChangeSpy.calls.reset();
 
-      getSubForm().setValue({
+      subRemapComponent.formGroup.setValue({
         vehiculeColor: getDefaultValues().color,
         vehiculeCanFire: getDefaultValues().canFire,
         vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,

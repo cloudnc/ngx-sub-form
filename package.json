@@ -18,6 +18,8 @@
     "------------------ LIB ngx-sub-form ------------------": "",
     "lib:build:prod": "yarn run ng build --project ngx-sub-form",
     "lib:build:watch": "yarn run lib:build:prod --watch",
+    "lib:test:watch": "yarn run ng test --project ngx-sub-form",
+    "lib:test:ci": "yarn run ng test --project ngx-sub-form --watch false",
     "------------------ Quick Commands ------------------": "",
     "lint:fix": "yarn demo:lint:fix && yarn prettier:write",
     "semantic-release": "semantic-release"

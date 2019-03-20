@@ -13,6 +13,8 @@ script:
   # lint
   - yarn run demo:lint:check
   - yarn run prettier:check
+  # tests
+  - yarn run lib:test:ci
   # build
   - yarn run lib:build:prod
   - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"

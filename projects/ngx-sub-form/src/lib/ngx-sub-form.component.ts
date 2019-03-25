@@ -113,7 +113,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onChange = fn;
 
     // this is required to correctly initialize the form value
-    this.onChange(this.transformFromFormGroup(this.formGroup.value));
+    // see note on-change-after-one-tick within the test file for more info
+    setTimeout(() => {
+      if (this.onChange) {
+        this.onChange(this.transformFromFormGroup(this.formGroup.value));
+      }
+    }, 0);
 
     this.subscription = this.formGroup.valueChanges
       .pipe(

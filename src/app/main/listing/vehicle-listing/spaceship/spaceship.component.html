@@ -2,14 +2,22 @@
   <legend>Spaceship Form</legend>
 
   <mat-form-field>
-    <input matInput type="color" placeholder="Color" [formControlName]="formControlNames.color" autocomplete="off" />
+    <input
+      matInput
+      data-input-color
+      type="color"
+      placeholder="Color"
+      [formControlName]="formControlNames.color"
+      autocomplete="off"
+    />
   </mat-form-field>
 
-  <mat-slide-toggle [formControlName]="formControlNames.canFire">Can fire</mat-slide-toggle>
+  <mat-slide-toggle data-input-can-fire [formControlName]="formControlNames.canFire">Can fire</mat-slide-toggle>
 
   <mat-form-field>
     <input
       matInput
+      data-input-number-of-wings
       type="number"
       placeholder="Number of wings"
       [formControlName]="formControlNames.numberOfWings"
@@ -20,6 +28,7 @@
   <mat-form-field>
     <input
       matInput
+      data-input-number-of-people-on-board
       type="number"
       placeholder="Number of people on board"
       [formControlName]="formControlNames.numberOfPeopleOnBoard"

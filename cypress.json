@@ -1,0 +1,8 @@
+{
+  "ignoreTestFiles": ["!**/*.e2e.ts", "**/*.util.e2e.ts"],
+  "integrationFolder": "src",
+  "baseUrl": "http://localhost:4765",
+  "video": false,
+  "viewportWidth": 1500,
+  "viewportHeight": 1400
+}

@@ -2,7 +2,11 @@
   <legend>Vehicle Form</legend>
 
   <mat-form-field>
-    <mat-select placeholder="Select vehicle type" [formControlName]="formControlNames.vehicleType">
+    <mat-select
+      data-select-vehicule-type
+      placeholder="Select vehicle type"
+      [formControlName]="formControlNames.vehicleType"
+    >
       <mat-option *ngFor="let vehicleType of (VehicleType | keyvalue)" [value]="vehicleType.value">
         {{ vehicleType.value }}
       </mat-option>

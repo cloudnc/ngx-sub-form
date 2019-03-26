@@ -8,6 +8,7 @@ cache: yarn
 
 install:
   - yarn --frozen-lockfile --non-interactive --no-progress
+  - yarn global add http-server-spa
 
 script:
   # lint
@@ -18,6 +19,14 @@ script:
   # build
   - yarn run lib:build:prod
   - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
+  # e2e tests
+  - sed -i 's/<base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/">/<base href="\/">/g' dist/ngx-sub-form-demo/index.html
+  - cd ./dist/ngx-sub-form-demo
+  - nohup http-server-spa . index.html 4765 &
+  - cd ../..
+  - sleep 5
+  - yarn run demo:test:e2e:ci
+  - sed -i 's/<base href="\/">/<base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/">/g' dist/ngx-sub-form-demo/index.html
 
   # publish to npm
   - yarn global add cpy-cli --ignore-engines

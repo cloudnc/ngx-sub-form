@@ -17,13 +17,15 @@ interface OneVehicleForm {
   providers: subformComponentProviders(VehicleProductComponent),
 })
 export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle, OneVehicleForm> {
-  protected formControls: Controls<OneVehicleForm> = {
-    speeder: new FormControl(null),
-    spaceship: new FormControl(null),
-    vehicleType: new FormControl(null, { validators: [Validators.required] }),
-  };
-
   public VehicleType = VehicleType;
+
+  protected getFormControls(): Controls<OneVehicleForm> {
+    return {
+      speeder: new FormControl(null),
+      spaceship: new FormControl(null),
+      vehicleType: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
 
   protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm {
     return {

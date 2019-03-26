@@ -10,13 +10,15 @@ import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../inte
   providers: subformComponentProviders(AstromechDroidComponent),
 })
 export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid> {
-  protected formControls: Controls<AstromechDroid> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
-    name: new FormControl(null, { validators: [Validators.required] }),
-    droidType: new FormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
-    numberOfToolsCarried: new FormControl(null, { validators: [Validators.required] }),
-    shape: new FormControl(null, { validators: [Validators.required] }),
-  };
-
   public AstromechDroidShape = AstromechDroidShape;
+
+  protected getFormControls(): Controls<AstromechDroid> {
+    return {
+      color: new FormControl(null, { validators: [Validators.required] }),
+      name: new FormControl(null, { validators: [Validators.required] }),
+      droidType: new FormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
+      numberOfToolsCarried: new FormControl(null, { validators: [Validators.required] }),
+      shape: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
 }

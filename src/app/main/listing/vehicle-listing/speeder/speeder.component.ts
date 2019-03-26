@@ -10,11 +10,13 @@ import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
   providers: subformComponentProviders(SpeederComponent),
 })
 export class SpeederComponent extends NgxSubFormComponent<Speeder> {
-  protected formControls: Controls<Speeder> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
-    canFire: new FormControl(false, { validators: [Validators.required] }),
-    numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
-    vehicleType: new FormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
-    maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
-  };
+  protected getFormControls(): Controls<Speeder> {
+    return {
+      color: new FormControl(null, { validators: [Validators.required] }),
+      canFire: new FormControl(false, { validators: [Validators.required] }),
+      numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
+      vehicleType: new FormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
+      maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
 }

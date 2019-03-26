@@ -10,11 +10,13 @@ import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
   providers: subformComponentProviders(MedicalDroidComponent),
 })
 export class MedicalDroidComponent extends NgxSubFormComponent<MedicalDroid> {
-  protected formControls: Controls<MedicalDroid> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
-    name: new FormControl(null, { validators: [Validators.required] }),
-    droidType: new FormControl(DroidType.MEDICAL, { validators: [Validators.required] }),
-    canHealHumans: new FormControl(false, { validators: [Validators.required] }),
-    canFixRobots: new FormControl(false, { validators: [Validators.required] }),
-  };
+  protected getFormControls(): Controls<MedicalDroid> {
+    return {
+      color: new FormControl(null, { validators: [Validators.required] }),
+      name: new FormControl(null, { validators: [Validators.required] }),
+      droidType: new FormControl(DroidType.MEDICAL, { validators: [Validators.required] }),
+      canHealHumans: new FormControl(false, { validators: [Validators.required] }),
+      canFixRobots: new FormControl(false, { validators: [Validators.required] }),
+    };
+  }
 }

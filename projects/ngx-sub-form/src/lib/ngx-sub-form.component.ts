@@ -4,43 +4,13 @@ import { Subscription } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
 
-export class FormControlsRequiredError extends Error {
-  message = `Passing the "formControls" is required to have NgxSubForm working`;
-}
-
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy {
-  protected abstract formControls: Controls<FormInterface>;
-
   public get formControlNames(): ControlsNames<FormInterface> {
-    return getControlsNames(this.formControls);
+    return getControlsNames(this.getFormControls());
   }
 
-  // flag to know whether the component has been destroyed or not because there's
-  // currently a memory leak when using custom ControlValueAccessor
-  private destroyed = false;
-
-  private fg: FormGroup | undefined;
-
-  public get formGroup(): FormGroup {
-    if (this.destroyed) {
-      // we do not want to type the formGroup as `FormGroup | undefined`
-      // because it will require to handle that use case from every component (ts and html)
-      // just to get the typings right, whereas we know formGroup will be defined when needed
-      // and we're just trying to avoid the memory leak issue. This shouldn't affect the public API
-      return undefined as any;
-    }
-
-    if (!this.formControls) {
-      throw new FormControlsRequiredError();
-    }
-
-    if (!this.fg) {
-      this.fg = new FormGroup(this.formControls);
-    }
-
-    return this.fg;
-  }
+  public formGroup: FormGroup = new FormGroup(this.getFormControls());
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -50,12 +20,15 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   @Input()
   public formControlName: string | undefined = undefined;
 
+  // can't define them directly
+  protected abstract getFormControls(): Controls<FormInterface>;
+
   public validate(): ValidationErrors | null {
     // @hack see below where defining this.formGroup to null
     if (
-      !this.fg ||
-      this.fg.valid ||
-      this.fg.pristine ||
+      !this.formGroup ||
+      this.formGroup.valid ||
+      this.formGroup.pristine ||
       // when using NgxSubForm on the top level component to get type checking and other utilities
       // but without binding it to a formControl, we might not have that value and thus, validate
       // should be null (should not happen at all)
@@ -68,12 +41,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public ngOnDestroy(): void {
-    this.destroyed = true;
-
     // @hack there's a memory leak within Angular and those components
     // are not correctly cleaned up which leads to error if a form is defined
     // with validators and then it's been removed, the validator would still fail
-    this.fg = undefined;
+    // `as any` if because we do not want to define the formGroup as FormGroup | undefined
+    // everything related to undefined is handled internally and shouldn't be exposed to end user
+    (this.formGroup as any) = undefined;
 
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -86,23 +59,15 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onChange = undefined;
   }
 
-  public writeValue(obj: Required<ControlInterface>): void {
-    // @note writeValue-and-form-group
-    // using a getter for `formGroup` is slightly inneficient but really convenient for the consumer
-    // so we should at least internally try to never call it directly and instead use `fg`
-    // BUT, `writeValue` is one of the first hooks to be called (before registerOnChange and registerOnTouched for e.g.)
-    // as the getter has a side effect of assigning `fg`, if we don't call it once at least the following condition `if (!!this.fg)`
-    // will be false in certain case and sub-forms might not be initialized properly
-    this.formGroup;
-
+  public writeValue(obj: Required<ControlInterface> | null): void {
     // should accept falsy values like `false` or empty string
     if (obj !== null && obj !== undefined) {
-      if (!!this.fg) {
-        this.fg.setValue(this.transformToFormGroup(obj), {
+      if (!!this.formGroup) {
+        this.formGroup.setValue(this.transformToFormGroup(obj), {
           emitEvent: false,
         });
 
-        this.fg.markAsPristine();
+        this.formGroup.markAsPristine();
       }
     } else {
       // @todo clear form?
@@ -125,20 +90,16 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public registerOnChange(fn: (_: any) => void): void {
-    // checking only fg would be enough but we need to initialize the getter
-    // otherwise tests would require to manually make a call to `formGroup` and that
-    // shouldn't be the case as it might be called manually and not reflect the reality of a component
-    // see @note writeValue-and-form-group
-    if (!this.formGroup || !this.fg) {
+    if (!this.formGroup) {
       return;
     }
 
     this.onChange = fn;
 
     // this is required to correctly initialize the form value
-    this.onChange(this.transformFromFormGroup(this.fg.value));
+    this.onChange(this.transformFromFormGroup(this.formGroup.value));
 
-    this.subscription = this.fg.valueChanges
+    this.subscription = this.formGroup.valueChanges
       .pipe(
         // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
         // this is due to the fact that parent component will define a given state for the form that might

@@ -17,14 +17,16 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   providers: subformComponentProviders(AssassinDroidComponent),
 })
 export class AssassinDroidComponent extends NgxSubFormComponent<AssassinDroid> {
-  protected formControls: Controls<AssassinDroid> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
-    name: new FormControl(null, { validators: [Validators.required] }),
-    droidType: new FormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
-    weapons: new FormControl([], { validators: [Validators.required] }),
-  };
-
   public AssassinDroidWeapon = AssassinDroidWeapon;
 
   public assassinDroidWeaponText = ASSASSIN_DROID_WEAPON_TEXT;
+
+  protected getFormControls(): Controls<AssassinDroid> {
+    return {
+      color: new FormControl(null, { validators: [Validators.required] }),
+      name: new FormControl(null, { validators: [Validators.required] }),
+      droidType: new FormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
+      weapons: new FormControl([], { validators: [Validators.required] }),
+    };
+  }
 }

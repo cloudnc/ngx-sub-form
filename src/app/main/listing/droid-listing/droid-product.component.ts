@@ -26,15 +26,17 @@ interface OneDroidForm {
   providers: subformComponentProviders(DroidProductComponent),
 })
 export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, OneDroidForm> {
-  protected formControls: Controls<OneDroidForm> = {
-    protocolDroid: new FormControl(null),
-    medicalDroid: new FormControl(null),
-    astromechDroid: new FormControl(null),
-    assassinDroid: new FormControl(null),
-    droidType: new FormControl(null, { validators: [Validators.required] }),
-  };
-
   public DroidType = DroidType;
+
+  protected getFormControls(): Controls<OneDroidForm> {
+    return {
+      protocolDroid: new FormControl(null),
+      medicalDroid: new FormControl(null),
+      astromechDroid: new FormControl(null),
+      assassinDroid: new FormControl(null),
+      droidType: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
 
   protected transformToFormGroup(obj: OneDroid | null): OneDroidForm {
     return {

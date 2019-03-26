@@ -10,11 +10,13 @@ import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
   providers: subformComponentProviders(SpaceshipComponent),
 })
 export class SpaceshipComponent extends NgxSubFormComponent<Spaceship> {
-  protected formControls: Controls<Spaceship> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
-    canFire: new FormControl(false, { validators: [Validators.required] }),
-    numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
-    numberOfWings: new FormControl(null, { validators: [Validators.required] }),
-    vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
-  };
+  protected getFormControls(): Controls<Spaceship> {
+    return {
+      color: new FormControl(null, { validators: [Validators.required] }),
+      canFire: new FormControl(false, { validators: [Validators.required] }),
+      numberOfPeopleOnBoard: new FormControl(null, { validators: [Validators.required] }),
+      numberOfWings: new FormControl(null, { validators: [Validators.required] }),
+      vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
+    };
+  }
 }

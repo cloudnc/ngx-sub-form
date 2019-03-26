@@ -1,8 +1,11 @@
 <mat-card>
   <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{ formGroup.value?.title }}</mat-card-title>
-    <mat-card-subtitle>{{ formGroup.value?.listing?.price }}</mat-card-subtitle>
+    <mat-card-title [class.not-visible]="!formGroup.value?.title">
+      {{ formGroup.value?.title }}
+    </mat-card-title>
+    <mat-card-subtitle [class.not-visible]="!formGroup.value || !formGroup.value.price">
+      £{{ formGroup.value?.price | number }}
+    </mat-card-subtitle>
   </mat-card-header>
   <div class="img-container">
     <img

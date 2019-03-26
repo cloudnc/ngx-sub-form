@@ -10,12 +10,14 @@ import { DroidType, Languages, ProtocolDroid } from '../../../../interfaces/droi
   providers: subformComponentProviders(ProtocolDroidComponent),
 })
 export class ProtocolDroidComponent extends NgxSubFormComponent<ProtocolDroid> {
-  protected formControls: Controls<ProtocolDroid> = {
-    color: new FormControl(null, { validators: [Validators.required] }),
-    name: new FormControl(null, { validators: [Validators.required] }),
-    droidType: new FormControl(DroidType.PROTOCOL, { validators: [Validators.required] }),
-    spokenLanguages: new FormControl(null, { validators: [Validators.required] }),
-  };
-
   public Languages = Languages;
+
+  protected getFormControls(): Controls<ProtocolDroid> {
+    return {
+      color: new FormControl(null, { validators: [Validators.required] }),
+      name: new FormControl(null, { validators: [Validators.required] }),
+      droidType: new FormControl(DroidType.PROTOCOL, { validators: [Validators.required] }),
+      spokenLanguages: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
 }

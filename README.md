@@ -104,11 +104,12 @@ Make your original class extend `NgxSubFormComponent` _or_ `NgxSubFormRemapCompo
 Define the controls of your form:
 
 ```ts
-protected formControls: Controls<VehicleListing> = {
-  id: new FormControl(this.uuidService.generate(), Validators.required),
-  price: new FormControl(null, Validators.required),
+protected getFormControls(): Controls<VehicleListing> {
+  return {
+    id: new FormControl(this.uuidService.generate(), Validators.required),
+    price: new FormControl(null, Validators.required),
+  }
 };
-
 ```
 
 _Simplified from the original example into src folder to keep the example as minimal as possible._

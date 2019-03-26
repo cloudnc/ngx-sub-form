@@ -1,7 +1,7 @@
 /// <reference types="jasmine" />
 
 import { FormControl, Validators } from '@angular/forms';
-import { NgxSubFormComponent, NgxSubFormRemapComponent, FormControlsRequiredError } from './ngx-sub-form.component';
+import { NgxSubFormComponent, NgxSubFormRemapComponent } from './ngx-sub-form.component';
 
 interface Vehicle {
   color?: string | null;
@@ -19,15 +19,17 @@ const getDefaultValues = (): Required<Vehicle> => ({
 });
 
 class SubComponent extends NgxSubFormComponent<Vehicle> {
-  formControls = {
+  getFormControls() {
     // even though optional, if we comment out color there should be a TS error
-    color: new FormControl(getDefaultValues().color),
-    canFire: new FormControl(getDefaultValues().canFire),
-    numberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard, [
-      Validators.min(MIN_NUMBER_OF_PEOPLE_ON_BOARD),
-      Validators.max(MAX_NUMBER_OF_PEOPLE_ON_BOARD),
-    ]),
-  };
+    return {
+      color: new FormControl(getDefaultValues().color),
+      canFire: new FormControl(getDefaultValues().canFire),
+      numberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard, [
+        Validators.min(MIN_NUMBER_OF_PEOPLE_ON_BOARD),
+        Validators.max(MAX_NUMBER_OF_PEOPLE_ON_BOARD),
+      ]),
+    };
+  }
 }
 
 describe(`NgxSubFormComponent`, () => {
@@ -39,12 +41,6 @@ describe(`NgxSubFormComponent`, () => {
   });
 
   describe(`created`, () => {
-    it(`should throw an error if formControls is not defined`, () => {
-      (subComponent as any).formControls = undefined;
-
-      expect(() => subComponent.formGroup).toThrowError(new FormControlsRequiredError().message);
-    });
-
     it(`should have the formControlNames defined, even for optional fields`, () => {
       expect(subComponent.formControlNames).toEqual({
         color: 'color',
@@ -211,12 +207,14 @@ interface VehiculeForm {
 }
 
 class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehiculeForm> {
-  formControls = {
-    // even though optional, if we comment out color there should be a TS error
-    vehiculeColor: new FormControl(getDefaultValues().color),
-    vehiculeCanFire: new FormControl(getDefaultValues().canFire),
-    vehiculeNumberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard),
-  };
+  getFormControls() {
+    // even though optional, if we comment out vehiculeColor there should be a TS error
+    return {
+      vehiculeColor: new FormControl(getDefaultValues().color),
+      vehiculeCanFire: new FormControl(getDefaultValues().canFire),
+      vehiculeNumberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard),
+    };
+  }
 
   protected transformToFormGroup(obj: Vehicle | null): VehiculeForm {
     return {

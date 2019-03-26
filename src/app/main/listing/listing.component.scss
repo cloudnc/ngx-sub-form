@@ -11,6 +11,11 @@ img {
 
 mat-card {
   max-width: 500px;
+
+  mat-card-title,
+  mat-card-subtitle {
+    min-height: 25px;
+  }
 }
 
 mat-form-field {

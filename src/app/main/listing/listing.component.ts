@@ -32,18 +32,20 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
 
   public ListingType = ListingType;
 
-  protected formControls: Controls<OneListingForm> = {
-    vehicleProduct: new FormControl(null),
-    droidProduct: new FormControl(null),
-    listingType: new FormControl(null, Validators.required),
-    id: new FormControl(this.uuidService.generate(), Validators.required),
-    title: new FormControl(null, Validators.required),
-    imageUrl: new FormControl(null, Validators.required),
-    price: new FormControl(null, Validators.required),
-  };
-
   constructor(private route: ActivatedRoute, private listingService: ListingService, private uuidService: UuidService) {
     super();
+  }
+
+  protected getFormControls(): Controls<OneListingForm> {
+    return {
+      vehicleProduct: new FormControl(null),
+      droidProduct: new FormControl(null),
+      listingType: new FormControl(null, Validators.required),
+      id: new FormControl(null, Validators.required),
+      title: new FormControl(null, Validators.required),
+      imageUrl: new FormControl(null, Validators.required),
+      price: new FormControl(null, Validators.required),
+    };
   }
 
   public ngOnInit(): void {
@@ -108,7 +110,7 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
         vehicleProduct: null,
         droidProduct: null,
         listingType: null,
-        id: '',
+        id: this.uuidService.generate(),
         title: '',
         imageUrl: '',
         price: 0,

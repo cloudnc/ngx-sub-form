@@ -12,7 +12,6 @@ fieldset {
   border: 1px solid grey;
   border-radius: 5px;
 
-
   &.ng-invalid {
     border-color: red;
   }
@@ -21,5 +20,8 @@ fieldset {
     padding: 0 5px;
     color: grey;
   }
+}
 
+.not-visible {
+  visibility: hidden;
 }

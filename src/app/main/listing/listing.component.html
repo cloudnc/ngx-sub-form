@@ -1,9 +1,9 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title [class.not-visible]="!formGroup.value?.title">
+    <mat-card-title data-title [class.not-visible]="!formGroup.value?.title">
       {{ formGroup.value?.title }}
     </mat-card-title>
-    <mat-card-subtitle [class.not-visible]="!formGroup.value || !formGroup.value.price">
+    <mat-card-subtitle data-price [class.not-visible]="!formGroup.value || !formGroup.value.price">
       £{{ formGroup.value?.price | number }}
     </mat-card-subtitle>
   </mat-card-header>
@@ -18,16 +18,31 @@
   <mat-card-content>
     <form [formGroup]="formGroup">
       <mat-form-field>
-        <input matInput type="text" placeholder="ID" [formControlName]="formControlNames.id" autocomplete="off" />
-      </mat-form-field>
-
-      <mat-form-field>
-        <input matInput type="text" placeholder="Title" [formControlName]="formControlNames.title" autocomplete="off" />
+        <input
+          matInput
+          data-input-id
+          type="text"
+          placeholder="ID"
+          [formControlName]="formControlNames.id"
+          autocomplete="off"
+        />
       </mat-form-field>
 
       <mat-form-field>
         <input
           matInput
+          data-input-title
+          type="text"
+          placeholder="Title"
+          [formControlName]="formControlNames.title"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          data-input-image-url
           type="text"
           placeholder="Image Url"
           [formControlName]="formControlNames.imageUrl"
@@ -38,6 +53,7 @@
       <mat-form-field>
         <input
           matInput
+          data-input-price
           type="number"
           placeholder="Price"
           [formControlName]="formControlNames.price"
@@ -46,7 +62,11 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-select placeholder="Select listing type" [formControlName]="formControlNames.listingType">
+        <mat-select
+          data-select-listing-type
+          placeholder="Select listing type"
+          [formControlName]="formControlNames.listingType"
+        >
           <mat-option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
             {{ listingType.value }}
           </mat-option>

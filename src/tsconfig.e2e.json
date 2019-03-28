@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "module": "es2015",
+    "target": "es5",
+    "noUnusedLocals": false,
+    "types": ["cypress"]
+  },
+  "include": ["**/*.e2e.ts"],
+  "exclude": ["**/*.spec.ts"]
+}

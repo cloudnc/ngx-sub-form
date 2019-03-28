@@ -1,7 +1,9 @@
 /// <reference types="Cypress" />
 
-import { ListElement, FormElement } from './data.helper';
+import { ListElement, FormElement, extractErrors } from './data.helper';
 import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { ListingType } from '../../src/app/interfaces/listing.interface';
+import { DroidType } from '../../src/app/interfaces/droid.interface';
 
 const getTextFromTag = (element: HTMLElement, tag: string): string =>
   Cypress.$(element)
@@ -26,6 +28,9 @@ const getToggleValue = (element: HTMLElement, tag: string): boolean =>
     .hasClass('mat-checked');
 
 export const DOM = {
+  get createNewButton() {
+    return cy.get('*[data-create-new]');
+  },
   get list() {
     return {
       get cy() {
@@ -59,6 +64,9 @@ export const DOM = {
     return {
       get cy() {
         return cy.get('app-listing');
+      },
+      get errors() {
+        return cy.get(`*[data-errors]`).then(extractErrors);
       },
       get obj(): Cypress.Chainable<FormElement> {
         const getVehiculeObj = (element: HTMLElement, type: VehicleType) =>
@@ -103,6 +111,42 @@ export const DOM = {
             }))
             .get()[0];
         });
+      },
+      get elements() {
+        return {
+          get title() {
+            return cy.get(`*[data-input-title]`);
+          },
+          get imageUrl() {
+            return cy.get(`*[data-input-image-url]`);
+          },
+          get price() {
+            return cy.get(`*[data-input-price]`);
+          },
+          get selectListingType() {
+            return cy.get(`*[data-select-listing-type]`);
+          },
+          selectListingTypeByType: (type: ListingType) => {
+            DOM.form.elements.selectListingType.click();
+
+            return cy.get(`*[data-select-listing-type-option]`).within(() => cy.contains(type).click());
+          },
+          get droidForm() {
+            return {
+              get name() {
+                return cy.get(`*[data-input-name]`);
+              },
+              get selectDroidType() {
+                return cy.get(`*[data-select-droid-type]`);
+              },
+              selectDroidTypeByType: (type: DroidType) => {
+                DOM.form.elements.droidForm.selectDroidType.click();
+
+                return cy.get(`*[data-select-droid-type-option]`).within(() => cy.contains(type).click());
+              },
+            };
+          },
+        };
       },
     };
   },

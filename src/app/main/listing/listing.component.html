@@ -67,7 +67,11 @@
           placeholder="Select listing type"
           [formControlName]="formControlNames.listingType"
         >
-          <mat-option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
+          <mat-option
+            data-select-listing-type-option
+            *ngFor="let listingType of (ListingType | keyvalue)"
+            [value]="listingType.value"
+          >
             {{ listingType.value }}
           </mat-option>
         </mat-select>
@@ -117,7 +121,7 @@
   <mat-card-title>Errors</mat-card-title>
 
   <mat-card-content>
-    <pre>{{ formGroupErrors | json }}</pre>
+    <pre data-errors>{{ formGroupErrors | json }}</pre>
   </mat-card-content>
 </mat-card>
 

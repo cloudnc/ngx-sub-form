@@ -3,8 +3,9 @@
 import { DOM } from '../../cypress/helpers/dom.helper';
 import { hardCodedListings } from './services/listings.data';
 import { hardcodedElementsToTestList, FormElement } from '../../cypress/helpers/data.helper';
-import { VehicleListing } from './interfaces/listing.interface';
+import { VehicleListing, ListingType } from './interfaces/listing.interface';
 import { Spaceship, Speeder } from './interfaces/vehicle.interface';
+import { DroidType } from './interfaces/droid.interface';
 
 context(`EJawa demo`, () => {
   beforeEach(() => {
@@ -74,5 +75,94 @@ context(`EJawa demo`, () => {
     };
 
     DOM.form.obj.should('eql', expectedObj);
+  });
+
+  it(`should display the (nested) errors from the form`, () => {
+    DOM.createNewButton.click();
+
+    DOM.form.errors.should('eql', {
+      listingType: {
+        required: true,
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
+
+    DOM.form.elements.selectListingTypeByType(ListingType.DROID);
+
+    DOM.form.errors.should('eql', {
+      droidProduct: {
+        droidType: {
+          required: true,
+        },
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
+
+    DOM.form.elements.droidForm.selectDroidTypeByType(DroidType.ASSASSIN);
+
+    DOM.form.errors.should('eql', {
+      droidProduct: {
+        assassinDroid: {
+          color: {
+            required: true,
+          },
+          name: {
+            required: true,
+          },
+          weapons: {
+            required: true,
+          },
+        },
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
+
+    DOM.form.elements.droidForm.name.type(`IG-86 sentinel`);
+
+    DOM.form.errors.should('eql', {
+      droidProduct: {
+        assassinDroid: {
+          color: {
+            required: true,
+          },
+          weapons: {
+            required: true,
+          },
+        },
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
   });
 });

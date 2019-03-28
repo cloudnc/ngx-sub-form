@@ -172,15 +172,26 @@ describe(`NgxSubFormComponent`, () => {
   });
 
   describe(`value updated by the sub form (onChange)`, () => {
-    it(`should call onChange callback as soon as it's being registered`, () => {
+    // @note on-change-after-one-tick
+    // we need to wait for one tick otherwise it might in certain case trigger an error
+    // `ExpressionChangedAfterItHasBeenCheckedError`
+    // see issue here: https://github.com/cloudnc/ngx-sub-form/issues/15
+    // repro here: https://github.com/lppedd/ngx-sub-form-test
+    // stackblitz here: https://stackblitz.com/edit/ngx-sub-form-repro-issue-15 (might have to download, seems broken on stackblitz)
+    it(`should call onChange callback as soon as it's being registered (after one tick)`, (done: () => void) => {
       const spy = jasmine.createSpy();
       subComponent.registerOnChange(spy);
 
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(getDefaultValues());
+      expect(spy).not.toHaveBeenCalled();
+
+      setTimeout(() => {
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(getDefaultValues());
+        done();
+      }, 0);
     });
 
-    it(`should call onChange and onTouched callback on next tick every time the form value changes`, (done: () => void) => {
+    it(`should call onChange and onTouched callback without waiting for next tick every time the form value changes`, () => {
       const onTouchedSpy = jasmine.createSpy('onTouchedSpy');
       const onChangeSpy = jasmine.createSpy('onChangeSpy');
 
@@ -189,13 +200,9 @@ describe(`NgxSubFormComponent`, () => {
 
       subComponent.formGroup.setValue(getDefaultValues());
 
-      setTimeout(() => {
-        expect(onTouchedSpy).toHaveBeenCalledTimes(1);
-        expect(onChangeSpy).toHaveBeenCalledTimes(2);
-        expect(onChangeSpy).toHaveBeenCalledWith(getDefaultValues());
-
-        done();
-      }, 0);
+      expect(onTouchedSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(getDefaultValues());
     });
   });
 });
@@ -267,7 +274,8 @@ describe(`NgxSubFormRemapComponent`, () => {
   });
 
   describe(`value updated by the sub form (onChange)`, () => {
-    it(`should call onChange callback with the formValue transformed by the transformFromFormGroup method`, (done: () => void) => {
+    // about the after one tick, see note on-change-after-one-tick
+    it(`should call onChange callback with the formValue transformed by the transformFromFormGroup method (after one tick)`, (done: () => void) => {
       const onChangeSpy = jasmine.createSpy('onChangeSpy');
 
       subRemapComponent.registerOnChange(onChangeSpy);
@@ -278,19 +286,21 @@ describe(`NgxSubFormRemapComponent`, () => {
         numberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
       };
 
-      expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
-
-      onChangeSpy.calls.reset();
-
-      subRemapComponent.formGroup.setValue({
-        vehiculeColor: getDefaultValues().color,
-        vehiculeCanFire: getDefaultValues().canFire,
-        vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
-      });
+      expect(onChangeSpy).not.toHaveBeenCalled();
 
       setTimeout(() => {
         expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
 
+        onChangeSpy.calls.reset();
+
+        subRemapComponent.formGroup.setValue({
+          vehiculeColor: getDefaultValues().color,
+          vehiculeCanFire: getDefaultValues().canFire,
+          vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
+        });
+
+        // this one shouldn't be async
+        expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
         done();
       }, 0);
     });

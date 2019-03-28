@@ -1,7 +1,7 @@
 import { OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
@@ -113,14 +113,23 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onChange = fn;
 
     // this is required to correctly initialize the form value
-    this.onChange(this.transformFromFormGroup(this.formGroup.value));
+    // see note on-change-after-one-tick within the test file for more info
+    // it makes sense to have it on the next tick and  without delay when the formGroup
+    // changes because otherwise it's breaking the one way data flow (and we've got an error expression has changed...):
+    // parent creates a sub form, it does call `registerOnChange`, we trigger a change because the ouput might not match
+    // the input (if implementing `transformToFormGroup`/`transformFromFormGroup`), value on the parent will be updated
+    setTimeout(() => {
+      if (this.onChange) {
+        this.onChange(this.transformFromFormGroup(this.formGroup.value));
+      }
+    }, 0);
 
     this.subscription = this.formGroup.valueChanges
       .pipe(
-        // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
-        // this is due to the fact that parent component will define a given state for the form that might
-        // be changed once the children are being initialized
-        delay(0),
+        // note: we do not want to use startWith here
+        // because we've got to handle the first onChange alone
+        // into an async way (CF huge comment above) and without
+        // calling `onTouched` nor `onChange`
         tap(changes => {
           if (this.onTouched) {
             this.onTouched();

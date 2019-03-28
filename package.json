@@ -5,7 +5,7 @@
     "------------------ BASE COMMANDS -----------------": "",
     "ng": "ng",
     "prettier": "prettier",
-    "prettier:base": "yarn run prettier \"**/*.{js,json,css,md,ts,html,component.html}\"",
+    "prettier:base": "yarn run prettier \"**/*.{js,json,scss,md,ts,html,component.html}\"",
     "prettier:write": "yarn run prettier:base --write",
     "prettier:check": "yarn run prettier:base --list-different",
     "cy": "cypress",

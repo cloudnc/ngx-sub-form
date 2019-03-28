@@ -179,3 +179,11 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
   }
 }
 ```
+
+### Handling errors
+
+There's currently a weird behavior ~~[issue (?)](https://github.com/angular/angular/issues/18004)~~ when checking for form validity. CF that [issue](https://github.com/angular/angular/issues/18004) and that [comment](https://github.com/angular/angular/issues/18004#issuecomment-328806479). It is also detailed into [`listing.component.html`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing.component.html).
+
+That said, let's move on to one of the great feature of ngx-sub-form: The possibility to have access to **nested** form errors. How? When extending `NgxSubFormComponent` or `NgxSubFormRemapComponent` you'll have access to the `formGroupErrors` property. That's it.
+
+You can see the online demo [here](https://cloudnc.github.io/ngx-sub-form).

@@ -35,9 +35,14 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
 describe(`NgxSubFormComponent`, () => {
   let subComponent: SubComponent;
 
-  beforeEach(() => {
+  beforeEach((done: () => void) => {
     subComponent = new SubComponent();
-    subComponent.formControlName = subComponent.formControlNames.color;
+
+    // we have to call `updateValueAndValidity` within the constructor in an async way
+    // and here we need to wait for it to run
+    setTimeout(() => {
+      done();
+    }, 0);
   });
 
   describe(`created`, () => {
@@ -87,36 +92,31 @@ describe(`NgxSubFormComponent`, () => {
   });
 
   describe(`validation`, () => {
-    // when formControlName is not passed, it means that the component is being used
-    // on the top level to get utilities from the lib (type safety for e.g.) but validation should not run in that case
-    it(`should return null if formControlName is not defined`, () => {
+    it(`should validate the field and return an object containing the errors if the formGroup is defined and invalid`, () => {
       // set one of the control to be invalid
       (subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
         MIN_NUMBER_OF_PEOPLE_ON_BOARD - 1,
       );
-      subComponent.formGroup.markAsDirty();
-      subComponent.formControlName = undefined;
-      expect(subComponent.validate()).toBeNull();
+      expect(subComponent.validate()).toEqual({
+        [subComponent.formControlNames.numberOfPeopleOnBoard]: { min: { min: 5, actual: 4 } },
+      });
     });
 
-    it(`should validate the field and return an object containing the formControlName set to true if the formGroup is defined, invalid and dirty`, () => {
-      subComponent.formControlName = subComponent.formControlNames.color;
+    it(`should give access to a formGroupErrors property`, () => {
       // set one of the control to be invalid
       (subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
         MIN_NUMBER_OF_PEOPLE_ON_BOARD - 1,
       );
-      subComponent.formGroup.markAsDirty();
-      subComponent.formGroup.updateValueAndValidity();
-      expect(subComponent.validate()).toEqual({ [subComponent.formControlNames.color]: true });
+      expect(subComponent.formGroupErrors).toEqual({
+        [subComponent.formControlNames.numberOfPeopleOnBoard]: { min: { min: 5, actual: 4 } },
+      });
     });
 
     describe(`should validate the field and return null if the formGroup is`, () => {
       it(`not defined`, () => {
         subComponent.ngOnDestroy();
-
         expect(subComponent.validate()).toBeNull();
       });
-
       it(`valid or pristine`, () => {
         // by default in that example defined, valid and pristine
         expect(subComponent.validate()).toBeNull();
@@ -236,9 +236,14 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehiculeForm> 
 describe(`NgxSubFormRemapComponent`, () => {
   let subRemapComponent: SubRemapComponent;
 
-  beforeEach(() => {
+  beforeEach((done: () => void) => {
     subRemapComponent = new SubRemapComponent();
-    subRemapComponent.formControlName = subRemapComponent.formControlNames.vehiculeColor;
+
+    // we have to call `updateValueAndValidity` within the constructor in an async way
+    // and here we need to wait for it to run
+    setTimeout(() => {
+      done();
+    }, 0);
   });
 
   describe(`value updated by the parent (write)`, () => {

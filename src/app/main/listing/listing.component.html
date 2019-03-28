@@ -87,15 +87,44 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="upsertListing(formGroup.value)" [disabled]="formGroup.invalid">
-      Upsert
-    </button>
+    <!--
+      `<div *ngIf="true">`... You could legitimely think that we're crazy or that ngx-sub-form
+      is messing up with your form. In fact, it is not related to the lib at all. It has to do
+      with how Angular analyze the DOM and the priorities during change detection.
+      "But will I have to do that in my app too?" -*-*-> YES if you need to make a check based
+      on the form validity.
+      Please see that issue for more info
+      https://github.com/angular/angular/issues/18004
+      and that comment in particular
+      https://github.com/angular/angular/issues/18004#issuecomment-328806479
+      "But what if I don't do that?" -*-*-> Well you'll end up with the error we all know:
+      `ExpressionChangedAfterItHasBeenCheckedError`. Please refer to comment if you want to
+      know why
+    -->
+    <div *ngIf="true">
+      <button mat-raised-button color="primary" (click)="upsertListing(formGroup.value)" [disabled]="formGroup.invalid">
+        Upsert
+      </button>
 
-    <div *ngIf="formGroup.invalid">
-      Form is invalid
-      <pre>{{ formGroup.controls.vehicleProduct.errors | json }}</pre>
+      <div *ngIf="formGroup.invalid">
+        Form is invalid
+      </div>
     </div>
   </mat-card-actions>
 </mat-card>
 
-<pre>{{ formGroup.value | json }}</pre>
+<mat-card>
+  <mat-card-title>Errors</mat-card-title>
+
+  <mat-card-content>
+    <pre>{{ formGroupErrors | json }}</pre>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-title>Form value</mat-card-title>
+
+  <mat-card-content>
+    <pre>{{ formGroup.value | json }}</pre>
+  </mat-card-content>
+</mat-card>

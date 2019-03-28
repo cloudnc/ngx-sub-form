@@ -1,4 +1,4 @@
-import { Input, OnDestroy, OnInit } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
@@ -10,6 +10,22 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return getControlsNames(this.getFormControls());
   }
 
+  public get formGroupErrors(): ValidationErrors {
+    const errors: ValidationErrors = {};
+
+    for (const key in this.formGroup.controls) {
+      if (this.formGroup.controls.hasOwnProperty(key)) {
+        const control = this.formGroup.controls[key];
+
+        if (!control.valid) {
+          errors[key] = control.errors;
+        }
+      }
+    }
+
+    return errors;
+  }
+
   public formGroup: FormGroup = new FormGroup(this.getFormControls());
 
   protected onChange: Function | undefined = undefined;
@@ -17,27 +33,30 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   private subscription: Subscription | undefined = undefined;
 
-  @Input()
-  public formControlName: string | undefined = undefined;
-
   // can't define them directly
   protected abstract getFormControls(): Controls<FormInterface>;
 
+  constructor() {
+    // `setTimeout` and `updateValueAndValidity` are both required here
+    // indeed, if you check the demo you'll notice that without it, if
+    // you select `Droid` and `Assassin` for example the displayed errors
+    // are not yet defined for the field `assassinDroid`
+    // (until you change one of the value in that form)
+    setTimeout(() => {
+      this.formGroup.updateValueAndValidity({ emitEvent: false });
+    }, 0);
+  }
+
   public validate(): ValidationErrors | null {
-    // @hack see below where defining this.formGroup to null
     if (
+      // @hack see below where defining this.formGroup to null
       !this.formGroup ||
-      this.formGroup.valid ||
-      this.formGroup.pristine ||
-      // when using NgxSubForm on the top level component to get type checking and other utilities
-      // but without binding it to a formControl, we might not have that value and thus, validate
-      // should be null (should not happen at all)
-      !this.formControlName
+      this.formGroup.valid
     ) {
       return null;
     }
 
-    return { [this.formControlName]: true };
+    return this.formGroupErrors;
   }
 
   public ngOnDestroy(): void {
@@ -66,17 +85,14 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         this.formGroup.setValue(this.transformToFormGroup(obj), {
           emitEvent: false,
         });
-
         this.formGroup.markAsPristine();
+        this.formGroup.markAsUntouched();
       }
     } else {
       // @todo clear form?
     }
   }
 
-  // ----------------------------------------------------
-  // ----------------------------------------------------
-  // ----------------------------------------------------
   // that method can be overridden if the
   // shape of the form needs to be modified
   protected transformToFormGroup(obj: ControlInterface | null): FormInterface {

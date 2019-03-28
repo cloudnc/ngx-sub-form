@@ -191,7 +191,7 @@ describe(`NgxSubFormComponent`, () => {
       }, 0);
     });
 
-    it(`should call onChange and onTouched callback on next tick every time the form value changes`, (done: () => void) => {
+    it(`should call onChange and onTouched callback without waiting for next tick every time the form value changes`, () => {
       const onTouchedSpy = jasmine.createSpy('onTouchedSpy');
       const onChangeSpy = jasmine.createSpy('onChangeSpy');
 
@@ -200,13 +200,9 @@ describe(`NgxSubFormComponent`, () => {
 
       subComponent.formGroup.setValue(getDefaultValues());
 
-      setTimeout(() => {
-        expect(onTouchedSpy).toHaveBeenCalledTimes(1);
-        expect(onChangeSpy).toHaveBeenCalledTimes(2);
-        expect(onChangeSpy).toHaveBeenCalledWith(getDefaultValues());
-
-        done();
-      }, 0);
+      expect(onTouchedSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledTimes(1);
+      expect(onChangeSpy).toHaveBeenCalledWith(getDefaultValues());
     });
   });
 });
@@ -303,11 +299,9 @@ describe(`NgxSubFormRemapComponent`, () => {
           vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
         });
 
-        setTimeout(() => {
-          expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
-
-          done();
-        }, 0);
+        // this one shouldn't be async
+        expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
+        done();
       }, 0);
     });
   });

@@ -9,7 +9,7 @@ Works well with polymorphic data structures.
 
 ## Install
 
-Install the [npm-package](https://www.npmjs.com/package/ngx-sub-form):
+Install the [npm-package](https://www.npmjs.com/package/ngx-sub-form): `npx-sub-form`
 
 ## Usage
 
@@ -18,8 +18,8 @@ Demo is built around a concept of galactic sales. You can sell either Droids (Pr
 
 ### First component level
 
-Within the component where the form will be handled, we have to define the top level structure of the form, with _each
-polymorphic type having it's own form control_
+Within the component where the form will be handled, we have to define the top level structure of the form, with **each
+polymorphic type having it's own form control**:
 
 ```ts
 public listingForm: FormGroup = new FormGroup({
@@ -57,8 +57,8 @@ Then, within the `.component.html` we create a `select` tag to choose between th
 Now we need to create, based on the listing type, either a `DroidListingComponent` or a `VehicleListingComponent`:
 
 ```html
-<form [formGroup]="listingForm">
-  <div [ngSwitch]="listingForm.get(formControlNames.listingType).value">
+<form [formGroup]="formGroup">
+  <div [ngSwitch]="controls.listingType.value">
     <app-droid-listing *ngSwitchCase="ListingType.DROID" formControlName="droidListing"></app-droid-listing>
     <app-vehicle-listing *ngSwitchCase="ListingType.VEHICLE" formControlName="vehicleListing"></app-vehicle-listing>
   </div>
@@ -126,6 +126,13 @@ Then within the `.html`, you can reference them like so:
 
   <input type="number" placeholder="Price" [formControlName]="formControlNames.price" />
 </fieldset>
+```
+
+It also exposes a `controls` property for simplicity **and** type safety.  
+Example to display previous values:
+
+```html
+ID: {{ controls.id.value }} Price: {{ controls.price.value }}
 ```
 
 ### Remapping Data

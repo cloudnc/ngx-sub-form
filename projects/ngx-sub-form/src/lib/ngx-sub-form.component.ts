@@ -1,29 +1,25 @@
 import { OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
+import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
+import { Controls, ControlsNames } from './ngx-sub-form-utils';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy {
-  public get formControlNames(): ControlsNames<FormInterface> {
-    return getControlsNames(this.getFormControls());
+  public get formGroupControls(): Controls<FormInterface> {
+    return this.mapControls();
+  }
+
+  public get formGroupValues(): FormInterface {
+    return this.mapControls(ctrl => ctrl.value);
   }
 
   public get formGroupErrors(): ValidationErrors {
-    const errors: ValidationErrors = {};
+    return this.mapControls(ctrl => ctrl.errors, ctrl => ctrl.invalid);
+  }
 
-    for (const key in this.formGroup.controls) {
-      if (this.formGroup.controls.hasOwnProperty(key)) {
-        const control = this.formGroup.controls[key];
-
-        if (!control.valid) {
-          errors[key] = control.errors;
-        }
-      }
-    }
-
-    return errors;
+  public get formControlNames(): ControlsNames<FormInterface> {
+    return this.mapControls((_, key) => key);
   }
 
   public formGroup: FormGroup = new FormGroup(this.getFormControls());
@@ -45,6 +41,24 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     setTimeout(() => {
       this.formGroup.updateValueAndValidity({ emitEvent: false });
     }, 0);
+  }
+
+  private mapControls(
+    mapControl?: (ctrl: AbstractControl, key: string) => any,
+    filterControl: (ctrl: AbstractControl) => boolean = () => true,
+  ): any {
+    const controls: any = {};
+
+    for (const key in this.formGroup.controls) {
+      if (this.formGroup.controls.hasOwnProperty(key)) {
+        const control = this.formGroup.get(key);
+        if (control && filterControl(control)) {
+          controls[key] = mapControl ? mapControl(control, key) : control;
+        }
+      }
+    }
+
+    return controls;
   }
 
   public validate(): ValidationErrors | null {

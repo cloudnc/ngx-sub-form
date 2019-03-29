@@ -13,7 +13,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="formGroup.get(formControlNames.droidType)?.value">
+  <div [ngSwitch]="formGroupValues.droidType">
     <app-protocol-droid
       *ngSwitchCase="DroidType.PROTOCOL"
       [formControlName]="formControlNames.protocolDroid"

@@ -61,6 +61,24 @@ describe(`NgxSubFormComponent`, () => {
       expect(subComponent.formGroup.get(subComponent.formControlNames.color)).not.toBeNull();
       expect(subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard)).not.toBeNull();
     });
+
+    it(`should create a formGroupControls property to easily access all the formControls`, () => {
+      // following should not compile because random is not defined
+      // expect(subComponent.controls.random).toBeNull();
+
+      expect(subComponent.formGroupControls.canFire).not.toBeNull();
+      expect(subComponent.formGroupControls.color).not.toBeNull();
+      expect(subComponent.formGroupControls.numberOfPeopleOnBoard).not.toBeNull();
+    });
+
+    it(`should create a formGroupValues property to easily access all the values individually`, () => {
+      // following should not compile because random is not defined
+      // expect(subComponent.formGroupValues.random).toBeNull();
+
+      expect(subComponent.formGroupValues.canFire).toEqual(true);
+      expect(subComponent.formGroupValues.color).toEqual('#ffffff');
+      expect(subComponent.formGroupValues.numberOfPeopleOnBoard).toEqual(10);
+    });
   });
 
   describe(`destroyed`, () => {

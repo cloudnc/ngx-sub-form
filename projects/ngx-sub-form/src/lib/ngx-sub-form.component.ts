@@ -14,11 +14,17 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return this.mapControls(ctrl => ctrl.value);
   }
 
-  public get formGroupErrors(): ControlMap<FormInterface, ValidationErrors | null> {
-    return this.mapControls<ValidationErrors | null, ControlMap<FormInterface, ValidationErrors | null>>(
+  public get formGroupErrors(): null | Partial<ControlMap<FormInterface, ValidationErrors | null>> {
+    const errors = this.mapControls<ValidationErrors | null, ControlMap<FormInterface, ValidationErrors | null>>(
       ctrl => ctrl.errors,
       ctrl => ctrl.invalid,
     );
+
+    if (!Object.keys(errors).length) {
+      return null;
+    }
+
+    return errors;
   }
 
   public get formControlNames(): ControlsNames<FormInterface> {

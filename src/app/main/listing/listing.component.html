@@ -122,7 +122,17 @@
   <mat-card-title>Errors</mat-card-title>
 
   <mat-card-content>
-    <pre data-errors>{{ formGroupErrors | json }}</pre>
+    <!--
+      this is an important test as we want to make sure that `formGroupErrors` is null when there's no error
+      if we return an empty object the `*ngIf` condition would be considered valid
+    -->
+    <pre *ngIf="formGroupErrors as errors; else noError" data-errors>{{ errors | json }}</pre>
+
+    <ng-template #noError>
+      <span data-no-error>
+        Form is valid, no error!
+      </span>
+    </ng-template>
   </mat-card-content>
 </mat-card>
 

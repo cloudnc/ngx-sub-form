@@ -44,7 +44,7 @@ When extending `NgxSubFormComponent` or `NgxSubFormRemapComponent` you'll have a
 - `formControlNames`: All the control names available in your form. Use it when defining a `formControlName` like that `<input [formControlName]="formControlNames.yourControl">`
 - `formGroupControls`: All the controls of your form, helpful to avoid doing `formGroup.get(formControlNames.yourControl)`, instead just do `formGroupControls.yourControl`
 - `formGroupValues`: Access all the values of your form directly without doing `formGroup.get(formControlNames.yourControl).value`, instead just do `formGroupValues.yourControl` (and it'll be correctly typed!)
-- `formGroupErrors`: All the errors of the current form **including** the sub errors (if any), just use `formGroupErrors` or `formGroupErrors.yourControl`
+- `formGroupErrors`: All the errors of the current form **including** the sub errors (if any), just use `formGroupErrors` or `formGroupErrors?.yourControl`. Notice the question mark in `formGroupErrors?.yourControl`, it **will return `null` if there's no error**
 
 With AOT turned on you'll get proper type checking within your TS **and** HTML files. When refactoring your interfaces your form will error if a property should no longer be here or if one is missing.
 

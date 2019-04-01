@@ -80,7 +80,7 @@ context(`EJawa demo`, () => {
   it(`should display the (nested) errors from the form`, () => {
     DOM.createNewButton.click();
 
-    DOM.form.errors.should('eql', {
+    DOM.form.errors.obj.should('eql', {
       listingType: {
         required: true,
       },
@@ -97,7 +97,7 @@ context(`EJawa demo`, () => {
 
     DOM.form.elements.selectListingTypeByType(ListingType.DROID);
 
-    DOM.form.errors.should('eql', {
+    DOM.form.errors.obj.should('eql', {
       droidProduct: {
         droidType: {
           required: true,
@@ -116,7 +116,7 @@ context(`EJawa demo`, () => {
 
     DOM.form.elements.droidForm.selectDroidTypeByType(DroidType.ASSASSIN);
 
-    DOM.form.errors.should('eql', {
+    DOM.form.errors.obj.should('eql', {
       droidProduct: {
         assassinDroid: {
           color: {
@@ -143,7 +143,7 @@ context(`EJawa demo`, () => {
 
     DOM.form.elements.droidForm.name.type(`IG-86 sentinel`);
 
-    DOM.form.errors.should('eql', {
+    DOM.form.errors.obj.should('eql', {
       droidProduct: {
         assassinDroid: {
           color: {
@@ -164,5 +164,14 @@ context(`EJawa demo`, () => {
         required: true,
       },
     });
+  });
+
+  it(`should display no error when form is valid`, () => {
+    // we want to make sure that it's easy to detect from the template that there's no error
+    // previously we returned an empty object which made that check way harder in the template
+    DOM.list.elements.cy.eq(0).click();
+
+    DOM.form.errors.cy.should('not.exist');
+    DOM.form.noErrors.should('exist');
   });
 });

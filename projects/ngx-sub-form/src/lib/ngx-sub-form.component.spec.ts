@@ -130,11 +130,16 @@ describe(`NgxSubFormComponent`, () => {
       } as any);
     });
 
+    it(`should have the formGroupErrors property set to null if there's no error`, () => {
+      expect(subComponent.formGroupErrors).toEqual(null);
+    });
+
     describe(`should validate the field and return null if the formGroup is`, () => {
       it(`not defined`, () => {
         subComponent.ngOnDestroy();
         expect(subComponent.validate()).toBeNull();
       });
+
       it(`valid or pristine`, () => {
         // by default in that example defined, valid and pristine
         expect(subComponent.validate()).toBeNull();

@@ -7,11 +7,14 @@ import { ControlMap, Controls, ControlsNames } from './ngx-sub-form-utils';
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy {
   public get formGroupControls(): ControlMap<FormInterface, AbstractControl> {
-    return this.mapControls();
+    // @note form-group-undefined we need the as syntax here because we do not want to expose the fact that
+    // the form can be undefined, it's hanlded internally to contain an Angular bug
+    return this.mapControls() as ControlMap<FormInterface, AbstractControl>;
   }
 
   public get formGroupValues(): Required<FormInterface> {
-    return this.mapControls(ctrl => ctrl.value);
+    // see @note form-group-undefined for as syntax
+    return this.mapControls(ctrl => ctrl.value) as Required<FormInterface>;
   }
 
   public get formGroupErrors(): null | Partial<ControlMap<FormInterface, ValidationErrors | null>> {
@@ -20,7 +23,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       ctrl => ctrl.invalid,
     );
 
-    if (!Object.keys(errors).length) {
+    if (!errors || !Object.keys(errors).length) {
       return null;
     }
 
@@ -28,9 +31,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public get formControlNames(): ControlsNames<FormInterface> {
-    return this.mapControls((_, key) => key);
+    // see @note form-group-undefined for as syntax
+    return this.mapControls((_, key) => key) as ControlsNames<FormInterface>;
   }
 
+  // when developing the lib it's a good idea to set the formGroup type
+  // to current + `| undefined` to catch a bunch of possible issues
+  // see @note form-group-undefined
   public formGroup: FormGroup & { controls: Controls<FormInterface> } = new FormGroup(this.getFormControls()) as any;
 
   protected onChange: Function | undefined = undefined;
@@ -48,14 +55,20 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     // are not yet defined for the field `assassinDroid`
     // (until you change one of the value in that form)
     setTimeout(() => {
-      this.formGroup.updateValueAndValidity({ emitEvent: false });
+      if (this.formGroup) {
+        this.formGroup.updateValueAndValidity({ emitEvent: false });
+      }
     }, 0);
   }
 
   private mapControls<MapValue, T extends ControlMap<FormInterface, MapValue>>(
     mapControl?: (ctrl: Controls<FormInterface>[keyof FormInterface], key: keyof FormInterface) => MapValue,
     filterControl: (ctrl: Controls<FormInterface>[keyof FormInterface]) => boolean = () => true,
-  ): T {
+  ): T | null {
+    if (!this.formGroup) {
+      return null;
+    }
+
     const formControls: Controls<FormInterface> = this.formGroup.controls;
 
     if (!mapControl) {
@@ -147,7 +160,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     // this is required to correctly initialize the form value
     // see note on-change-after-one-tick within the test file for more info
     setTimeout(() => {
-      if (this.onChange) {
+      if (this.onChange && this.formGroup) {
         this.onChange(this.transformFromFormGroup(this.formGroup.value));
       }
     }, 0);

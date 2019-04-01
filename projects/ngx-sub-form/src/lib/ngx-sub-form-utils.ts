@@ -6,6 +6,8 @@ export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
 export type ControlsNames<T> = { [K in keyof T]-?: K };
 
+export type ControlMap<T, V> = { [K in keyof T]-?: V };
+
 export function subformComponentProviders(
   component: any,
 ): {

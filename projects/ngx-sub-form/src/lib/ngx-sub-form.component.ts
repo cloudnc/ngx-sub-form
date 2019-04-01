@@ -2,27 +2,30 @@ import { OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { Controls, ControlsNames } from './ngx-sub-form-utils';
+import { ControlMap, Controls, ControlsNames } from './ngx-sub-form-utils';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy {
-  public get formGroupControls(): Controls<FormInterface> {
+  public get formGroupControls(): ControlMap<FormInterface, AbstractControl> {
     return this.mapControls();
   }
 
-  public get formGroupValues(): FormInterface {
+  public get formGroupValues(): Required<FormInterface> {
     return this.mapControls(ctrl => ctrl.value);
   }
 
-  public get formGroupErrors(): ValidationErrors {
-    return this.mapControls(ctrl => ctrl.errors, ctrl => ctrl.invalid);
+  public get formGroupErrors(): ControlMap<FormInterface, ValidationErrors | null> {
+    return this.mapControls<ValidationErrors | null, ControlMap<FormInterface, ValidationErrors | null>>(
+      ctrl => ctrl.errors,
+      ctrl => ctrl.invalid,
+    );
   }
 
   public get formControlNames(): ControlsNames<FormInterface> {
     return this.mapControls((_, key) => key);
   }
 
-  public formGroup: FormGroup = new FormGroup(this.getFormControls());
+  public formGroup: FormGroup & { controls: Controls<FormInterface> } = new FormGroup(this.getFormControls()) as any;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -43,22 +46,28 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     }, 0);
   }
 
-  private mapControls(
-    mapControl?: (ctrl: AbstractControl, key: string) => any,
-    filterControl: (ctrl: AbstractControl) => boolean = () => true,
-  ): any {
-    const controls: any = {};
+  private mapControls<MapValue, T extends ControlMap<FormInterface, MapValue>>(
+    mapControl?: (ctrl: Controls<FormInterface>[keyof FormInterface], key: keyof FormInterface) => MapValue,
+    filterControl: (ctrl: Controls<FormInterface>[keyof FormInterface]) => boolean = () => true,
+  ): T {
+    const formControls: Controls<FormInterface> = this.formGroup.controls;
 
-    for (const key in this.formGroup.controls) {
+    if (!mapControl) {
+      return formControls as any;
+    }
+
+    const controls: Partial<T> = {};
+
+    for (const key in formControls) {
       if (this.formGroup.controls.hasOwnProperty(key)) {
-        const control = this.formGroup.get(key);
+        const control = formControls[key];
         if (control && filterControl(control)) {
-          controls[key] = mapControl ? mapControl(control, key) : control;
+          controls[key] = mapControl(control, key);
         }
       }
     }
 
-    return controls;
+    return controls as Required<T>;
   }
 
   public validate(): ValidationErrors | null {

@@ -66,7 +66,17 @@ export const DOM = {
         return cy.get('app-listing');
       },
       get errors() {
-        return cy.get(`*[data-errors]`).then(extractErrors);
+        return {
+          get cy() {
+            return cy.get(`*[data-errors]`);
+          },
+          get obj() {
+            return DOM.form.errors.cy.then(extractErrors);
+          },
+        };
+      },
+      get noErrors() {
+        return cy.get(`*[data-no-error]`);
       },
       get obj(): Cypress.Chainable<FormElement> {
         const getVehiculeObj = (element: HTMLElement, type: VehicleType) =>

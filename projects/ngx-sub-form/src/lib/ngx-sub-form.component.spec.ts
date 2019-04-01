@@ -61,6 +61,24 @@ describe(`NgxSubFormComponent`, () => {
       expect(subComponent.formGroup.get(subComponent.formControlNames.color)).not.toBeNull();
       expect(subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard)).not.toBeNull();
     });
+
+    it(`should create a formGroupControls property to easily access all the formControls`, () => {
+      // following should not compile because random is not defined
+      // expect(subComponent.controls.random).toBeNull();
+
+      expect(subComponent.formGroupControls.canFire).not.toBeNull();
+      expect(subComponent.formGroupControls.color).not.toBeNull();
+      expect(subComponent.formGroupControls.numberOfPeopleOnBoard).not.toBeNull();
+    });
+
+    it(`should create a formGroupValues property to easily access all the values individually`, () => {
+      // following should not compile because random is not defined
+      // expect(subComponent.formGroupValues.random).toBeNull();
+
+      expect(subComponent.formGroupValues.canFire).toEqual(true);
+      expect(subComponent.formGroupValues.color).toEqual('#ffffff');
+      expect(subComponent.formGroupValues.numberOfPeopleOnBoard).toEqual(10);
+    });
   });
 
   describe(`destroyed`, () => {
@@ -109,7 +127,11 @@ describe(`NgxSubFormComponent`, () => {
       );
       expect(subComponent.formGroupErrors).toEqual({
         [subComponent.formControlNames.numberOfPeopleOnBoard]: { min: { min: 5, actual: 4 } },
-      });
+      } as any);
+    });
+
+    it(`should have the formGroupErrors property set to null if there's no error`, () => {
+      expect(subComponent.formGroupErrors).toEqual(null);
     });
 
     describe(`should validate the field and return null if the formGroup is`, () => {
@@ -117,6 +139,7 @@ describe(`NgxSubFormComponent`, () => {
         subComponent.ngOnDestroy();
         expect(subComponent.validate()).toBeNull();
       });
+
       it(`valid or pristine`, () => {
         // by default in that example defined, valid and pristine
         expect(subComponent.validate()).toBeNull();

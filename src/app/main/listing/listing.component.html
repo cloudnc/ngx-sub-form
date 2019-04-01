@@ -1,18 +1,18 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title data-title [class.not-visible]="!formGroup.value?.title">
-      {{ formGroup.value?.title }}
+    <mat-card-title data-title [class.not-visible]="!formGroupValues.title">
+      {{ formGroupValues.title }}
     </mat-card-title>
-    <mat-card-subtitle data-price [class.not-visible]="!formGroup.value || !formGroup.value.price">
-      £{{ formGroup.value?.price | number }}
+    <mat-card-subtitle data-price [class.not-visible]="!formGroupValues.price">
+      £{{ formGroupValues.price | number }}
     </mat-card-subtitle>
   </mat-card-header>
   <div class="img-container">
     <img
-      *ngIf="formGroup.value?.imageUrl"
+      *ngIf="formGroupValues.imageUrl"
       mat-card-image
-      [src]="formGroup.value?.imageUrl"
-      alt="Photo of {{ formGroup.value?.title }}"
+      [src]="formGroupValues.imageUrl"
+      alt="Photo of {{ formGroupValues.title }}"
     />
   </div>
   <mat-card-content>
@@ -77,7 +77,7 @@
         </mat-select>
       </mat-form-field>
 
-      <div [ngSwitch]="formGroup.get(formControlNames.listingType)?.value">
+      <div [ngSwitch]="formGroupValues.listingType">
         <app-droid-product
           *ngSwitchCase="ListingType.DROID"
           [formControlName]="formControlNames.droidProduct"
@@ -106,7 +106,8 @@
       know why
     -->
     <div *ngIf="true">
-      <button mat-raised-button color="primary" (click)="upsertListing(formGroup.value)" [disabled]="formGroup.invalid">
+      <!-- @todo -->
+      <button mat-raised-button color="primary" (click)="upsertListing(formGroupValues)" [disabled]="formGroup.invalid">
         Upsert
       </button>
 
@@ -121,7 +122,17 @@
   <mat-card-title>Errors</mat-card-title>
 
   <mat-card-content>
-    <pre data-errors>{{ formGroupErrors | json }}</pre>
+    <!--
+      this is an important test as we want to make sure that `formGroupErrors` is null when there's no error
+      if we return an empty object the `*ngIf` condition would be considered valid
+    -->
+    <pre *ngIf="formGroupErrors as errors; else noError" data-errors>{{ errors | json }}</pre>
+
+    <ng-template #noError>
+      <span data-no-error>
+        Form is valid, no error!
+      </span>
+    </ng-template>
   </mat-card-content>
 </mat-card>
 
@@ -129,6 +140,6 @@
   <mat-card-title>Form value</mat-card-title>
 
   <mat-card-content>
-    <pre>{{ formGroup.value | json }}</pre>
+    <pre>{{ formGroupValues | json }}</pre>
   </mat-card-content>
 </mat-card>

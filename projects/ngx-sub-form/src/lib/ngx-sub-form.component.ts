@@ -1,32 +1,37 @@
 import { OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
+import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { Controls, ControlsNames, getControlsNames } from './ngx-sub-form-utils';
+import { ControlMap, Controls, ControlsNames } from './ngx-sub-form-utils';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy {
-  public get formControlNames(): ControlsNames<FormInterface> {
-    return getControlsNames(this.getFormControls());
+  public get formGroupControls(): ControlMap<FormInterface, AbstractControl> {
+    return this.mapControls();
   }
 
-  public get formGroupErrors(): ValidationErrors {
-    const errors: ValidationErrors = {};
+  public get formGroupValues(): Required<FormInterface> {
+    return this.mapControls(ctrl => ctrl.value);
+  }
 
-    for (const key in this.formGroup.controls) {
-      if (this.formGroup.controls.hasOwnProperty(key)) {
-        const control = this.formGroup.controls[key];
+  public get formGroupErrors(): null | Partial<ControlMap<FormInterface, ValidationErrors | null>> {
+    const errors = this.mapControls<ValidationErrors | null, ControlMap<FormInterface, ValidationErrors | null>>(
+      ctrl => ctrl.errors,
+      ctrl => ctrl.invalid,
+    );
 
-        if (!control.valid) {
-          errors[key] = control.errors;
-        }
-      }
+    if (!Object.keys(errors).length) {
+      return null;
     }
 
     return errors;
   }
 
-  public formGroup: FormGroup = new FormGroup(this.getFormControls());
+  public get formControlNames(): ControlsNames<FormInterface> {
+    return this.mapControls((_, key) => key);
+  }
+
+  public formGroup: FormGroup & { controls: Controls<FormInterface> } = new FormGroup(this.getFormControls()) as any;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -47,9 +52,33 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     }, 0);
   }
 
+  private mapControls<MapValue, T extends ControlMap<FormInterface, MapValue>>(
+    mapControl?: (ctrl: Controls<FormInterface>[keyof FormInterface], key: keyof FormInterface) => MapValue,
+    filterControl: (ctrl: Controls<FormInterface>[keyof FormInterface]) => boolean = () => true,
+  ): T {
+    const formControls: Controls<FormInterface> = this.formGroup.controls;
+
+    if (!mapControl) {
+      return formControls as any;
+    }
+
+    const controls: Partial<T> = {};
+
+    for (const key in formControls) {
+      if (this.formGroup.controls.hasOwnProperty(key)) {
+        const control = formControls[key];
+        if (control && filterControl(control)) {
+          controls[key] = mapControl(control, key);
+        }
+      }
+    }
+
+    return controls as Required<T>;
+  }
+
   public validate(): ValidationErrors | null {
     if (
-      // @hack see below where defining this.formGroup to null
+      // @hack see where defining this.formGroup to undefined
       !this.formGroup ||
       this.formGroup.valid
     ) {
@@ -79,23 +108,26 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public writeValue(obj: Required<ControlInterface> | null): void {
-    // should accept falsy values like `false` or empty string
-    if (obj !== null && obj !== undefined) {
-      if (!!this.formGroup) {
-        this.formGroup.setValue(this.transformToFormGroup(obj), {
-          emitEvent: false,
-        });
-        this.formGroup.markAsPristine();
-        this.formGroup.markAsUntouched();
-      }
-    } else {
-      // @todo clear form?
+    if (
+      // @hack see where defining this.formGroup to undefined
+      !this.formGroup ||
+      // should accept falsy values like `false` or empty string
+      obj === null ||
+      obj === undefined
+    ) {
+      return;
     }
+
+    this.formGroup.setValue(this.transformToFormGroup(obj), {
+      emitEvent: false,
+    });
+    this.formGroup.markAsPristine();
+    this.formGroup.markAsUntouched();
   }
 
   // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformToFormGroup(obj: ControlInterface | null): FormInterface {
+  protected transformToFormGroup(obj: ControlInterface): FormInterface {
     return (obj as any) as FormInterface;
   }
 

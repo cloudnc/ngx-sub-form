@@ -27,11 +27,11 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm {
+  protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
     return {
-      speeder: obj && obj.vehicleType === VehicleType.SPEEDER ? obj : null,
-      spaceship: obj && obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
-      vehicleType: obj ? obj.vehicleType : null,
+      speeder: obj.vehicleType === VehicleType.SPEEDER ? obj : null,
+      spaceship: obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
+      vehicleType: obj.vehicleType,
     };
   }
 

@@ -63,7 +63,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   public validate(): ValidationErrors | null {
     if (
-      // @hack see below where defining this.formGroup to null
+      // @hack see where defining this.formGroup to undefined
       !this.formGroup ||
       this.formGroup.valid
     ) {
@@ -93,23 +93,26 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public writeValue(obj: Required<ControlInterface> | null): void {
-    // should accept falsy values like `false` or empty string
-    if (obj !== null && obj !== undefined) {
-      if (!!this.formGroup) {
-        this.formGroup.setValue(this.transformToFormGroup(obj), {
-          emitEvent: false,
-        });
-        this.formGroup.markAsPristine();
-        this.formGroup.markAsUntouched();
-      }
-    } else {
-      // @todo clear form?
+    if (
+      // @hack see where defining this.formGroup to undefined
+      !this.formGroup ||
+      // should accept falsy values like `false` or empty string
+      obj === null ||
+      obj === undefined
+    ) {
+      return;
     }
+
+    this.formGroup.setValue(this.transformToFormGroup(obj), {
+      emitEvent: false,
+    });
+    this.formGroup.markAsPristine();
+    this.formGroup.markAsUntouched();
   }
 
   // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformToFormGroup(obj: ControlInterface | null): FormInterface {
+  protected transformToFormGroup(obj: ControlInterface): FormInterface {
     return (obj as any) as FormInterface;
   }
 

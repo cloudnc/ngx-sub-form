@@ -104,19 +104,7 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
     }
   }
 
-  protected transformToFormGroup(obj: OneListing | null): OneListingForm {
-    if (!obj) {
-      return {
-        vehicleProduct: null,
-        droidProduct: null,
-        listingType: null,
-        id: this.uuidService.generate(),
-        title: '',
-        imageUrl: '',
-        price: 0,
-      };
-    }
-
+  protected transformToFormGroup(obj: OneListing): OneListingForm {
     const { listingType, product, ...commonValues } = obj;
 
     return {

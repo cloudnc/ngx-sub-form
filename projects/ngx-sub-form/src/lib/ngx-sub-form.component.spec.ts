@@ -19,7 +19,7 @@ const getDefaultValues = (): Required<Vehicle> => ({
 });
 
 class SubComponent extends NgxSubFormComponent<Vehicle> {
-  getFormControls() {
+  protected getFormControls() {
     // even though optional, if we comment out color there should be a TS error
     return {
       color: new FormControl(getDefaultValues().color),
@@ -31,6 +31,21 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
     };
   }
 }
+
+describe(`Common`, () => {
+  it(`should call formGroup.updateValueAndValidity only if formGroup is defined`, (done: () => void) => {
+    const subComponent: SubComponent = new SubComponent();
+
+    const formGroupSpy = spyOn(subComponent.formGroup, 'updateValueAndValidity');
+
+    expect(formGroupSpy).not.toHaveBeenCalled();
+
+    setTimeout(() => {
+      expect(formGroupSpy).toHaveBeenCalled();
+      done();
+    }, 0);
+  });
+});
 
 describe(`NgxSubFormComponent`, () => {
   let subComponent: SubComponent;

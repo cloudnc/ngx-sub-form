@@ -127,7 +127,7 @@ describe(`NgxSubFormComponent`, () => {
       );
       expect(subComponent.formGroupErrors).toEqual({
         [subComponent.formControlNames.numberOfPeopleOnBoard]: { min: { min: 5, actual: 4 } },
-      });
+      } as any);
     });
 
     describe(`should validate the field and return null if the formGroup is`, () => {

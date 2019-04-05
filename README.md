@@ -9,7 +9,7 @@ Works well with polymorphic data structures.
 
 ## Install
 
-Install the [npm package](https://www.npmjs.com/package/ngx-sub-form): `npx-sub-form`
+Install the [npm package](https://www.npmjs.com/package/ngx-sub-form): `ngx-sub-form`
 
 ## Demo
 

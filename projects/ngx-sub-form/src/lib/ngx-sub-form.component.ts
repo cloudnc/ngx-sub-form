@@ -42,6 +42,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
+  protected emitNullOnDestroy = true;
+  protected emitInitialValueOnInit = true;
 
   private subscription: Subscription | undefined = undefined;
 
@@ -113,7 +115,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       this.subscription.unsubscribe();
     }
 
-    if (this.onChange) {
+    if (this.emitNullOnDestroy && this.onChange) {
       this.onChange(null);
     }
 
@@ -159,11 +161,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     // this is required to correctly initialize the form value
     // see note on-change-after-one-tick within the test file for more info
-    setTimeout(() => {
-      if (this.onChange && this.formGroup) {
-        this.onChange(this.transformFromFormGroup(this.formGroup.value));
-      }
-    }, 0);
+    if (this.emitInitialValueOnInit) {
+      setTimeout(() => {
+        if (this.onChange && this.formGroup) {
+          this.onChange(this.transformFromFormGroup(this.formGroup.value));
+        }
+      }, 0);
+    }
 
     this.subscription = this.formGroup.valueChanges
       .pipe(

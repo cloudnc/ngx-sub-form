@@ -191,6 +191,18 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
+
+  public setDisabledState(shouldDisable: boolean): void {
+    if (!this.formGroup) {
+      return;
+    }
+
+    if (shouldDisable) {
+      this.formGroup.disable();
+    } else {
+      this.formGroup.enable();
+    }
+  }
 }
 
 export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> extends NgxSubFormComponent<

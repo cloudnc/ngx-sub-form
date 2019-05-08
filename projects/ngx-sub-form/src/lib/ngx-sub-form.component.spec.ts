@@ -247,6 +247,29 @@ describe(`NgxSubFormComponent`, () => {
       }, 0);
     });
   });
+
+  describe(`enabled/disabled`, () => {
+    it(`should recursively disable the forms when disabling a formGroup`, () => {
+      expect(subComponent.formGroup.enabled).toBe(true);
+
+      const spyDisable = jasmine.createSpy();
+      const spyEnable = jasmine.createSpy();
+
+      subComponent.formGroup.disable = spyDisable;
+      subComponent.formGroup.enable = spyEnable;
+
+      subComponent.setDisabledState(true);
+      expect(spyDisable).toHaveBeenCalled();
+      expect(spyEnable).not.toHaveBeenCalled();
+
+      spyDisable.calls.reset();
+      spyEnable.calls.reset();
+
+      subComponent.setDisabledState(false);
+      expect(spyDisable).not.toHaveBeenCalled();
+      expect(spyEnable).toHaveBeenCalled();
+    });
+  });
 });
 
 interface VehiculeForm {

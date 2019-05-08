@@ -27,6 +27,13 @@ const getToggleValue = (element: HTMLElement, tag: string): boolean =>
     .find(`*[data-${tag}]`)
     .hasClass('mat-checked');
 
+export const expectAll = (selector: string, cb: (el: Cypress.Chainable) => void) =>
+  cy.get(selector).then($elements => {
+    $elements.each((_, $element) => {
+      cb(cy.wrap($element));
+    });
+  });
+
 export const DOM = {
   get createNewButton() {
     return cy.get('*[data-create-new]');
@@ -59,6 +66,9 @@ export const DOM = {
         });
       },
     };
+  },
+  get readonlyToggle() {
+    return cy.get(`*[data-readonly]`);
   },
   get form() {
     return {

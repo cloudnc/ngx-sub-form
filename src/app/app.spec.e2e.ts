@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-import { DOM } from '../../cypress/helpers/dom.helper';
+import { DOM, expectAll } from '../../cypress/helpers/dom.helper';
 import { hardCodedListings } from './services/listings.data';
 import { hardcodedElementsToTestList, FormElement } from '../../cypress/helpers/data.helper';
 import { VehicleListing, ListingType } from './interfaces/listing.interface';
@@ -173,5 +173,27 @@ context(`EJawa demo`, () => {
 
     DOM.form.errors.cy.should('not.exist');
     DOM.form.noErrors.should('exist');
+  });
+
+  it(`should recursively disable the form when disabling the top formGroup`, () => {
+    DOM.list.elements.cy.eq(0).click();
+
+    DOM.form.cy.within(() => {
+      cy.get(`mat-card`).within(() => {
+        expectAll(`input`, el => el.should('be.enabled'));
+        expectAll(`mat-select`, el => el.should('not.have.class', 'mat-select-disabled'));
+        expectAll(`mat-slide-toggle`, el => el.should('not.have.class', 'mat-disabled'));
+      });
+    });
+
+    DOM.readonlyToggle.click();
+
+    DOM.form.cy.within(() => {
+      cy.get(`mat-card`).within(() => {
+        expectAll(`input`, el => el.should('be.disabled'));
+        expectAll(`mat-select`, el => el.should('have.class', 'mat-select-disabled'));
+        expectAll(`mat-slide-toggle`, el => el.should('have.class', 'mat-disabled'));
+      });
+    });
   });
 });

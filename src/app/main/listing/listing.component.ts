@@ -32,6 +32,8 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
 
   public ListingType = ListingType;
 
+  public readonlyFormControl: FormControl = new FormControl(false);
+
   constructor(private route: ActivatedRoute, private listingService: ListingService, private uuidService: UuidService) {
     super();
   }
@@ -52,7 +54,6 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
     this.route.paramMap
       .pipe(
         map(params => params.get('listingId')),
-        takeUntil(this.onDestroy$),
         switchMap(listingId => {
           if (listingId === 'new' || !listingId) {
             return of(null);
@@ -68,6 +69,20 @@ export class ListingComponent extends NgxSubFormRemapComponent<OneListing, OneLi
             });
           }
         }),
+        takeUntil(this.onDestroy$),
+      )
+      .subscribe();
+
+    this.readonlyFormControl.valueChanges
+      .pipe(
+        tap((readonly: boolean) => {
+          if (readonly) {
+            this.formGroup.disable();
+          } else {
+            this.formGroup.enable();
+          }
+        }),
+        takeUntil(this.onDestroy$),
       )
       .subscribe();
   }

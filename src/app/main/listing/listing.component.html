@@ -1,3 +1,5 @@
+<mat-slide-toggle class="readonly" data-readonly [formControl]="readonlyFormControl">Readonly</mat-slide-toggle>
+
 <mat-card>
   <mat-card-header>
     <mat-card-title data-title [class.not-visible]="!formGroupValues.title">
@@ -107,11 +109,16 @@
     -->
     <div *ngIf="true">
       <!-- @todo -->
-      <button mat-raised-button color="primary" (click)="upsertListing(formGroupValues)" [disabled]="formGroup.invalid">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="upsertListing(formGroupValues)"
+        [disabled]="formGroup.invalid || formGroup.disabled"
+      >
         Upsert
       </button>
 
-      <div *ngIf="formGroup.invalid">
+      <div *ngIf="formGroup.invalid" class="invalid-form">
         Form is invalid
       </div>
     </div>

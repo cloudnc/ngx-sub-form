@@ -189,11 +189,12 @@ describe(`NgxSubFormComponent`, () => {
       });
 
       // when a parent set the form value, he's already aware of it and we do not want to update it upstream for no reason
-      it(`should have the option "emitEvent" set to false`, () => {
+      it(`should have the option "emitEvent" set to true AND "onlySelf" set to true`, () => {
         subComponent.formGroup.setValue = jasmine.createSpy();
         subComponent.writeValue('some value' as any);
         expect(subComponent.formGroup.setValue).toHaveBeenCalledWith('some value', {
-          emitEvent: false,
+          emitEvent: true,
+          onlySelf: true,
         });
       });
 
@@ -270,6 +271,39 @@ describe(`NgxSubFormComponent`, () => {
       expect(spyEnable).toHaveBeenCalled();
     });
   });
+
+  describe(`onFormUpdate`, () => {
+    it(`should call onFormUpdate when registerOnChange is called and everytime the form changes`, (done: () => void) => {
+      const spyOnFormUpdate = jasmine.createSpy();
+      subComponent.onFormUpdate = spyOnFormUpdate;
+      subComponent.registerOnChange(() => {});
+
+      setTimeout(() => {
+        expect(spyOnFormUpdate).toHaveBeenCalledWith({
+          isInitialValue: true,
+          formValue: getDefaultValues(),
+        });
+
+        spyOnFormUpdate.calls.reset();
+
+        const newFormValue = {
+          color: 'red',
+          canFire: false,
+          numberOfPeopleOnBoard: 100,
+        };
+        subComponent.formGroup.patchValue(newFormValue);
+
+        setTimeout(() => {
+          expect(spyOnFormUpdate).toHaveBeenCalledWith({
+            isInitialValue: false,
+            formValue: newFormValue,
+          });
+
+          done();
+        }, 0);
+      }, 0);
+    });
+  });
 });
 
 interface VehiculeForm {
@@ -278,13 +312,19 @@ interface VehiculeForm {
   vehiculeNumberOfPeopleOnBoard: Vehicle['numberOfPeopleOnBoard'] | null;
 }
 
+const getDefaultRemapValues = (): Required<VehiculeForm> => ({
+  vehiculeColor: '#ffffff',
+  vehiculeCanFire: true,
+  vehiculeNumberOfPeopleOnBoard: 10,
+});
+
 class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehiculeForm> {
   getFormControls() {
     // even though optional, if we comment out vehiculeColor there should be a TS error
     return {
-      vehiculeColor: new FormControl(getDefaultValues().color),
-      vehiculeCanFire: new FormControl(getDefaultValues().canFire),
-      vehiculeNumberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard),
+      vehiculeColor: new FormControl(getDefaultRemapValues().vehiculeColor),
+      vehiculeCanFire: new FormControl(getDefaultRemapValues().vehiculeCanFire),
+      vehiculeNumberOfPeopleOnBoard: new FormControl(getDefaultRemapValues().vehiculeNumberOfPeopleOnBoard),
     };
   }
 
@@ -331,7 +371,8 @@ describe(`NgxSubFormRemapComponent`, () => {
             vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
           },
           {
-            emitEvent: false,
+            emitEvent: true,
+            onlySelf: true,
           },
         );
       });
@@ -366,6 +407,46 @@ describe(`NgxSubFormRemapComponent`, () => {
 
         setTimeout(() => {
           expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
+
+          done();
+        }, 0);
+      }, 0);
+    });
+  });
+
+  describe(`onFormUpdate`, () => {
+    it(`should call onFormUpdate when registerOnChange is called and everytime the form changes`, (done: () => void) => {
+      const spyOnFormUpdate = jasmine.createSpy();
+      subRemapComponent.onFormUpdate = spyOnFormUpdate;
+      subRemapComponent.registerOnChange(() => {});
+
+      setTimeout(() => {
+        expect(spyOnFormUpdate).toHaveBeenCalledWith({
+          isInitialValue: true,
+          formValue: getDefaultRemapValues(),
+          formRemapValue: { color: '#ffffff', canFire: true, numberOfPeopleOnBoard: 10 },
+        });
+
+        spyOnFormUpdate.calls.reset();
+
+        const newFormValue: Vehicle = {
+          color: 'red',
+          canFire: false,
+          numberOfPeopleOnBoard: 100,
+        };
+
+        subRemapComponent.writeValue(newFormValue as any);
+
+        setTimeout(() => {
+          expect(spyOnFormUpdate).toHaveBeenCalledWith({
+            isInitialValue: false,
+            formValue: {
+              vehiculeColor: 'red',
+              vehiculeCanFire: false,
+              vehiculeNumberOfPeopleOnBoard: 100,
+            },
+            formRemapValue: newFormValue,
+          });
 
           done();
         }, 0);

@@ -296,6 +296,10 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 
 Our "incoming" object is of type `OneVehicle` but into that component we treat it as a `OneVehicleForm` to split the vehicule (either a `speeder` or `spaceship`) in 2 **separated** properties.
 
+### Helpers
+
+- `onFormUpdate` hook: Allows you to react whenever the form is being modified. Behind the scenes it is just subscribing to `formGroup.valueChanges` and calling the method but from a consumer point of view, you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks
+
 ## Be aware of
 
 There's currently a weird behavior ~~[issue (?)](https://github.com/angular/angular/issues/18004)~~ when checking for form validity.  

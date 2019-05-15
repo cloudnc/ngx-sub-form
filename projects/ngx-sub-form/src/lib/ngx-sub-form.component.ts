@@ -1,8 +1,15 @@
 import { OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
-import { ControlMap, Controls, ControlsNames } from './ngx-sub-form-utils';
+import { delay, tap, startWith, map, filter } from 'rxjs/operators';
+import {
+  ControlMap,
+  Controls,
+  ControlsNames,
+  FormChange,
+  FormRemapChange,
+  isNgxSubFormRemapComponent,
+} from './ngx-sub-form-utils';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy {
@@ -133,9 +140,17 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return;
     }
 
-    this.formGroup.setValue(this.transformToFormGroup(obj), {
-      emitEvent: false,
+    const formValue = this.transformToFormGroup(obj);
+    this.formGroup.setValue(formValue, {
+      emitEvent: true,
+      // by doing that, we will trigger the function within `registerOnChange`
+      // which is watching the form BUT it will not warn the parent, which is
+      // exactly what we want as when the parent either `patchValue` or `setValue`
+      // he's already aware that a chance has been made and probably don't want the
+      // formGroup.valueChanges to be triggered
+      onlySelf: true,
     });
+
     this.formGroup.markAsPristine();
     this.formGroup.markAsUntouched();
   }
@@ -152,6 +167,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return (formValue as any) as ControlInterface;
   }
 
+  public onFormUpdate({ isInitialValue, formValue }: FormChange<FormInterface>): void {}
+
   public registerOnChange(fn: (_: any) => void): void {
     if (!this.formGroup) {
       return;
@@ -159,29 +176,38 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     this.onChange = fn;
 
-    // this is required to correctly initialize the form value
-    // see note on-change-after-one-tick within the test file for more info
-    if (this.emitInitialValueOnInit) {
-      setTimeout(() => {
-        if (this.onChange && this.formGroup) {
-          this.onChange(this.transformFromFormGroup(this.formGroup.value));
-        }
-      }, 0);
-    }
-
     this.subscription = this.formGroup.valueChanges
       .pipe(
+        startWith(this.formGroupValues),
+        map((formValue, index) => ({ formValue, isInitialValue: index === 0 })),
         // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
         // this is due to the fact that parent component will define a given state for the form that might
         // be changed once the children are being initialized
         delay(0),
-        tap(changes => {
-          if (this.onTouched) {
-            this.onTouched();
+        filter(() => !!this.formGroup),
+        tap(({ formValue, isInitialValue }) => {
+          const formRemapValue = this.transformFromFormGroup(formValue);
+
+          if (!isInitialValue) {
+            if (this.onTouched) {
+              this.onTouched();
+            }
           }
 
-          if (this.onChange) {
-            this.onChange(this.transformFromFormGroup(changes));
+          if (!isInitialValue || (isInitialValue && this.emitInitialValueOnInit)) {
+            if (this.onChange) {
+              this.onChange(formRemapValue);
+            }
+          }
+
+          if (isNgxSubFormRemapComponent(this)) {
+            (this as NgxSubFormRemapComponent<ControlInterface, FormInterface>).onFormUpdate({
+              isInitialValue,
+              formValue,
+              formRemapValue,
+            });
+          } else {
+            this.onFormUpdate({ isInitialValue, formValue });
           }
         }),
       )
@@ -211,4 +237,10 @@ export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> 
 > {
   protected abstract transformToFormGroup(obj: ControlInterface | null): FormInterface;
   protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface | null;
+
+  public onFormUpdate({
+    isInitialValue,
+    formValue,
+    formRemapValue,
+  }: FormRemapChange<FormInterface, ControlInterface>): void {}
 }

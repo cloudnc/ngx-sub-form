@@ -198,9 +198,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     }
 
     if (shouldDisable) {
-      this.formGroup.disable();
+      this.formGroup.disable({ emitEvent: false });
     } else {
-      this.formGroup.enable();
+      this.formGroup.enable({ emitEvent: false });
     }
   }
 }

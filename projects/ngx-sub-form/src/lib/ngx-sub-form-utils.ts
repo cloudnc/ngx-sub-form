@@ -8,6 +8,8 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
+export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
+
 export function subformComponentProviders(
   component: any,
 ): {

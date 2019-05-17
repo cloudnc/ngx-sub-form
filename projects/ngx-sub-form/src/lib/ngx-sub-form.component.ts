@@ -1,11 +1,16 @@
 import { OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
-import { ControlMap, Controls, ControlsNames } from './ngx-sub-form-utils';
+import { Subscription, combineLatest, merge, Observable } from 'rxjs';
+import { delay, filter, startWith, map, withLatestFrom } from 'rxjs/operators';
+import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
+import { keyValuePairToObj } from '../helpers/utils';
+
+interface OnFormUpdate<FormInterface> {
+  onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
+}
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
-  implements ControlValueAccessor, Validator, OnDestroy {
+  implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
   public get formGroupControls(): ControlMap<FormInterface, AbstractControl> {
     // @note form-group-undefined we need the as syntax here because we do not want to expose the fact that
     // the form can be undefined, it's hanlded internally to contain an Angular bug
@@ -91,6 +96,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return controls as Required<T>;
   }
 
+  public onFormUpdate(formUpdate: FormUpdate<FormInterface>): void {}
+
   public validate(): ValidationErrors | null {
     if (
       // @hack see where defining this.formGroup to undefined
@@ -159,29 +166,45 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     this.onChange = fn;
 
-    // this is required to correctly initialize the form value
-    // see note on-change-after-one-tick within the test file for more info
-    if (this.emitInitialValueOnInit) {
-      setTimeout(() => {
-        if (this.onChange && this.formGroup) {
-          this.onChange(this.transformFromFormGroup(this.formGroup.value));
-        }
-      }, 0);
+    interface KeyValueForm {
+      key: keyof FormInterface;
+      value: unknown;
     }
 
-    this.subscription = this.formGroup.valueChanges
+    const formControlNames: (keyof FormInterface)[] = Object.keys(this.formControlNames) as (keyof FormInterface)[];
+
+    const formValues: Observable<KeyValueForm>[] = formControlNames.map(key =>
+      this.formGroup.controls[key].valueChanges.pipe(
+        startWith(this.formGroup.controls[key].value),
+        map(value => ({ key, value })),
+      ),
+    );
+
+    const keyLastEmit$: Observable<keyof FormInterface> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
+
+    this.subscription = combineLatest<KeyValueForm[]>(...formValues)
       .pipe(
+        filter(() => !!this.formGroup),
         // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
         // this is due to the fact that parent component will define a given state for the form that might
         // be changed once the children are being initialized
         delay(0),
-        tap(changes => {
-          if (this.onTouched) {
+        map(x => keyValuePairToObj<FormInterface>(x)),
+        // detect which stream emitted last
+        withLatestFrom(keyLastEmit$),
+        map(([changes, keyLastEmit], index) => {
+          if (index > 0 && this.onTouched) {
             this.onTouched();
           }
 
-          if (this.onChange) {
-            this.onChange(this.transformFromFormGroup(changes));
+          if (index > 0 || (index === 0 && this.emitInitialValueOnInit)) {
+            if (this.onChange) {
+              this.onChange(this.transformFromFormGroup(changes));
+            }
+
+            const formUpdate: FormUpdate<FormInterface> = {};
+            formUpdate[keyLastEmit] = true;
+            this.onFormUpdate(formUpdate);
           }
         }),
       )

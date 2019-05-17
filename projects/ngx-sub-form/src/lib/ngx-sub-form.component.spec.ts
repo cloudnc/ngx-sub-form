@@ -229,19 +229,20 @@ describe(`NgxSubFormComponent`, () => {
       }, 0);
     });
 
-    it(`should call onChange and onTouched callback on next tick every time the form value changes`, (done: () => void) => {
+    it(`should call onChange and onTouched callback on next tick every time one of the form value changes`, (done: () => void) => {
       const onTouchedSpy = jasmine.createSpy('onTouchedSpy');
       const onChangeSpy = jasmine.createSpy('onChangeSpy');
 
       subComponent.registerOnTouched(onTouchedSpy);
       subComponent.registerOnChange(onChangeSpy);
 
-      subComponent.formGroup.setValue(getDefaultValues());
+      subComponent.formGroupControls.color.setValue('red');
 
       setTimeout(() => {
         expect(onTouchedSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy).toHaveBeenCalledTimes(2);
         expect(onChangeSpy).toHaveBeenCalledWith(getDefaultValues());
+        expect(onChangeSpy).toHaveBeenCalledWith({ ...getDefaultValues(), color: 'red' });
 
         done();
       }, 0);
@@ -268,6 +269,42 @@ describe(`NgxSubFormComponent`, () => {
       subComponent.setDisabledState(false);
       expect(spyDisable).not.toHaveBeenCalled();
       expect(spyEnable).toHaveBeenCalled();
+    });
+  });
+
+  describe(`onFormUpdate`, () => {
+    it(`should not call onFormUpdate when patched by the parent (through "writeValue")`, (done: () => void) => {
+      const spyOnFormUpdate = jasmine.createSpy();
+      subComponent.onFormUpdate = spyOnFormUpdate;
+      subComponent.registerOnChange(() => {});
+
+      setTimeout(() => {
+        spyOnFormUpdate.calls.reset();
+
+        subComponent.writeValue({ ...subComponent.formGroupValues, color: 'red' });
+
+        setTimeout(() => {
+          expect(spyOnFormUpdate).not.toHaveBeenCalled();
+
+          done();
+        }, 0);
+      }, 0);
+    });
+
+    it(`should call onFormUpdate everytime the form changes (local changes)`, (done: () => void) => {
+      const spyOnFormUpdate = jasmine.createSpy();
+      subComponent.onFormUpdate = spyOnFormUpdate;
+      subComponent.registerOnChange(() => {});
+
+      subComponent.formGroupControls.color.setValue(`red`);
+
+      setTimeout(() => {
+        expect(spyOnFormUpdate).toHaveBeenCalledWith({
+          color: true,
+        });
+
+        done();
+      }, 0);
     });
   });
 });

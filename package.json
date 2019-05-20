@@ -25,7 +25,8 @@
     "lib:test:ci": "yarn run ng test --project ngx-sub-form --watch false",
     "------------------ Quick Commands ------------------": "",
     "lint:fix": "yarn demo:lint:fix && yarn prettier:write",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "test": "yarn lib:test:watch"
   },
   "private": true,
   "resolutions": {

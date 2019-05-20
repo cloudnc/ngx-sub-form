@@ -1,9 +1,9 @@
 import { OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
-import { Subscription, combineLatest, merge, Observable } from 'rxjs';
-import { delay, filter, startWith, map, withLatestFrom } from 'rxjs/operators';
-import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
+import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
+import { combineLatest, merge, Observable, Subscription } from 'rxjs';
+import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { keyValuePairToObj } from '../helpers/utils';
+import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
 
 interface OnFormUpdate<FormInterface> {
   onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;

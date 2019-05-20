@@ -309,35 +309,35 @@ describe(`NgxSubFormComponent`, () => {
   });
 });
 
-interface VehiculeForm {
-  vehiculeColor: Vehicle['color'] | null;
-  vehiculeCanFire: Vehicle['canFire'] | null;
-  vehiculeNumberOfPeopleOnBoard: Vehicle['numberOfPeopleOnBoard'] | null;
+interface VehicleForm {
+  vehicleColor: Vehicle['color'] | null;
+  vehicleCanFire: Vehicle['canFire'] | null;
+  vehicleNumberOfPeopleOnBoard: Vehicle['numberOfPeopleOnBoard'] | null;
 }
 
-class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehiculeForm> {
+class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
   getFormControls() {
-    // even though optional, if we comment out vehiculeColor there should be a TS error
+    // even though optional, if we comment out vehicleColor there should be a TS error
     return {
-      vehiculeColor: new FormControl(getDefaultValues().color),
-      vehiculeCanFire: new FormControl(getDefaultValues().canFire),
-      vehiculeNumberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard),
+      vehicleColor: new FormControl(getDefaultValues().color),
+      vehicleCanFire: new FormControl(getDefaultValues().canFire),
+      vehicleNumberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard),
     };
   }
 
-  protected transformToFormGroup(obj: Vehicle | null): VehiculeForm {
+  protected transformToFormGroup(obj: Vehicle | null): VehicleForm {
     return {
-      vehiculeColor: obj ? obj.color : null,
-      vehiculeCanFire: obj ? obj.canFire : null,
-      vehiculeNumberOfPeopleOnBoard: obj ? obj.numberOfPeopleOnBoard : null,
+      vehicleColor: obj ? obj.color : null,
+      vehicleCanFire: obj ? obj.canFire : null,
+      vehicleNumberOfPeopleOnBoard: obj ? obj.numberOfPeopleOnBoard : null,
     };
   }
 
-  protected transformFromFormGroup(formValue: VehiculeForm): Vehicle | null {
+  protected transformFromFormGroup(formValue: VehicleForm): Vehicle | null {
     return {
-      color: formValue.vehiculeColor,
-      canFire: formValue.vehiculeCanFire,
-      numberOfPeopleOnBoard: formValue.vehiculeNumberOfPeopleOnBoard,
+      color: formValue.vehicleColor,
+      canFire: formValue.vehicleCanFire,
+      numberOfPeopleOnBoard: formValue.vehicleNumberOfPeopleOnBoard,
     };
   }
 }
@@ -363,9 +363,9 @@ describe(`NgxSubFormRemapComponent`, () => {
 
         expect(subRemapComponent.formGroup.setValue).toHaveBeenCalledWith(
           {
-            vehiculeColor: getDefaultValues().color,
-            vehiculeCanFire: getDefaultValues().canFire,
-            vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
+            vehicleColor: getDefaultValues().color,
+            vehicleCanFire: getDefaultValues().canFire,
+            vehicleNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
           },
           {
             emitEvent: false,
@@ -396,9 +396,9 @@ describe(`NgxSubFormRemapComponent`, () => {
         onChangeSpy.calls.reset();
 
         subRemapComponent.formGroup.setValue({
-          vehiculeColor: getDefaultValues().color,
-          vehiculeCanFire: getDefaultValues().canFire,
-          vehiculeNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
+          vehicleColor: getDefaultValues().color,
+          vehicleCanFire: getDefaultValues().canFire,
+          vehicleNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
         });
 
         setTimeout(() => {

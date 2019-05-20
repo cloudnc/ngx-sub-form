@@ -31,8 +31,8 @@ context(`EJawa demo`, () => {
         imageUrl: x.imageUrl,
         price: x.price + '',
         listingType: x.listingType,
-        vehiculeForm: {
-          vehiculeType: x.product.vehicleType,
+        vehicleForm: {
+          vehicleType: x.product.vehicleType,
           spaceshipForm: {
             color: v.color,
             canFire: v.canFire,
@@ -62,8 +62,8 @@ context(`EJawa demo`, () => {
         imageUrl: x.imageUrl,
         price: x.price + '',
         listingType: x.listingType,
-        vehiculeForm: {
-          vehiculeType: x.product.vehicleType,
+        vehicleForm: {
+          vehicleType: x.product.vehicleType,
           speederForm: {
             color: v.color,
             canFire: v.canFire,

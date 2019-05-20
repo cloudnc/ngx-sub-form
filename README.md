@@ -63,7 +63,7 @@ interface OneListingForm {
   title: string;
   price: number;
 
-  // polymorphic form where product can either be a vehicule or a droid
+  // polymorphic form where product can either be a vehicle or a droid
   listingType: ListingType | null;
   vehicleProduct: OneVehicle | null;
   droidProduct: OneDroid | null;
@@ -294,7 +294,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 }
 ```
 
-Our "incoming" object is of type `OneVehicle` but into that component we treat it as a `OneVehicleForm` to split the vehicule (either a `speeder` or `spaceship`) in 2 **separated** properties.
+Our "incoming" object is of type `OneVehicle` but into that component we treat it as a `OneVehicleForm` to split the vehicle (either a `speeder` or `spaceship`) in 2 **separated** properties.
 
 ### Helpers
 

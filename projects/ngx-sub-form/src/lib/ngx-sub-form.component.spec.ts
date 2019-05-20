@@ -306,6 +306,27 @@ describe(`NgxSubFormComponent`, () => {
         done();
       }, 0);
     });
+
+    it(`should correctly emit the onChange value only once when form is patched`, (done: () => void) => {
+      const spyOnFormUpdate = jasmine.createSpy();
+      const spyOnChange = jasmine.createSpy();
+      subComponent.onFormUpdate = spyOnFormUpdate;
+      subComponent.registerOnChange(spyOnChange);
+      (subComponent as any).emitInitialValueOnInit = false;
+
+      subComponent.formGroup.patchValue({color: 'red', canFire: false});
+
+      setTimeout(() => {
+        expect(spyOnFormUpdate).toHaveBeenCalledWith({
+          canFire: true,
+        });
+
+        expect(spyOnChange).toHaveBeenCalledTimes(1);
+        expect(spyOnChange).toHaveBeenCalledWith({color: 'red', canFire: false, numberOfPeopleOnBoard: 10});
+
+        done();
+      }, 0);
+    });
   });
 });
 
@@ -395,14 +416,20 @@ describe(`NgxSubFormRemapComponent`, () => {
 
         onChangeSpy.calls.reset();
 
+        const newExpectation = {
+          color: 'green',
+          canFire: false,
+          numberOfPeopleOnBoard: 12,
+        };
+
         subRemapComponent.formGroup.setValue({
-          vehicleColor: getDefaultValues().color,
-          vehicleCanFire: getDefaultValues().canFire,
-          vehicleNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
+          vehicleColor: newExpectation.color,
+          vehicleCanFire: newExpectation.canFire,
+          vehicleNumberOfPeopleOnBoard: newExpectation.numberOfPeopleOnBoard,
         });
 
         setTimeout(() => {
-          expect(onChangeSpy).toHaveBeenCalledWith(expectedValue);
+          expect(onChangeSpy).toHaveBeenCalledWith(newExpectation);
 
           done();
         }, 0);

@@ -1,8 +1,7 @@
 import { OnDestroy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
-import { combineLatest, merge, Observable, Subscription } from 'rxjs';
+import { merge, Observable, Subscription } from 'rxjs';
 import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
-import { keyValuePairToObj } from '../helpers/utils';
 import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
 
 interface OnFormUpdate<FormInterface> {
@@ -193,7 +192,6 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         // detect which stream emitted last
         withLatestFrom(lastKeyEmitted$),
         map(([changes, keyLastEmit], index) => {
-
           if (index > 0 && this.onTouched) {
             this.onTouched();
           }

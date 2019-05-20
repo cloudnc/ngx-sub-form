@@ -122,10 +122,7 @@ export const DOM = {
                 listingType: getSelectedOptionFromSelect(element, 'select-listing-type'),
                 vehicleForm: {
                   vehicleType: getSelectedOptionFromSelect(element, 'select-vehicle-type'),
-                  ...getVehicleObj(element, getSelectedOptionFromSelect(
-                    element,
-                    'select-vehicle-type',
-                  ) as VehicleType),
+                  ...getVehicleObj(element, getSelectedOptionFromSelect(element, 'select-vehicle-type') as VehicleType),
                 },
               },
             }))

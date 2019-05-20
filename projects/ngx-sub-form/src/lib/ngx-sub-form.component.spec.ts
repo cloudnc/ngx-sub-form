@@ -307,14 +307,14 @@ describe(`NgxSubFormComponent`, () => {
       }, 0);
     });
 
-    it(`should correctly emit the onChange value only once when form is patched`, (done: () => void) => {
+    it(`should correctly emit the onChange value only once when form is patched locally`, (done: () => void) => {
       const spyOnFormUpdate = jasmine.createSpy();
       const spyOnChange = jasmine.createSpy();
       subComponent.onFormUpdate = spyOnFormUpdate;
       subComponent.registerOnChange(spyOnChange);
       (subComponent as any).emitInitialValueOnInit = false;
 
-      subComponent.formGroup.patchValue({color: 'red', canFire: false});
+      subComponent.formGroup.patchValue({ color: 'red', canFire: false });
 
       setTimeout(() => {
         expect(spyOnFormUpdate).toHaveBeenCalledWith({
@@ -322,7 +322,7 @@ describe(`NgxSubFormComponent`, () => {
         });
 
         expect(spyOnChange).toHaveBeenCalledTimes(1);
-        expect(spyOnChange).toHaveBeenCalledWith({color: 'red', canFire: false, numberOfPeopleOnBoard: 10});
+        expect(spyOnChange).toHaveBeenCalledWith({ color: 'red', canFire: false, numberOfPeopleOnBoard: 10 });
 
         done();
       }, 0);

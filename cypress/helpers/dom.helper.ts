@@ -89,7 +89,7 @@ export const DOM = {
         return cy.get(`*[data-no-error]`);
       },
       get obj(): Cypress.Chainable<FormElement> {
-        const getVehiculeObj = (element: HTMLElement, type: VehicleType) =>
+        const getVehicleObj = (element: HTMLElement, type: VehicleType) =>
           ({
             Spaceship: {
               spaceshipForm: {
@@ -120,12 +120,9 @@ export const DOM = {
                 imageUrl: getTextFromInput(element, 'input-image-url'),
                 price: getTextFromInput(element, 'input-price'),
                 listingType: getSelectedOptionFromSelect(element, 'select-listing-type'),
-                vehiculeForm: {
-                  vehiculeType: getSelectedOptionFromSelect(element, 'select-vehicule-type'),
-                  ...getVehiculeObj(element, getSelectedOptionFromSelect(
-                    element,
-                    'select-vehicule-type',
-                  ) as VehicleType),
+                vehicleForm: {
+                  vehicleType: getSelectedOptionFromSelect(element, 'select-vehicle-type'),
+                  ...getVehicleObj(element, getSelectedOptionFromSelect(element, 'select-vehicle-type') as VehicleType),
                 },
               },
             }))

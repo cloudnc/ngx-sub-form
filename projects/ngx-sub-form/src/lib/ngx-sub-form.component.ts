@@ -1,9 +1,8 @@
 import { OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormGroup, ValidationErrors, Validator, AbstractControl } from '@angular/forms';
-import { Subscription, combineLatest, merge, Observable } from 'rxjs';
-import { delay, filter, startWith, map, withLatestFrom } from 'rxjs/operators';
+import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
+import { merge, Observable, Subscription } from 'rxjs';
+import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
-import { keyValuePairToObj } from '../helpers/utils';
 
 interface OnFormUpdate<FormInterface> {
   onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
@@ -180,18 +179,18 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       ),
     );
 
-    const keyLastEmit$: Observable<keyof FormInterface> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
+    const lastKeyEmitted$: Observable<keyof FormInterface> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
 
-    this.subscription = combineLatest<KeyValueForm[]>(...formValues)
+    this.subscription = this.formGroup.valueChanges
       .pipe(
+        startWith(this.formGroup.value),
         filter(() => !!this.formGroup),
         // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
         // this is due to the fact that parent component will define a given state for the form that might
         // be changed once the children are being initialized
         delay(0),
-        map(x => keyValuePairToObj<FormInterface>(x)),
         // detect which stream emitted last
-        withLatestFrom(keyLastEmit$),
+        withLatestFrom(lastKeyEmitted$),
         map(([changes, keyLastEmit], index) => {
           if (index > 0 && this.onTouched) {
             this.onTouched();

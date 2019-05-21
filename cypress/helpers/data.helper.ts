@@ -11,8 +11,8 @@ export interface ListElement {
   readonly details: string;
 }
 
-export type VehiculeFormElement = {
-  readonly vehiculeType: string;
+export type VehicleFormElement = {
+  readonly vehicleType: string;
 } & (
   | {
       readonly spaceshipForm: {
@@ -50,7 +50,7 @@ export interface FormElement {
     readonly imageUrl: string;
     readonly price: string;
     readonly listingType: string;
-  } & ({ readonly vehiculeForm: VehiculeFormElement });
+  } & ({ readonly vehicleForm: VehicleFormElement });
 }
 
 export const hardcodedElementToTestElement = (item: OneListing): ListElement => {

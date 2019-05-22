@@ -362,6 +362,36 @@ describe(`NgxSubFormComponent`, () => {
       }
     }
 
+    interface PasswordForm {
+      password: string;
+      passwordRepeat: string;
+    }
+
+    class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
+      protected getFormControls() {
+        return {
+          password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
+          passwordRepeat: new FormControl(null, Validators.required),
+        };
+      }
+
+      public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+        return {
+          validators: [
+            formGroup => {
+              if (formGroup.value.password !== formGroup.value.passwordRepeat) {
+                return {
+                  passwordsMustMatch: true,
+                };
+              }
+
+              return null;
+            },
+          ],
+        };
+      }
+    }
+
     let validatedSubComponent: ValidatedSubComponent;
 
     beforeEach((done: () => void) => {

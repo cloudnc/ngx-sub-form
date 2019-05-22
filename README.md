@@ -299,6 +299,51 @@ Our "incoming" object is of type `OneVehicle` but into that component we treat i
 ### Helpers
 
 - `onFormUpdate` hook: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered
+- `getFormGroupControlOptions` hook: Defines control options for construction of the internal FormGroup. Use this to define form-level validators
+
+e.g.
+
+```ts
+interface PasswordForm {
+  password: string;
+  passwordRepeat: string;
+}
+
+class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
+  protected getFormControls() {
+    return {
+      password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
+      passwordRepeat: new FormControl(null, Validators.required),
+    };
+  }
+
+  public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+    return {
+      validators: [
+        formGroup => {
+          if (formGroup.value.password !== formGroup.value.passwordRepeat) {
+            return {
+              passwordsMustMatch: true,
+            };
+          }
+
+          return null;
+        },
+      ],
+    };
+  }
+}
+```
+
+Errors are exposed under the key `errors.formGroup` e.g.
+
+```html
+<input type="text" placeholder="Password" [formControlName]="formControlNames.password" />
+<mat-error *ngIf="formControlErrors?.password?.minlength">Password too short</mat-error>
+
+<input type="text" placeholder="Repeat Password" [formControlName]="formControlNames.passwordRepeat" />
+<mat-error *ngIf="formControlErrors?.formGroup?.passwordsMustMatch">Passwords do not match</mat-error>
+```
 
 ## Be aware of
 

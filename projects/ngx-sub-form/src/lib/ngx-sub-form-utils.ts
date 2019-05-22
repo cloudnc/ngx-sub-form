@@ -1,5 +1,7 @@
 import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
-import { InjectionToken, Type, forwardRef } from '@angular/core';
+import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 
 export type Controls<T> = { [K in keyof T]-?: AbstractControl };
@@ -53,4 +55,27 @@ export class MissingFormControlsError<T extends string> extends Error {
         .join(`, `)}`,
     );
   }
+}
+
+/**
+ * Easily unsubscribe from an observable stream by appending `takeUntilDestroyed(this)` to the observable pipe.
+ * If the component already has a `ngOnDestroy` method defined, it will call this first.
+ * Note that the component *must* implement OnDestroy for this to work (the typings will enforce this anyway)
+ */
+export function takeUntilDestroyed<T>(component: OnDestroy): (source: Observable<T>) => Observable<T> {
+  return (source: Observable<T>): Observable<T> => {
+    const onDestroy = new Subject();
+    const previousOnDestroy = component.ngOnDestroy;
+
+    component.ngOnDestroy = () => {
+      if (previousOnDestroy) {
+        previousOnDestroy.apply(component);
+      }
+
+      onDestroy.next();
+      onDestroy.complete();
+    };
+
+    return source.pipe(takeUntil(onDestroy));
+  };
 }

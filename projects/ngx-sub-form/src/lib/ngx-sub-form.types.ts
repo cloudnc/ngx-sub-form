@@ -8,6 +8,10 @@ export interface OnFormUpdate<FormInterface> {
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
+type Nullable<T> = T | null;
+
+export type NullableObject<T> = { [P in keyof T]: Nullable<T[P]> };
+
 export type TypedFormGroup<FormInterface> = Omit<FormGroup, 'controls' | 'value'> & {
   controls: Controls<FormInterface>;
   value: FormInterface;

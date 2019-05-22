@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
-import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../interfaces/droid.interface';
+import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../interfaces/droid.interface';
 
 @Component({
   selector: 'app-astromech-droid',

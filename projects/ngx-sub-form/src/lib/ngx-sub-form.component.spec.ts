@@ -1,7 +1,7 @@
 /// <reference types="jasmine" />
 
 import { FormControl, Validators } from '@angular/forms';
-import { NgxSubFormComponent, NgxSubFormRemapComponent } from './ngx-sub-form.component';
+import { FormGroupOptions, NgxSubFormComponent, NgxSubFormRemapComponent } from '../public_api';
 
 interface Vehicle {
   color?: string | null;
@@ -325,6 +325,102 @@ describe(`NgxSubFormComponent`, () => {
         expect(spyOnChange).toHaveBeenCalledWith({ color: 'red', canFire: false, numberOfPeopleOnBoard: 10 });
 
         done();
+      }, 0);
+    });
+  });
+
+  describe('getFormGroupControlOptions', () => {
+    interface Numbered {
+      numberOne: number;
+      numberTwo: number;
+    }
+
+    class ValidatedSubComponent extends NgxSubFormComponent<Numbered> {
+      protected getFormControls() {
+        return {
+          numberOne: new FormControl(null, Validators.required),
+          numberTwo: new FormControl(null, Validators.required),
+        };
+      }
+
+      public getFormGroupControlOptions(): FormGroupOptions<Numbered> {
+        return {
+          validators: [
+            formGroup => {
+              const sum = formGroup.value.numberOne + formGroup.value.numberTwo;
+
+              if (sum % 2 !== 0) {
+                return {
+                  sumMustBeEven: sum,
+                };
+              }
+
+              return null;
+            },
+          ],
+        };
+      }
+    }
+
+    interface PasswordForm {
+      password: string;
+      passwordRepeat: string;
+    }
+
+    class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
+      protected getFormControls() {
+        return {
+          password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
+          passwordRepeat: new FormControl(null, Validators.required),
+        };
+      }
+
+      public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+        return {
+          validators: [
+            formGroup => {
+              if (formGroup.value.password !== formGroup.value.passwordRepeat) {
+                return {
+                  passwordsMustMatch: true,
+                };
+              }
+
+              return null;
+            },
+          ],
+        };
+      }
+    }
+
+    let validatedSubComponent: ValidatedSubComponent;
+
+    beforeEach((done: () => void) => {
+      validatedSubComponent = new ValidatedSubComponent();
+
+      // we have to call `updateValueAndValidity` within the constructor in an async way
+      // and here we need to wait for it to run
+      setTimeout(() => {
+        done();
+      }, 0);
+    });
+
+    it('can declare custom form group level validators, to prevent updating the control', (done: () => void) => {
+      const spyOnChange = jasmine.createSpy();
+      validatedSubComponent.registerOnChange(spyOnChange);
+
+      validatedSubComponent.formGroup.patchValue({ numberOne: 1, numberTwo: 2 });
+
+      setTimeout(() => {
+        expect(validatedSubComponent.validate()).toEqual({ formGroup: { sumMustBeEven: 3 } });
+        expect(validatedSubComponent.formGroupErrors).toEqual({ formGroup: { sumMustBeEven: 3 } });
+
+        validatedSubComponent.formGroup.patchValue({ numberOne: 2, numberTwo: 2 });
+        setTimeout(() => {
+          expect(spyOnChange).toHaveBeenCalledWith({ numberOne: 2, numberTwo: 2 });
+          expect(validatedSubComponent.validate()).toEqual(null);
+          expect(validatedSubComponent.formGroupErrors).toEqual(null);
+          done();
+        }, 0);
       }, 0);
     });
   });

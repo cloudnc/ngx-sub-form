@@ -1,12 +1,16 @@
 import { OnDestroy } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
+import {
+  AbstractControl,
+  AbstractControlOptions,
+  ControlValueAccessor,
+  FormGroup,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { merge, Observable, Subscription } from 'rxjs';
 import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
-
-interface OnFormUpdate<FormInterface> {
-  onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
-}
+import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
@@ -21,17 +25,19 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return this.mapControls(ctrl => ctrl.value) as Required<FormInterface>;
   }
 
-  public get formGroupErrors(): null | Partial<ControlMap<FormInterface, ValidationErrors | null>> {
+  public get formGroupErrors(): null | Partial<
+    ControlMap<FormInterface, ValidationErrors | null> & { formGroup: ValidationErrors }
+  > {
     const errors = this.mapControls<ValidationErrors | null, ControlMap<FormInterface, ValidationErrors | null>>(
       ctrl => ctrl.errors,
       ctrl => ctrl.invalid,
     );
 
-    if (!errors || !Object.keys(errors).length) {
+    if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
       return null;
     }
 
-    return errors;
+    return Object.assign({}, this.formGroup.errors ? { formGroup: this.formGroup.errors } : {}, errors);
   }
 
   public get formControlNames(): ControlsNames<FormInterface> {
@@ -42,7 +48,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
-  public formGroup: FormGroup & { controls: Controls<FormInterface> } = new FormGroup(this.getFormControls()) as any;
+  public formGroup: TypedFormGroup<FormInterface> = new FormGroup(
+    this.getFormControls(),
+    this.getFormGroupControlOptions() as AbstractControlOptions,
+  ) as any;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -96,6 +105,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public onFormUpdate(formUpdate: FormUpdate<FormInterface>): void {}
+
+  /**
+   * Extend this method to provide custom local FormGroup level validation
+   */
+  protected getFormGroupControlOptions(): FormGroupOptions<FormInterface> {
+    return {};
+  }
 
   public validate(): ValidationErrors | null {
     if (

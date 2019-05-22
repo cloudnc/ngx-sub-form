@@ -10,12 +10,7 @@ import {
 import { merge, Observable, Subscription } from 'rxjs';
 import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
-
-interface OnFormUpdate<FormInterface> {
-  onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
-}
-
-export type TypedFormGroup<FormInterface> = FormGroup & { controls: Controls<FormInterface> };
+import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
@@ -55,7 +50,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // see @note form-group-undefined
   public formGroup: TypedFormGroup<FormInterface> = new FormGroup(
     this.getFormControls(),
-    this.getFormGroupControlOptions(),
+    this.getFormGroupControlOptions() as AbstractControlOptions,
   ) as any;
 
   protected onChange: Function | undefined = undefined;
@@ -114,7 +109,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   /**
    * Extend this method to provide custom local FormGroup level validation
    */
-  protected getFormGroupControlOptions(): AbstractControlOptions {
+  protected getFormGroupControlOptions(): FormGroupOptions<FormInterface> {
     return {};
   }
 

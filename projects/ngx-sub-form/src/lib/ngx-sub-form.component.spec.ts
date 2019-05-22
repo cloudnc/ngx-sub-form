@@ -1,7 +1,7 @@
 /// <reference types="jasmine" />
 
-import { AbstractControlOptions, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgxSubFormComponent, NgxSubFormRemapComponent, TypedFormGroup } from './ngx-sub-form.component';
+import { FormControl, Validators } from '@angular/forms';
+import { FormGroupOptions, NgxSubFormComponent, NgxSubFormRemapComponent } from '../public_api';
 
 interface Vehicle {
   color?: string | null;
@@ -343,7 +343,7 @@ describe(`NgxSubFormComponent`, () => {
         };
       }
 
-      public getFormGroupControlOptions(): AbstractControlOptions {
+      public getFormGroupControlOptions(): FormGroupOptions<Numbered> {
         return {
           validators: [
             formGroup => {
@@ -382,11 +382,13 @@ describe(`NgxSubFormComponent`, () => {
 
       setTimeout(() => {
         expect(validatedSubComponent.validate()).toEqual({ formGroup: { sumMustBeEven: 3 } });
+        expect(validatedSubComponent.formGroupErrors).toEqual({ formGroup: { sumMustBeEven: 3 } });
 
         validatedSubComponent.formGroup.patchValue({ numberOne: 2, numberTwo: 2 });
         setTimeout(() => {
           expect(spyOnChange).toHaveBeenCalledWith({ numberOne: 2, numberTwo: 2 });
           expect(validatedSubComponent.validate()).toEqual(null);
+          expect(validatedSubComponent.formGroupErrors).toEqual(null);
           done();
         }, 0);
       }, 0);

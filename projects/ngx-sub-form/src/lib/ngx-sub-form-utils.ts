@@ -34,3 +34,23 @@ export function subformComponentProviders(
     },
   ];
 }
+
+const wrapAsQuote = (str: string): string => `"${str}"`;
+
+export class ArrayNotTransformedBeforeWriteValueError<T extends string> extends Error {
+  constructor() {
+    super(
+      `If you need to pass an array, please wrap it (for now) using "NgxSubFormRemapComponent" into an "array" property for example. Track direct array support here https://github.com/cloudnc/ngx-sub-form/issues/9`,
+    );
+  }
+}
+
+export class MissingFormControlsError<T extends string> extends Error {
+  constructor(missingFormControls: T[]) {
+    super(
+      `Attempt to update the form value with an object that doesn't contains some of the required form control keys.\nMissing: ${missingFormControls
+        .map(wrapAsQuote)
+        .join(`, `)}`,
+    );
+  }
+}

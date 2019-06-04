@@ -9,7 +9,14 @@ import {
 } from '@angular/forms';
 import { merge, Observable, Subscription } from 'rxjs';
 import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
-import { ControlMap, Controls, ControlsNames, FormUpdate } from './ngx-sub-form-utils';
+import {
+  ControlMap,
+  Controls,
+  ControlsNames,
+  FormUpdate,
+  MissingFormControlsError,
+  ArrayNotTransformedBeforeWriteValueError,
+} from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
@@ -45,11 +52,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return this.mapControls((_, key) => key) as ControlsNames<FormInterface>;
   }
 
+  private controlKeys: (keyof FormInterface)[] = [];
+
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
   public formGroup: TypedFormGroup<FormInterface> = new FormGroup(
-    this.getFormControls(),
+    this._getFormControls(),
     this.getFormGroupControlOptions() as AbstractControlOptions,
   ) as any;
 
@@ -59,9 +68,6 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   protected emitInitialValueOnInit = true;
 
   private subscription: Subscription | undefined = undefined;
-
-  // can't define them directly
-  protected abstract getFormControls(): Controls<FormInterface>;
 
   constructor() {
     // `setTimeout` and `updateValueAndValidity` are both required here
@@ -74,6 +80,16 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         this.formGroup.updateValueAndValidity({ emitEvent: false });
       }
     }, 0);
+  }
+
+  // can't define them directly
+  protected abstract getFormControls(): Controls<FormInterface>;
+  private _getFormControls(): Controls<FormInterface> {
+    const controls: Controls<FormInterface> = this.getFormControls();
+
+    this.controlKeys = (Object.keys(controls) as unknown) as (keyof FormInterface)[];
+
+    return controls;
   }
 
   private mapControls<MapValue, T extends ControlMap<FormInterface, MapValue>>(
@@ -125,6 +141,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return this.formGroupErrors;
   }
 
+  // @todo could this be removed to avoid an override and just use `takeUntilDestroyed`?
   public ngOnDestroy(): void {
     // @hack there's a memory leak within Angular and those components
     // are not correctly cleaned up which leads to error if a form is defined
@@ -155,11 +172,45 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return;
     }
 
-    this.formGroup.setValue(this.transformToFormGroup(obj), {
+    const transformedValue: FormInterface = this.transformToFormGroup(obj);
+
+    // for now we throw an error if the transformed value isn't an object with all the expect values
+    // there's an issue to track support for an array https://github.com/cloudnc/ngx-sub-form/issues/9
+    this.throwIfArray(transformedValue);
+    this.throwIfMissingKey(transformedValue);
+
+    this.formGroup.setValue(transformedValue, {
       emitEvent: false,
     });
     this.formGroup.markAsPristine();
     this.formGroup.markAsUntouched();
+  }
+
+  private throwIfArray(transformedValue: any): void {
+    if (Array.isArray(transformedValue)) {
+      throw new ArrayNotTransformedBeforeWriteValueError();
+    }
+  }
+
+  private throwIfMissingKey(transformedValue: FormInterface) {
+    const missingKeys: (keyof FormInterface)[] = this.controlKeys.reduce(
+      (keys, key) => {
+        if (transformedValue[key] === undefined) {
+          keys.push(key);
+        }
+
+        return keys;
+      },
+      [] as (keyof FormInterface)[],
+    );
+
+    if (
+      missingKeys.length > 0 &&
+      // `controlKeys` can be an empty array, empty forms are allowed
+      this.controlKeys.length > 0
+    ) {
+      throw new MissingFormControlsError(missingKeys as string[]);
+    }
   }
 
   // that method can be overridden if the

@@ -1,7 +1,13 @@
 /// <reference types="jasmine" />
 
 import { FormControl, Validators } from '@angular/forms';
-import { FormGroupOptions, NgxSubFormComponent, NgxSubFormRemapComponent } from '../public_api';
+import {
+  FormGroupOptions,
+  NgxSubFormComponent,
+  NgxSubFormRemapComponent,
+  MissingFormControlsError,
+  ArrayNotTransformedBeforeWriteValueError,
+} from '../public_api';
 
 interface Vehicle {
   color?: string | null;
@@ -172,27 +178,48 @@ describe(`NgxSubFormComponent`, () => {
 
     describe(`value is not null nor undefined`, () => {
       // we should be able to pass a value `false`, or an empty string for ex
-      it(`should set the value even if the value is falsy`, () => {
-        subComponent.formGroup.setValue = jasmine.createSpy();
-        subComponent.writeValue(false as any);
-        expect(subComponent.formGroup.setValue).toHaveBeenCalledTimes(1);
+      it(`should throw an error when the value is different than an object`, () => {
+        const invalidValues: any[] = [1, true, false, '', 'some random string'];
 
-        subComponent.writeValue('' as any);
-        expect(subComponent.formGroup.setValue).toHaveBeenCalledTimes(2);
+        // this could happen when using the setValue of patchValue on the top form as those methods are not strongly typed
+        // but not using `subComponent.formGroup.patchValue` here as the error would not be caught here because not directly
+        // called by that method
+        invalidValues.forEach(value =>
+          expect(() => subComponent.writeValue(value)).toThrow(
+            new MissingFormControlsError(['color', 'canFire', 'numberOfPeopleOnBoard']),
+          ),
+        );
+
+        const invalidArrays: any[] = [[], [1, 2, 3]];
+        invalidArrays.forEach(value =>
+          expect(() => subComponent.writeValue(value)).toThrow(new ArrayNotTransformedBeforeWriteValueError()),
+        );
+      });
+
+      it(`should throw an error when the value is missing any of the required keys to create the form`, () => {
+        expect(() => subComponent.writeValue({ randomValue: 'ok' } as any)).toThrow(
+          new MissingFormControlsError(['color', 'canFire', 'numberOfPeopleOnBoard']),
+        );
+        expect(() => subComponent.writeValue({ color: '' } as any)).toThrow(
+          new MissingFormControlsError(['canFire', 'numberOfPeopleOnBoard']),
+        );
+        expect(() => subComponent.writeValue({ color: '', canFire: true } as any)).toThrow(
+          new MissingFormControlsError(['numberOfPeopleOnBoard']),
+        );
       });
 
       // setValue will make sure the object matches the shape of the interface and will error otherwise
       it(`should use the setValue method instead of patchValue`, () => {
         subComponent.formGroup.setValue = jasmine.createSpy();
-        subComponent.writeValue(false as any);
+        subComponent.writeValue(getDefaultValues());
         expect(subComponent.formGroup.setValue).toHaveBeenCalledTimes(1);
       });
 
       // when a parent set the form value, he's already aware of it and we do not want to update it upstream for no reason
       it(`should have the option "emitEvent" set to false`, () => {
         subComponent.formGroup.setValue = jasmine.createSpy();
-        subComponent.writeValue('some value' as any);
-        expect(subComponent.formGroup.setValue).toHaveBeenCalledWith('some value', {
+        subComponent.writeValue(getDefaultValues());
+        expect(subComponent.formGroup.setValue).toHaveBeenCalledWith(getDefaultValues(), {
           emitEvent: false,
         });
       });

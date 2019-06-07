@@ -33,9 +33,11 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
   @Output('listingUpdated')
   public dataOutput: EventEmitter<OneListing | null> = new EventEmitter();
 
-  public ListingType = ListingType;
+  public ListingType: typeof ListingType = ListingType;
 
   public readonlyFormControl: FormControl = new FormControl(false);
+  public autoSubmitFormControl: FormControl = new FormControl(false);
+  protected automaticSubmitDebounceTiming: number = 500;
 
   protected getFormControls(): Controls<OneListingForm> {
     return {
@@ -59,6 +61,19 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
             this.formGroup.disable();
           } else {
             this.formGroup.enable();
+          }
+        }),
+        takeUntilDestroyed(this),
+      )
+      .subscribe();
+
+    this.autoSubmitFormControl.valueChanges
+      .pipe(
+        tap((autoSubmit: boolean) => {
+          if (autoSubmit) {
+            this.automaticSubmit = true;
+          } else {
+            this.automaticSubmit = false;
           }
         }),
         takeUntilDestroyed(this),

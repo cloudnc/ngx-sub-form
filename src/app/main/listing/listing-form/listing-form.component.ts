@@ -7,6 +7,9 @@ import { NgxRootFormComponent } from '../../../../../projects/ngx-sub-form/src/l
 import { OneDroid } from '../../../interfaces/droid.interface';
 import { OneVehicle } from '../../../interfaces/vehicle.interface';
 import { UnreachableCase } from '../../../shared/utils';
+// import { NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES } from '../../../../../projects/ngx-sub-form/src/lib/ngx-sub-form-utils';
+// import { NgxAutomaticRootFormComponent } from '../../../../../projects/ngx-sub-form/src/lib/ngx-automatic-root-form.component';
+// import { Observable } from 'rxjs';
 
 interface OneListingForm {
   vehicleProduct: OneVehicle | null;
@@ -18,11 +21,17 @@ interface OneListingForm {
   price: number;
 }
 
+// if you wish to try the automatic root form component uncomment lines containing:
+// - `extends NgxAutomaticRootFormComponent`
+// - the `handleDataOutput` method
+// - the 3 related imports at the top
+
 @Component({
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',
   styleUrls: ['./listing-form.component.scss'],
 })
+// export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
 export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm>
   implements OnInit, OnDestroy {
   // tslint:disable-next-line:no-input-rename
@@ -33,9 +42,14 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
   @Output('listingUpdated')
   public dataOutput: EventEmitter<OneListing | null> = new EventEmitter();
 
-  public ListingType = ListingType;
+  public ListingType: typeof ListingType = ListingType;
 
   public readonlyFormControl: FormControl = new FormControl(false);
+  public autoSubmitFormControl: FormControl = new FormControl(false);
+
+  // protected handleEmissionRate(): (obs$: Observable<OneListingForm>) => Observable<OneListingForm> {
+  //   return NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES.debounce(500);
+  // }
 
   protected getFormControls(): Controls<OneListingForm> {
     return {

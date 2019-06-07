@@ -6,9 +6,10 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject, timer } from 'rxjs';
+import { takeUntil, debounce } from 'rxjs/operators';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
+import { NgxSubFormComponent } from './ngx-sub-form.component';
 
 export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
@@ -66,6 +67,11 @@ export class MissingFormControlsError<T extends string> extends Error {
     );
   }
 }
+
+export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
+  debounce: <T, U>(time: number): ReturnType<NgxSubFormComponent<T, U>['handleEmissionRate']> => obs =>
+    obs.pipe(debounce(() => timer(time))),
+};
 
 /**
  * Easily unsubscribe from an observable stream by appending `takeUntilDestroyed(this)` to the observable pipe.

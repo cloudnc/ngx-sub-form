@@ -223,6 +223,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     }
   }
 
+  // when customizing the emission rate of your sub form component, remember not to **mutate** the stream
+  // it is safe to throttle, debounce, delay, etc but using skip, first, last or mutating data inside
+  // the stream will cause issues!
+  protected handleEmissionRate(): (obs$: Observable<FormInterface>) => Observable<FormInterface> {
+    return obs$ => obs$;
+  }
+
   // that method can be overridden if the
   // shape of the form needs to be modified
   protected transformToFormGroup(obj: ControlInterface): FormInterface {
@@ -262,6 +269,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       .pipe(
         startWith(this.formGroup.value),
         filter(() => !!this.formGroup),
+        // hook to give access to the observable for sub-classes
+        // this allow sub-classes (for example) to debounce, throttle, etc
+        this.handleEmissionRate(),
         // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
         // this is due to the fact that parent component will define a given state for the form that might
         // be changed once the children are being initialized

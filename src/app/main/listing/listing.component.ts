@@ -27,9 +27,7 @@ export class ListingComponent {
       }
       return this.listingService.getOneListing(listingId);
     }),
-    map(listing => {
-      return listing ? listing : this.emptyListing();
-    }),
+    map(listing => (listing ? listing : this.emptyListing())),
   );
 
   private emptyListing(): NullableObject<OneListing> {

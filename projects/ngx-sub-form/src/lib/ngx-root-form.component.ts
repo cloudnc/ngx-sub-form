@@ -42,10 +42,13 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
       }
 
       this.dataValue = data;
+
       if (!this.automaticSubmit) {
         return;
       }
+
       this.applyingChangeSignal.next(true);
+
       if (this.formGroup) {
         this.formGroup.markAsPristine();
 
@@ -57,16 +60,13 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
 
     this.dataInput$
       .pipe(
-        tap(input => {
-          this.applyingChangeSignal.next(false);
-        }),
-        filter(value => value != null),
+        tap(() => this.applyingChangeSignal.next(false)),
+        filter(newValue => newValue != null),
         filter(newValue => !isEqual(newValue, this.formGroup.value)),
+        tap(newValue => this.writeValue(newValue as Required<ControlInterface>)),
         takeUntilDestroyed(this),
       )
-      .subscribe((newValue: ControlInterface | null) => {
-        this.writeValue(newValue as Required<ControlInterface>);
-      });
+      .subscribe();
 
     this.applyingChange$
       .pipe(
@@ -76,7 +76,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
       .subscribe();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(): void {
     this.dataInput$.next(this.dataInput);
   }
 

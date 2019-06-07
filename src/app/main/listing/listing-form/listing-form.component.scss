@@ -17,6 +17,13 @@ mat-card {
   mat-card-subtitle {
     min-height: 25px;
   }
+
+  &.errors,
+  &.values {
+    mat-card-content {
+      overflow: auto;
+    }
+  }
 }
 
 mat-form-field {

@@ -7,6 +7,11 @@ import { NgxRootFormComponent } from '../../../../../projects/ngx-sub-form/src/l
 import { OneDroid } from '../../../interfaces/droid.interface';
 import { OneVehicle } from '../../../interfaces/vehicle.interface';
 import { UnreachableCase } from '../../../shared/utils';
+import {
+  NgxAutomaticRootFormComponent,
+  NGX_SUB_FORM_HANDLE_DATA_OUTPUT_STRATEGIES,
+} from '../../../../../projects/ngx-sub-form/src/lib/ngx-automatic-root-form.component';
+import { Observable } from 'rxjs';
 
 interface OneListingForm {
   vehicleProduct: OneVehicle | null;
@@ -18,12 +23,17 @@ interface OneListingForm {
   price: number;
 }
 
+// if you wish to try the automatic root form component uncomment lines containing:
+// - `extends NgxAutomaticRootFormComponent`
+// - the `handleDataOutput` method
+
 @Component({
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',
   styleUrls: ['./listing-form.component.scss'],
 })
-export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm>
+export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
+// export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm>
   implements OnInit, OnDestroy {
   // tslint:disable-next-line:no-input-rename
   @Input('listing')
@@ -37,7 +47,10 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
 
   public readonlyFormControl: FormControl = new FormControl(false);
   public autoSubmitFormControl: FormControl = new FormControl(false);
-  protected automaticSubmitDebounceTiming: number = 500;
+
+  protected handleDataOutput(): (obs$: Observable<OneListing | null>) => Observable<OneListing | null> {
+    return NGX_SUB_FORM_HANDLE_DATA_OUTPUT_STRATEGIES.debounce(500);
+  }
 
   protected getFormControls(): Controls<OneListingForm> {
     return {
@@ -61,19 +74,6 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
             this.formGroup.disable();
           } else {
             this.formGroup.enable();
-          }
-        }),
-        takeUntilDestroyed(this),
-      )
-      .subscribe();
-
-    this.autoSubmitFormControl.valueChanges
-      .pipe(
-        tap((autoSubmit: boolean) => {
-          if (autoSubmit) {
-            this.automaticSubmit = true;
-          } else {
-            this.automaticSubmit = false;
           }
         }),
         takeUntilDestroyed(this),

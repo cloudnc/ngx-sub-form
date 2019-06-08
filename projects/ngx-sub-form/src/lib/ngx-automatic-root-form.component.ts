@@ -10,7 +10,7 @@ export abstract class NgxAutomaticRootFormComponent<ControlInterface, FormInterf
     // `registerOnChange` with different params than the parent!
 
     this.registerOnChange(data => {
-      if (this.formGroup.invalid || isEqual(data, this.dataInput)) {
+      if (this.formGroup.invalid || isEqual(data, this._dataInput)) {
         return;
       }
 

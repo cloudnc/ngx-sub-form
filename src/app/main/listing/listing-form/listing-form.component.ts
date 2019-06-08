@@ -36,7 +36,9 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
   implements OnInit, OnDestroy {
   // tslint:disable-next-line:no-input-rename
   @Input('listing')
-  public dataInput: Required<OneListing> | null = null;
+  public set dataInput(data: Required<OneListing> | null) {
+    super.dataInputUpdated(data);
+  }
 
   // tslint:disable-next-line:no-output-rename
   @Output('listingUpdated')

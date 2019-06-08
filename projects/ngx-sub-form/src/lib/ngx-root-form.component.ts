@@ -8,8 +8,10 @@ import { takeUntilDestroyed } from './ngx-sub-form-utils';
 
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
-  implements OnInit, OnChanges {
+  implements OnInit {
   public abstract dataInput: Required<ControlInterface> | null;
+  /** @internal */
+  protected _dataInput: Required<ControlInterface> | null = null;
   public abstract dataOutput: EventEmitter<ControlInterface | null>;
   // using a private variable `_dataOutput$` to be able to control the
   // emission rate with a debounce or throttle for ex
@@ -46,7 +48,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
     // handles most of the logic from NgxSubForm and when it's called
     // as a ControlValueAccessor that function is called by Angular itself
     this.registerOnChange(data => {
-      if (this.formGroup.invalid || isEqual(data, this.dataInput)) {
+      if (this.formGroup.invalid || isEqual(data, this._dataInput)) {
         return;
       }
 
@@ -82,15 +84,14 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
       .subscribe();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['dataInput$']) {
-      this.dataInput$.next(this.dataInput);
-    }
+  protected dataInputUpdated(data: Required<ControlInterface> | null): void {
+    this._dataInput = data;
+    this.dataInput$.next(data);
   }
 
   protected handleApplyingChangeTimeout(changeApplying: boolean): void {
-    if (!changeApplying && !isEqual(this.dataInput, this.formGroup.value)) {
-      this.writeValue(this.dataInput);
+    if (!changeApplying && !isEqual(this._dataInput, this.formGroup.value)) {
+      this.writeValue(this._dataInput);
     }
   }
 

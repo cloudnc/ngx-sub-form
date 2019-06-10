@@ -7,6 +7,10 @@ Works well with polymorphic data structures.
 
 `ngx-sub-form` is here to help you **avoid** passing your `formGroup` as inputs and tackle down the boilerplate of creating a custom [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor).
 
+[![npm version](https://badge.fury.io/js/ngx-sub-form.svg)](https://www.npmjs.com/package/ngx-sub-form)
+[![Build Status](https://travis-ci.org/cloudnc/ngx-sub-form.svg?branch=master)](https://travis-ci.org/cloudnc/ngx-sub-form)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://commitizen.github.io/cz-cli/)
+
 ## Install
 
 Install the [npm package](https://www.npmjs.com/package/ngx-sub-form): `ngx-sub-form`

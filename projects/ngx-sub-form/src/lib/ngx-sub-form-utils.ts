@@ -1,4 +1,10 @@
-import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NG_VALIDATORS,
+  ValidationErrors,
+} from '@angular/forms';
 import { InjectionToken, Type, forwardRef } from '@angular/core';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 
@@ -9,6 +15,10 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
 export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
+
+export type FormErrors<FormInterface> = null | Partial<
+  ControlMap<FormInterface, ValidationErrors | null> & { formGroup?: ValidationErrors }
+>;
 
 export function subformComponentProviders(
   component: any,

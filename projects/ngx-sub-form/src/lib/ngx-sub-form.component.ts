@@ -16,6 +16,7 @@ import {
   FormUpdate,
   MissingFormControlsError,
   ArrayNotTransformedBeforeWriteValueError,
+  FormErrors,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
@@ -32,13 +33,14 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return this.mapControls(ctrl => ctrl.value) as Required<FormInterface>;
   }
 
-  public get formGroupErrors(): null | Partial<
-    ControlMap<FormInterface, ValidationErrors | null> & { formGroup: ValidationErrors }
-  > {
-    const errors = this.mapControls<ValidationErrors | null, ControlMap<FormInterface, ValidationErrors | null>>(
-      ctrl => ctrl.errors,
-      ctrl => ctrl.invalid,
-    );
+  public get formGroupErrors(): FormErrors<FormInterface> {
+    // @todo remove the as
+    // working: ControlMap<FormInterface, ValidationErrors | null> | null
+    // not working: Partial<ControlMap<FormInterface, ValidationErrors | null>> | null
+    const errors: Partial<ControlMap<FormInterface, ValidationErrors | null>> | null = this.mapControls<
+      ValidationErrors | null,
+      ControlMap<FormInterface, ValidationErrors | null>
+    >(ctrl => ctrl.errors, ctrl => ctrl.invalid) as Partial<ControlMap<FormInterface, ValidationErrors | null>> | null;
 
     if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
       return null;
@@ -112,6 +114,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       if (this.formGroup.controls.hasOwnProperty(key)) {
         const control = formControls[key];
         if (control && filterControl(control)) {
+          // @todo
           controls[key] = mapControl(control, key);
         }
       }

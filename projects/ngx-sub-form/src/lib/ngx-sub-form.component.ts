@@ -20,27 +20,28 @@ import {
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
+type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
+type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
+
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
   public get formGroupControls(): ControlMap<FormInterface, AbstractControl> {
-    // @note form-group-undefined we need the as syntax here because we do not want to expose the fact that
-    // the form can be undefined, it's hanlded internally to contain an Angular bug
-    return this.mapControls() as ControlMap<FormInterface, AbstractControl>;
+    // @note form-group-undefined we need the no-null-assertion here because we do not want to expose the fact that
+    // the form can be undefined, it's handled internally to contain an Angular bug
+    // tslint:disable-next-line:no-non-null-assertion
+    return this.mapControls<AbstractControl>()!;
   }
 
   public get formGroupValues(): Required<FormInterface> {
-    // see @note form-group-undefined for as syntax
-    return this.mapControls(ctrl => ctrl.value) as Required<FormInterface>;
+    // see @note form-group-undefined for non-null assertion reason
+    // tslint:disable-next-line:no-non-null-assertion
+    return this.mapControls(ctrl => ctrl.value)!;
   }
 
   public get formGroupErrors(): FormErrors<FormInterface> {
-    // @todo remove the as
-    // working: ControlMap<FormInterface, ValidationErrors | null> | null
-    // not working: Partial<ControlMap<FormInterface, ValidationErrors | null>> | null
-    const errors: Partial<ControlMap<FormInterface, ValidationErrors | null>> | null = this.mapControls<
-      ValidationErrors | null,
+    const errors: Partial<
       ControlMap<FormInterface, ValidationErrors | null>
-    >(ctrl => ctrl.errors, ctrl => ctrl.invalid) as Partial<ControlMap<FormInterface, ValidationErrors | null>> | null;
+    > | null = this.mapControls<ValidationErrors | null>(ctrl => ctrl.errors, ctrl => ctrl.invalid);
 
     if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
       return null;
@@ -59,10 +60,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
-  public formGroup: TypedFormGroup<FormInterface> = new FormGroup(
+  public formGroup: TypedFormGroup<FormInterface> = (new FormGroup(
     this._getFormControls(),
     this.getFormGroupControlOptions() as AbstractControlOptions,
-  ) as any;
+  ) as unknown) as TypedFormGroup<FormInterface>;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -94,10 +95,17 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return controls;
   }
 
-  private mapControls<MapValue, T extends ControlMap<FormInterface, MapValue>>(
-    mapControl?: (ctrl: Controls<FormInterface>[keyof FormInterface], key: keyof FormInterface) => MapValue,
-    filterControl: (ctrl: Controls<FormInterface>[keyof FormInterface]) => boolean = () => true,
-  ): T | null {
+  private mapControls<MapValue>(
+    mapControl: MapControlFunction<FormInterface, MapValue>,
+    filterControl: FilterControlFunction<FormInterface>,
+  ): Partial<ControlMap<FormInterface, MapValue>> | null;
+  private mapControls<MapValue>(
+    mapControl?: MapControlFunction<FormInterface, MapValue>,
+  ): ControlMap<FormInterface, MapValue> | null;
+  private mapControls<MapValue>(
+    mapControl?: MapControlFunction<FormInterface, MapValue>,
+    filterControl: FilterControlFunction<FormInterface> = () => true,
+  ): Partial<ControlMap<FormInterface, MapValue>> | null {
     if (!this.formGroup) {
       return null;
     }
@@ -108,19 +116,18 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return formControls as any;
     }
 
-    const controls: Partial<T> = {};
+    const controls: Partial<ControlMap<FormInterface, MapValue>> = {};
 
     for (const key in formControls) {
       if (this.formGroup.controls.hasOwnProperty(key)) {
         const control = formControls[key];
-        if (control && filterControl(control)) {
-          // @todo
+        if (control && filterControl(control, key)) {
           controls[key] = mapControl(control, key);
         }
       }
     }
 
-    return controls as Required<T>;
+    return controls;
   }
 
   public onFormUpdate(formUpdate: FormUpdate<FormInterface>): void {}

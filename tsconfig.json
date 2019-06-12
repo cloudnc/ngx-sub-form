@@ -14,6 +14,7 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
+    "stripInternal": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],

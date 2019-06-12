@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
-import { DroidType, Languages, ProtocolDroid } from '../../../../interfaces/droid.interface';
+import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/droid.interface';
 
 @Component({
   selector: 'app-protocol-droid',

@@ -9,7 +9,7 @@ import {
   OneDroid,
   ProtocolDroid,
 } from 'src/app/interfaces/droid.interface';
-import { UnreachableCase } from '../../../shared/utils';
+import { UnreachableCase } from '../../../../shared/utils';
 
 interface OneDroidForm {
   protocolDroid: ProtocolDroid | null;

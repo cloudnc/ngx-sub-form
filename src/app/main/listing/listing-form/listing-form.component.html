@@ -1,0 +1,152 @@
+<mat-slide-toggle class="readonly" data-readonly [formControl]="readonlyFormControl">Readonly</mat-slide-toggle>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title data-title [class.not-visible]="!formGroupValues.title">
+      {{ formGroupValues.title }}
+    </mat-card-title>
+    <mat-card-subtitle data-price [class.not-visible]="!formGroupValues.price">
+      £{{ formGroupValues.price | number }}
+    </mat-card-subtitle>
+  </mat-card-header>
+  <div class="img-container">
+    <img
+      *ngIf="formGroupValues.imageUrl"
+      mat-card-image
+      [src]="formGroupValues.imageUrl"
+      alt="Photo of {{ formGroupValues.title }}"
+    />
+  </div>
+  <mat-card-content>
+    <form [formGroup]="formGroup">
+      <mat-form-field>
+        <input
+          matInput
+          data-input-id
+          type="text"
+          placeholder="ID"
+          [formControlName]="formControlNames.id"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          data-input-title
+          type="text"
+          placeholder="Title"
+          [formControlName]="formControlNames.title"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          data-input-image-url
+          type="text"
+          placeholder="Image Url"
+          [formControlName]="formControlNames.imageUrl"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          data-input-price
+          type="number"
+          placeholder="Price"
+          [formControlName]="formControlNames.price"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select
+          data-select-listing-type
+          placeholder="Select listing type"
+          [formControlName]="formControlNames.listingType"
+        >
+          <mat-option
+            data-select-listing-type-option
+            *ngFor="let listingType of (ListingType | keyvalue)"
+            [value]="listingType.value"
+          >
+            {{ listingType.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div [ngSwitch]="formGroupValues.listingType">
+        <app-droid-product
+          *ngSwitchCase="ListingType.DROID"
+          [formControlName]="formControlNames.droidProduct"
+        ></app-droid-product>
+
+        <app-vehicle-product
+          *ngSwitchCase="ListingType.VEHICLE"
+          [formControlName]="formControlNames.vehicleProduct"
+        ></app-vehicle-product>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <!--
+      `<div *ngIf="true">`... You could legitimely think that we're crazy or that ngx-sub-form
+      is messing up with your form. In fact, it is not related to the lib at all. It has to do
+      with how Angular analyze the DOM and the priorities during change detection.
+      "But will I have to do that in my app too?" -*-*-> YES if you need to make a check based
+      on the form validity.
+      Please see that issue for more info
+      https://github.com/angular/angular/issues/18004
+      and that comment in particular
+      https://github.com/angular/angular/issues/18004#issuecomment-328806479
+      "But what if I don't do that?" -*-*-> Well you'll end up with the error we all know:
+      `ExpressionChangedAfterItHasBeenCheckedError`. Please refer to comment if you want to
+      know why
+    -->
+    <div *ngIf="true">
+      <!-- @todo -->
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="manualSave()"
+        [disabled]="formGroup.invalid || formGroup.disabled"
+      >
+        Upsert
+      </button>
+
+      <div *ngIf="formGroup.invalid" class="invalid-form">
+        Form is invalid
+      </div>
+    </div>
+  </mat-card-actions>
+</mat-card>
+
+<mat-card class="errors">
+  <mat-card-title>Form errors</mat-card-title>
+
+  <mat-card-content>
+    <!--
+      this is an important test as we want to make sure that `formGroupErrors` is null when there's no error
+      if we return an empty object the `*ngIf` condition would be considered valid
+    -->
+    <pre *ngIf="formGroupErrors as errors; else noError" data-errors>{{ errors | json }}</pre>
+
+    <ng-template #noError>
+      <span data-no-error>
+        Form is valid, no error!
+      </span>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="values">
+  <mat-card-title>Form values</mat-card-title>
+
+  <mat-card-content>
+    <pre>{{ formGroupValues | json }}</pre>
+  </mat-card-content>
+</mat-card>

@@ -19,6 +19,7 @@ import {
   FormErrors,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import { isNil } from 'lodash-es';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
@@ -172,13 +173,16 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public writeValue(obj: Required<ControlInterface> | null): void {
-    if (
-      // @hack see where defining this.formGroup to undefined
-      !this.formGroup ||
-      // should accept falsy values like `false` or empty string
-      obj === null ||
-      obj === undefined
-    ) {
+    // @hack see where defining this.formGroup to undefined
+    if (!this.formGroup) {
+      return;
+    }
+
+    // should accept falsy values like `false` or empty string
+    // if the value is null or undefined it might be because we're
+    // switching from one value of a polymorphic type to another
+    // for ex and in that case we don't want to go further
+    if (isNil(obj)) {
       return;
     }
 
@@ -186,8 +190,14 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     // for now we throw an error if the transformed value isn't an object with all the expect values
     // there's an issue to track support for an array https://github.com/cloudnc/ngx-sub-form/issues/9
-    this.throwIfArray(transformedValue);
-    this.throwIfMissingKey(transformedValue);
+    if (Array.isArray(transformedValue)) {
+      throw new ArrayNotTransformedBeforeWriteValueError();
+    }
+
+    const missingKeys: (keyof FormInterface)[] = this.getMissingKeys(transformedValue);
+    if (missingKeys.length > 0) {
+      throw new MissingFormControlsError(missingKeys as string[]);
+    }
 
     this.formGroup.setValue(transformedValue, {
       emitEvent: false,
@@ -196,16 +206,11 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.formGroup.markAsUntouched();
   }
 
-  private throwIfArray(transformedValue: any): void {
-    if (Array.isArray(transformedValue)) {
-      throw new ArrayNotTransformedBeforeWriteValueError();
-    }
-  }
-
-  private throwIfMissingKey(transformedValue: FormInterface) {
+  private getMissingKeys(transformedValue: FormInterface | null) {
+    // `controlKeys` can be an empty array, empty forms are allowed
     const missingKeys: (keyof FormInterface)[] = this.controlKeys.reduce(
       (keys, key) => {
-        if (transformedValue[key] === undefined) {
+        if (isNil(transformedValue) || transformedValue[key] === undefined) {
           keys.push(key);
         }
 
@@ -214,13 +219,14 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       [] as (keyof FormInterface)[],
     );
 
-    if (
-      missingKeys.length > 0 &&
-      // `controlKeys` can be an empty array, empty forms are allowed
-      this.controlKeys.length > 0
-    ) {
-      throw new MissingFormControlsError(missingKeys as string[]);
-    }
+    return missingKeys;
+  }
+
+  // when customizing the emission rate of your sub form component, remember not to **mutate** the stream
+  // it is safe to throttle, debounce, delay, etc but using skip, first, last or mutating data inside
+  // the stream will cause issues!
+  protected handleEmissionRate(): (obs$: Observable<FormInterface>) => Observable<FormInterface> {
+    return obs$ => obs$;
   }
 
   // that method can be overridden if the
@@ -260,12 +266,15 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     this.subscription = this.formGroup.valueChanges
       .pipe(
+        // hook to give access to the observable for sub-classes
+        // this allow sub-classes (for example) to debounce, throttle, etc
+        this.handleEmissionRate(),
         startWith(this.formGroup.value),
-        filter(() => !!this.formGroup),
         // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
         // this is due to the fact that parent component will define a given state for the form that might
         // be changed once the children are being initialized
         delay(0),
+        filter(() => !!this.formGroup),
         // detect which stream emitted last
         withLatestFrom(lastKeyEmitted$),
         map(([changes, keyLastEmit], index) => {

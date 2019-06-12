@@ -7,7 +7,9 @@ import {
   NgxSubFormRemapComponent,
   MissingFormControlsError,
   ArrayNotTransformedBeforeWriteValueError,
+  NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
 } from '../public_api';
+import { Observable } from 'rxjs';
 
 interface Vehicle {
   color?: string | null;
@@ -38,6 +40,14 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
   }
 }
 
+const DEBOUNCE_TIMING = 500;
+
+class DebouncedSubComponent extends SubComponent {
+  protected handleEmissionRate(): (obs$: Observable<Vehicle>) => Observable<Vehicle> {
+    return NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES.debounce(DEBOUNCE_TIMING);
+  }
+}
+
 describe(`Common`, () => {
   it(`should call formGroup.updateValueAndValidity only if formGroup is defined`, (done: () => void) => {
     const subComponent: SubComponent = new SubComponent();
@@ -55,9 +65,11 @@ describe(`Common`, () => {
 
 describe(`NgxSubFormComponent`, () => {
   let subComponent: SubComponent;
+  let debouncedSubComponent: DebouncedSubComponent;
 
   beforeEach((done: () => void) => {
     subComponent = new SubComponent();
+    debouncedSubComponent = new DebouncedSubComponent();
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
@@ -173,7 +185,14 @@ describe(`NgxSubFormComponent`, () => {
 
   describe(`value updated by the parent (write)`, () => {
     describe(`value is null or undefined`, () => {
-      it(`should set the form value`, () => {});
+      it(`should not even call transformToFormGroup hook`, () => {
+        const transformToFormGroupSpy = spyOn(subComponent, 'transformToFormGroup' as any);
+
+        [null, undefined].forEach(value => {
+          subComponent.writeValue(value as any);
+          expect(transformToFormGroupSpy).not.toHaveBeenCalled();
+        });
+      });
     });
 
     describe(`value is not null nor undefined`, () => {
@@ -273,6 +292,27 @@ describe(`NgxSubFormComponent`, () => {
 
         done();
       }, 0);
+    });
+
+    it(`should call onChange and onTouched callback **once** on next tick after the form has been updated multiple times in less than the debounce timing`, (done: () => void) => {
+      const onTouchedSpy = jasmine.createSpy('onTouchedSpy');
+      const onChangeSpy = jasmine.createSpy('onChangeSpy');
+
+      debouncedSubComponent.registerOnTouched(onTouchedSpy);
+      debouncedSubComponent.registerOnChange(onChangeSpy);
+
+      debouncedSubComponent.formGroupControls.color.setValue('red');
+      debouncedSubComponent.formGroupControls.color.setValue('blue');
+      debouncedSubComponent.formGroupControls.color.setValue('green');
+      debouncedSubComponent.formGroupControls.color.setValue('yellow');
+
+      setTimeout(() => {
+        expect(onTouchedSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledTimes(2);
+        expect(onChangeSpy).toHaveBeenCalledWith({ ...getDefaultValues(), color: 'yellow' });
+
+        done();
+      }, DEBOUNCE_TIMING + 100);
     });
   });
 

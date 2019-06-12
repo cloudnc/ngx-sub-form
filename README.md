@@ -2,10 +2,15 @@
 
 ![ngx-sub-form logo](https://user-images.githubusercontent.com/4950209/53812385-45f48900-3f53-11e9-8687-b57cd335f26e.png)
 
-Utility library for breaking down a form into multiple components.  
-Works well with polymorphic data structures.
+Utility library to manage forms with Angular.
 
-`ngx-sub-form` is here to help you **avoid** passing your `formGroup` as inputs and tackle down the boilerplate of creating a custom [`ControlValueAccessor`](https://angular.io/api/forms/ControlValueAccessor).
+Really small bundle (< 15kb) and no module to setup. Pick the class you need and extend it.
+
+Built for **all your different forms** (tiny to extra large!), this library will deal with all the boilerplate required to use a [`ControlValueAccessor`](https://blog.angularindepth.com/never-again-be-confused-when-implementing-controlvalueaccessor-in-angular-forms-93b9eee9ee83) internally and let you manage your most complex forms in a fast and easy way.
+
+From creating a small custom input, to breaking down a form into multiple sub components, `ngx-sub-form` will give you a lot of functionalities like better type safety to survive futur refactors (from both `TS` and `HTML`), remapping external data to the shape you need within your form, access nested errors and many more. It'll also save you from passing a `FormGroup` to an `@Input` :pray:.
+
+It also works particularly well with polymorphic data structures.
 
 [![npm version](https://badge.fury.io/js/ngx-sub-form.svg)](https://www.npmjs.com/package/ngx-sub-form)
 [![Build Status](https://travis-ci.org/cloudnc/ngx-sub-form.svg?branch=master)](https://travis-ci.org/cloudnc/ngx-sub-form)
@@ -24,25 +29,38 @@ If you want to see the demo in action, please visit [https://cloudnc.github.io/n
 
 ## Setup
 
-`ngx-sub-form` only provides
+`ngx-sub-form` provides
 
-- 2 classes: `NgxSubFormComponent`, `NgxSubFormRemapComponent`
-- 2 interfaces: `Controls<T>`, `ControlsNames<T>`
+- 2 classes for top level form components: `NgxRootFormComponent`, `NgxAutomaticRootFormComponent`
+- 2 classes for sub level form components: `NgxSubFormComponent`, `NgxSubFormRemapComponent`
+- 3 interfaces: `Controls<T>`, `ControlsNames<T>`, `FormGroupOptions<T>`
 - 1 function: `subformComponentProviders`
 
-So there's nothing to setup (like a module), you can just use them directly.
+So there's actually nothing to setup (like a module), you can just use them directly.
 
 ## Usage
 
-### When can I use `ngx-sub-form`?
+### When should I use `ngx-sub-form`?
 
-- When you create a simple form, it'll give you better typings
+**Short answer:** As soon as you've got a form!
+
+**Detailed answer:**
+
+- When you want to create a `ControlValueAccessor`
+- When you want to create a simple form, it'll give you better typings
 - When you want to create a bigger form that you need to split up into sub components
 - When dealing with polymorphic data that you want to display in a form
 
 ### Type safety you said?
 
-When extending `NgxSubFormComponent` or `NgxSubFormRemapComponent` you'll have access to the following properties (within `.ts` **and** `.html`):
+When extending one of the 4 core classes:
+
+- `NgxRootFormComponent`
+- `NgxAutomaticRootFormComponent`
+- `NgxSubFormComponent`
+- `NgxSubFormRemapComponent`
+
+You'll have access to the following properties (within your `.ts` **and** `.html` files):
 
 - `formGroup`: The actual form group, useful to define the binding `[formGroup]="formGroup"` into the view
 - `formControlNames`: All the control names available in your form. Use it when defining a `formControlName` like that `<input [formControlName]="formControlNames.yourControl">`
@@ -50,12 +68,15 @@ When extending `NgxSubFormComponent` or `NgxSubFormRemapComponent` you'll have a
 - `formGroupValues`: Access all the values of your form directly without doing `formGroup.get(formControlNames.yourControl).value`, instead just do `formGroupValues.yourControl` (and it'll be correctly typed!)
 - `formGroupErrors`: All the errors of the current form **including** the sub errors (if any), just use `formGroupErrors` or `formGroupErrors?.yourControl`. Notice the question mark in `formGroupErrors?.yourControl`, it **will return `null` if there's no error**
 
-With AOT turned on you'll get proper type checking within your TS **and** HTML files. When refactoring your interfaces your form will error if a property should no longer be here or if one is missing.
+With AOT turned on you'll get proper type checking within your TS **and** HTML files.  
+When refactoring your interfaces/classes, your form will error at build time if a property should no longer be here or if one is missing.
 
 ### First component level
 
-Within the component where the (top) form will be handled, you have to define the top level structure. You can do it manually as you'd usually do, but it's better to extend from `NgxSubFormComponent` as you'll get some type safety. If dealing with polymorphic data, **each type must have it's own form control**:  
+Within the component where the (top) form will be handled, you have to define the top level structure. You can do it manually as you'd usually do (by defining your own `FormGroup`), but it's better to extend from either `NgxRootFormComponent` or `NgxAutomaticRootFormComponent` as you'll get some type safety and other useful helpers. If dealing with polymorphic data, **each type must have it's own form control**:  
 (_even if it doesn't match your model, we'll talk about that later_)
+
+Before explaining the difference between `NgxRootFormComponent` or `NgxAutomaticRootFormComponent`, let's look at an example with a polymorphic type:
 
 ```ts
 enum ListingType {
@@ -78,7 +99,18 @@ interface OneListingForm {
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss'],
 })
-export class ListingComponent extends NgxSubFormComponent<OneListingForm> {
+export class ListingComponent extends NgxAutomaticRootFormComponent<OneListingForm> {
+  // as we're renaming the input, it'd be impossible for ngx-sub-form to guess
+  // the name of your input to then check within the `ngOnChanges` hook wheter
+  // it has been updated or not
+  // another solution would be to ask you to use a setter and call a hook but
+  // this is too verbose, that's why we created a decorator `@DataInput`
+  @DataInput()
+  @Input('listing')
+  public dataInput: OneListing | null | undefined;
+
+  public @Output('listingUpdated') dataOutput: EventEmitter<OneListingForm> = new EventEmitter();
+
   // to access it from the view
   public ListingType = ListingType;
 
@@ -96,41 +128,62 @@ export class ListingComponent extends NgxSubFormComponent<OneListingForm> {
 }
 ```
 
-Then, within the `.component.html` we create a `select` tag to choose between the 2 types:
+Then, within the `.component.html` we:
 
-```html
-<select [formControlName]="formControlNames.listingType">
-  <option *ngFor="let listingType of ListingType | keyvalue" [value]="listingType.value">
-    {{ listingType.value }}
-  </option>
-</select>
-```
-
-Now we need to create, based on the listing type, either a `DroidListingComponent` or a `VehicleListingComponent`:
+- Define the `formGroup`
+- Create a `select` tag to choose between the 2 types
+- Use `ngSwitch` directive to create either a `DroidProductComponent` or a `VehicleProductComponent`
 
 ```html
 <form [formGroup]="formGroup">
+  <select [formControlName]="formControlNames.listingType">
+    <option *ngFor="let listingType of ListingType | keyvalue" [value]="listingType.value">
+      {{ listingType.value }}
+    </option>
+  </select>
+
   <div [ngSwitch]="formGroupValues.listingType">
-    <app-droid-listing
+    <app-droid-product
       *ngSwitchCase="ListingType.DROID"
       [formControlName]="formControlNames.droidProduct"
-    ></app-droid-listing>
+    ></app-droid-product>
 
-    <app-vehicle-listing
+    <app-vehicle-product
       *ngSwitchCase="ListingType.VEHICLE"
       [formControlName]="formControlNames.vehicleProduct"
-    ></app-vehicle-listing>
+    ></app-vehicle-product>
   </div>
 </form>
 ```
 
-One thing to notice above:
+One thing to notice above: `<app-droid-product>` and `<app-vehicle-product>` **are** custom `ControlValueAccessor`s and let us bind them to `formControlName`, as we would with a regular `input` tag.
 
-- `<app-droid-listing>` and `<app-vehicle-listing>` **are** custom `ControlValueAccessor`s and let us bind them to `formControlName` as we would with an input.
+Every time the form changes, that component will `emit` a value from the `dataOutput` output (that you can rename). On the other hand, if there's an update, simply pass the new object as input and the form will be updated.
 
-### Second component level
+From the parent component you can do like the following:
 
-This is where `ngx-sub-form` is becoming (more) useful.  
+```html
+<app-listing-form [listing]="listing$ | async" (listingUpdated)="upsertListing($event)"></app-listing-form>
+```
+
+Differences between:
+
+- `NgxRootFormComponent`: Will never emit the form value automatically when it changes, to emit the value you'll have to call the method `manualSave` when needed
+- `NgxAutomaticRootFormComponent`: Will emit the form value as soon as there's a change. It's possible to customize the emission rate by overidding the `handleEmissionRate` method
+
+The method `handleEmissionRate` is available accross **all** the classes that `ngx-sub-form` offers. It takes an observable as input and expect another observable as output. One common case is to simply [`debounce`](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-debounce) the emission. If that's what you want to do, instead of manipulating the observable chain yourself you can just do:
+
+```ts
+protected handleEmissionRate(): (obs$: Observable<OneListingForm>) => Observable<OneListingForm> {
+  // debounce by 500ms
+  return NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES.debounce(500);
+}
+```
+
+### Second component level (optional)
+
+_Only useful if you're breaking up a form into sub components._
+
 All you have to do is:
 
 1. Add required providers using the utility function `subformComponentProviders`:
@@ -139,12 +192,12 @@ All you have to do is:
 +import { subformComponentProviders } from 'ngx-sub-form';
 
 @Component({
-  selector: 'app-vehicle-listing',
-  templateUrl: './vehicle-listing.component.html',
-  styleUrls: ['./vehicle-listing.component.scss'],
-+ providers: subformComponentProviders(VehicleListingComponent),
+  selector: 'app-vehicle-product',
+  templateUrl: './vehicle-product.component.html',
+  styleUrls: ['./vehicle-product.component.scss'],
++ providers: subformComponentProviders(VehicleProductComponent),
 })
-export class VehicleListingComponent {}
+export class VehicleProductComponent {}
 ```
 
 2. Make your original class extend `NgxSubFormComponent` **or** `NgxSubFormRemapComponent` if you need to remap the data (will be explained later):
@@ -153,19 +206,19 @@ export class VehicleListingComponent {}
 +import { subformComponentProviders } from 'ngx-sub-form';
 
 @Component({
-  selector: 'app-vehicle-listing',
-  templateUrl: './vehicle-listing.component.html',
-  styleUrls: ['./vehicle-listing.component.scss'],
-+ providers: subformComponentProviders(VehicleListingComponent),
+  selector: 'app-vehicle-product',
+  templateUrl: './vehicle-product.component.html',
+  styleUrls: ['./vehicle-product.component.scss'],
++ providers: subformComponentProviders(VehicleProductComponent),
 })
-+export class VehicleListingComponent extends NgxSubFormComponent {}
++export class VehicleProductComponent extends NgxSubFormComponent {}
 ```
 
 Define the controls of your form (as we previously did in the top form component):
 
 ```ts
 export class VehicleProductComponent extends NgxSubFormComponent<OneVehicleForm> {
-  protected getFormControls(): Controls<VehicleListing> {
+  protected getFormControls(): Controls<OneVehicle> {
     return {
       speeder: new FormControl(null),
       spaceship: new FormControl(null),
@@ -185,7 +238,7 @@ which will require you to define two interfaces:
 - One to model the data going into the form
 - The other to describe the data that will be set as the value
 
-Example, take a look into [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/vehicle-listing/vehicle-product.component.ts):
+Example, take a look into [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts):
 
 ```ts
 // merged few files together to make it easier to follow
@@ -255,7 +308,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 
 **You're always better off making your data structure better suit Angular forms, than abusing forms to fit your data pattern**
 
-For a complete example of this see `https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/vehicle-listing/vehicle-product.component.ts` (repeated below):
+For a complete example of this see `https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts` (repeated below):
 
 ```ts
 interface OneVehicleForm {
@@ -303,7 +356,8 @@ Our "incoming" object is of type `OneVehicle` but into that component we treat i
 ### Helpers
 
 - `onFormUpdate` hook: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered
-- `getFormGroupControlOptions` hook: Defines control options for construction of the internal FormGroup. Use this to define form-level validators
+- `getFormGroupControlOptions` hook: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
+- `handleEmissionRate` hook: Allows you to define a custom emission rate (top level or any sub level)
 
 e.g.
 

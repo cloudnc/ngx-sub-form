@@ -1,14 +1,18 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Controls, takeUntilDestroyed } from 'ngx-sub-form';
+import {
+  Controls,
+  takeUntilDestroyed,
+  // NgxAutomaticRootFormComponent,
+  // NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
+  DataInput,
+  NgxRootFormComponent,
+} from 'ngx-sub-form';
 import { tap } from 'rxjs/operators';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
-import { NgxRootFormComponent } from '../../../../../projects/ngx-sub-form/src/lib/ngx-root-form.component';
 import { OneDroid } from '../../../interfaces/droid.interface';
 import { OneVehicle } from '../../../interfaces/vehicle.interface';
 import { UnreachableCase } from '../../../shared/utils';
-// import { NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES } from '../../../../../projects/ngx-sub-form/src/lib/ngx-sub-form-utils';
-// import { NgxAutomaticRootFormComponent } from '../../../../../projects/ngx-sub-form/src/lib/ngx-automatic-root-form.component';
 // import { Observable } from 'rxjs';
 
 interface OneListingForm {
@@ -34,15 +38,14 @@ interface OneListingForm {
 // export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
 export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm>
   implements OnInit, OnDestroy {
+  @DataInput()
   // tslint:disable-next-line:no-input-rename
   @Input('listing')
-  public set dataInput(data: Required<OneListing> | null) {
-    super.dataInputUpdated(data);
-  }
+  public dataInput: Required<OneListing> | null | undefined;
 
   // tslint:disable-next-line:no-output-rename
   @Output('listingUpdated')
-  public dataOutput: EventEmitter<OneListing | null> = new EventEmitter();
+  public dataOutput: EventEmitter<OneListing> = new EventEmitter();
 
   public ListingType: typeof ListingType = ListingType;
 

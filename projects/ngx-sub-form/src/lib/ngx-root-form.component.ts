@@ -1,7 +1,7 @@
-import { EventEmitter, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { EventEmitter, OnInit } from '@angular/core';
 import isEqual from 'lodash-es/isEqual';
-import { BehaviorSubject, of, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, mapTo, startWith, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { isNil } from 'lodash-es';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 import { takeUntilDestroyed } from './ngx-sub-form-utils';
@@ -9,69 +9,40 @@ import { takeUntilDestroyed } from './ngx-sub-form-utils';
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
   implements OnInit {
-  public abstract dataInput: Required<ControlInterface> | null;
-  /** @internal */
-  protected _dataInput: Required<ControlInterface> | null = null;
-  public abstract dataOutput: EventEmitter<ControlInterface | null>;
+  public abstract dataInput: Required<ControlInterface> | null | undefined;
+  // `Input` values are set while the `ngOnChanges` hook is ran
+  // and it does happen before the `ngOnInit` where we start
+  // listening to `dataInput$`. Therefore, it cannot be a `Subject`
+  // or we will miss the first value
+  protected dataInput$: BehaviorSubject<Required<ControlInterface> | null | undefined> = new BehaviorSubject<
+    Required<ControlInterface> | null | undefined
+  >(null);
+
+  public abstract dataOutput: EventEmitter<ControlInterface>;
   // using a private variable `_dataOutput$` to be able to control the
   // emission rate with a debounce or throttle for ex
   /** @internal */
-  protected _dataOutput$: Subject<ControlInterface | null> = new Subject();
-
-  protected dataInput$: Subject<ControlInterface | null> = new Subject();
-  protected updateTimeoutMs = 500;
+  protected _dataOutput$: Subject<ControlInterface> = new Subject();
 
   protected emitInitialValueOnInit = false;
   protected emitNullOnDestroy = false;
 
   protected dataValue: ControlInterface | null = null;
 
-  /** @internal */
-  protected applyingChangeSignal = new BehaviorSubject(false);
-
-  protected applyingChange$ = this.applyingChangeSignal.pipe(
-    switchMap(isApplying => {
-      if (!isApplying) {
-        return of(false);
-      }
-
-      return timer(this.updateTimeoutMs).pipe(
-        mapTo(false),
-        startWith(true),
-      );
-    }),
-    distinctUntilChanged(),
-  );
-
   public ngOnInit(): void {
     // we need to manually call registerOnChange because that function
     // handles most of the logic from NgxSubForm and when it's called
     // as a ControlValueAccessor that function is called by Angular itself
-    this.registerOnChange(data => {
-      if (this.formGroup.invalid || isEqual(data, this._dataInput)) {
-        return;
-      }
+    this.registerOnChange(data => this.onRegisterOnChangeHook(data));
 
-      this.dataValue = data;
-    });
-
-    this.watchChanges();
-  }
-
-  /** @internal */
-  protected watchChanges() {
     this.dataInput$
       .pipe(
-        tap(() => this.applyingChangeSignal.next(false)),
-        filter(newValue => !isNil(newValue) && !isEqual(newValue, this.formGroup.value)),
-        tap(newValue => this.writeValue(newValue as Required<ControlInterface>)),
-        takeUntilDestroyed(this),
-      )
-      .subscribe();
-
-    this.applyingChange$
-      .pipe(
-        tap(isApplying => this.handleApplyingChangeTimeout(isApplying)),
+        filter(newValue => !isEqual(newValue, this.formGroup.value)),
+        tap(newValue => {
+          if (!isNil(newValue)) {
+            this.writeValue(newValue);
+          }
+        }),
         takeUntilDestroyed(this),
       )
       .subscribe();
@@ -84,15 +55,20 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
       .subscribe();
   }
 
-  protected dataInputUpdated(data: Required<ControlInterface> | null): void {
-    this._dataInput = data;
-    this.dataInput$.next(data);
+  /** @internal */
+  protected onRegisterOnChangeHook(data: ControlInterface | null): boolean {
+    if (this.formGroup.invalid || isEqual(data, this.dataInput$.value)) {
+      return false;
+    }
+
+    this.dataValue = data;
+    return true;
   }
 
-  protected handleApplyingChangeTimeout(changeApplying: boolean): void {
-    if (!changeApplying && !isEqual(this._dataInput, this.formGroup.value)) {
-      this.writeValue(this._dataInput);
-    }
+  // called by the DataInput decorator
+  /** @internal */
+  public dataInputUpdated(data: Required<ControlInterface> | null | undefined): void {
+    this.dataInput$.next(data);
   }
 
   public writeValue(obj: Required<ControlInterface> | null): void {
@@ -109,6 +85,8 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
   }
 
   public manualSave(): void {
-    this._dataOutput$.next(this.dataValue);
+    if (!isNil(this.dataValue)) {
+      this._dataOutput$.next(this.dataValue);
+    }
   }
 }

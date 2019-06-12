@@ -50,7 +50,7 @@ export function subformComponentProviders(
 
 const wrapAsQuote = (str: string): string => `"${str}"`;
 
-export class ArrayNotTransformedBeforeWriteValueError<T extends string> extends Error {
+export class ArrayNotTransformedBeforeWriteValueError extends Error {
   constructor() {
     super(
       `If you need to pass an array, please wrap it (for now) using "NgxSubFormRemapComponent" into an "array" property for example. Track direct array support here https://github.com/cloudnc/ngx-sub-form/issues/9`,

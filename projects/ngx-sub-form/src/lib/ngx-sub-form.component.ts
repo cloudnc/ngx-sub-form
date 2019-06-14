@@ -300,7 +300,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onTouched = fn;
   }
 
-  public setDisabledState(shouldDisable: boolean): void {
+  public setDisabledState(shouldDisable: boolean | undefined): void {
     if (!this.formGroup) {
       return;
     }

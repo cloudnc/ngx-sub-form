@@ -1,4 +1,4 @@
-import { EventEmitter, OnInit } from '@angular/core';
+import { EventEmitter, OnInit, Input } from '@angular/core';
 import isEqual from 'lodash-es/isEqual';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
@@ -23,6 +23,11 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
   // emission rate with a debounce or throttle for ex
   /** @internal */
   protected _dataOutput$: Subject<ControlInterface> = new Subject();
+
+  @Input()
+  public set disabled(shouldDisable: boolean | undefined) {
+    this.setDisabledState(shouldDisable);
+  }
 
   protected emitInitialValueOnInit = false;
   protected emitNullOnDestroy = false;

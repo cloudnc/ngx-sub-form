@@ -1,1 +1,7 @@
-<app-listing-form [listing]="listing$ | async" (listingUpdated)="upsertListing($event)"></app-listing-form>
+<mat-slide-toggle class="readonly" data-readonly [formControl]="readonlyFormControl">Readonly</mat-slide-toggle>
+
+<app-listing-form
+  [disabled]="readonlyFormControl.value"
+  [listing]="listing$ | async"
+  (listingUpdated)="upsertListing($event)"
+></app-listing-form>

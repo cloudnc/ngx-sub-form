@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   Controls,
@@ -36,8 +36,7 @@ interface OneListingForm {
   styleUrls: ['./listing-form.component.scss'],
 })
 // export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
-export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm>
-  implements OnInit, OnDestroy {
+export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm> {
   @DataInput()
   // tslint:disable-next-line:no-input-rename
   @Input('listing')
@@ -48,9 +47,6 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
   public dataOutput: EventEmitter<OneListing> = new EventEmitter();
 
   public ListingType: typeof ListingType = ListingType;
-
-  public readonlyFormControl: FormControl = new FormControl(false);
-  public autoSubmitFormControl: FormControl = new FormControl(false);
 
   // protected handleEmissionRate(): (obs$: Observable<OneListingForm>) => Observable<OneListingForm> {
   //   return NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES.debounce(500);
@@ -66,23 +62,6 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
       imageUrl: new FormControl(null, Validators.required),
       price: new FormControl(null, Validators.required),
     };
-  }
-
-  public ngOnInit(): void {
-    super.ngOnInit();
-
-    this.readonlyFormControl.valueChanges
-      .pipe(
-        tap((readonly: boolean) => {
-          if (readonly) {
-            this.formGroup.disable();
-          } else {
-            this.formGroup.enable();
-          }
-        }),
-        takeUntilDestroyed(this),
-      )
-      .subscribe();
   }
 
   protected transformFromFormGroup(formValue: OneListingForm): OneListing | null {

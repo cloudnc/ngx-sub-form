@@ -163,8 +163,14 @@ Every time the form changes, that component will `emit` a value from the `dataOu
 From the parent component you can do like the following:
 
 ```html
-<app-listing-form [listing]="listing$ | async" (listingUpdated)="upsertListing($event)"></app-listing-form>
+<app-listing-form
+  [disabled]="false"
+  [listing]="listing$ | async"
+  (listingUpdated)="upsertListing($event)"
+></app-listing-form>
 ```
+
+_Note the presence of disabled, this is an optional input provided by both `NgxRootFormComponent` and `NgxAutomaticRootFormComponent` that let you disable (or enable when true) the whole form._
 
 Differences between:
 

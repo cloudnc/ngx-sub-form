@@ -30,10 +30,16 @@ const getNewValues = (): Required<Vehicle> => ({
 
 @Component({
   template: `
-    <app-root-form [vehicle]="vehicle$ | async" (vehicleUpdated)="vehicleUpdated($event)"></app-root-form>
+    <app-root-form
+      [disabled]="disabled"
+      [vehicle]="vehicle$ | async"
+      (vehicleUpdated)="vehicleUpdated($event)"
+    ></app-root-form>
   `,
 })
 class TestWrapperComponent {
+  public disabled: boolean | null | undefined = false;
+
   public vehicle$: BehaviorSubject<Required<Vehicle>> = new BehaviorSubject(getDefaultValues());
 
   public vehicleUpdated(vehicle: Required<Vehicle>): void {}
@@ -54,7 +60,7 @@ class RootFormComponent extends NgxRootFormComponent<Vehicle> {
   @DataInput()
   // tslint:disable-next-line:no-input-rename
   @Input('vehicle')
-  public dataInput: Required<Vehicle> | null = null;
+  public dataInput: Required<Vehicle> | null | undefined = null;
 
   // tslint:disable-next-line:no-output-rename
   @Output('vehicleUpdated')
@@ -114,5 +120,29 @@ describe(`NgxRootFormComponent`, () => {
     componentForm.manualSave();
 
     expect(vehicleUpdatedSpy).toHaveBeenCalledWith(getNewValues());
+  });
+
+  it(`should be able to disable/enable the form via the "disabled" input`, () => {
+    expect(componentForm.formGroup.enabled).toBe(true);
+
+    component.disabled = true;
+    componentFixture.detectChanges();
+    expect(componentForm.formGroup.disabled).toBe(true);
+
+    component.disabled = null;
+    componentFixture.detectChanges();
+    expect(componentForm.formGroup.enabled).toBe(true);
+
+    component.disabled = undefined;
+    componentFixture.detectChanges();
+    expect(componentForm.formGroup.enabled).toBe(true);
+
+    component.disabled = false;
+    componentFixture.detectChanges();
+    expect(componentForm.formGroup.enabled).toBe(true);
+
+    component.disabled = true;
+    componentFixture.detectChanges();
+    expect(componentForm.formGroup.disabled).toBe(true);
   });
 });

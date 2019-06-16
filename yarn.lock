@@ -3673,6 +3673,11 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
+embedme@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/embedme/-/embedme-1.1.0.tgz#3bb2a498c217f8055868722c74b1bab39e0d9600"
+  integrity sha512-deaHIEcSsieJ7YWzDPzEkDsR+Wi6QdGLVmLygFm3QvZDwZS+KW8vEepsm28nv70U1SiPOX5UE9CZwQCcG/GTZg==
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"

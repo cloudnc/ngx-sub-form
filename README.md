@@ -390,8 +390,8 @@ interface PasswordForm {
 
 @Component({
   selector: 'app-password-sub-form',
-  templateUrl: './listing.component.html',
-  styleUrls: ['./listing.component.scss'],
+  templateUrl: './password-sub-form.component.html',
+  styleUrls: ['./password-sub-form.component.scss'],
   providers: subformComponentProviders(PasswordSubFormComponent),
 })
 class PasswordSubFormComponent extends NgxSubFormComponent<PasswordForm> {

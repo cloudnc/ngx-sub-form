@@ -61,6 +61,7 @@ const MATERIAL_MODULES = [
     AssassinDroidComponent,
     ListingFormComponent,
   ],
+  exports: [DroidProductComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

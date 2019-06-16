@@ -79,14 +79,18 @@ Within the component where the (top) form will be handled, you have to define th
 Before explaining the difference between `NgxRootFormComponent` or `NgxAutomaticRootFormComponent`, let's look at an example with a polymorphic type:
 
 ```ts
+// src/readme/listing.component.ts#L8-L58
+
 enum ListingType {
   VEHICLE = 'Vehicle',
   DROID = 'Droid',
 }
 
-interface OneListingForm {
+export interface OneListingForm {
+  id: string;
   title: string;
   price: number;
+  imageUrl: string;
 
   // polymorphic form where product can either be a vehicle or a droid
   listingType: ListingType | null;
@@ -99,17 +103,19 @@ interface OneListingForm {
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss'],
 })
-export class ListingComponent extends NgxAutomaticRootFormComponent<OneListingForm> {
+export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm> {
   // as we're renaming the input, it'd be impossible for ngx-sub-form to guess
   // the name of your input to then check within the `ngOnChanges` hook wheter
   // it has been updated or not
   // another solution would be to ask you to use a setter and call a hook but
   // this is too verbose, that's why we created a decorator `@DataInput`
   @DataInput()
+  // tslint:disable-next-line:no-input-rename
   @Input('listing')
   public dataInput: OneListing | null | undefined;
 
-  public @Output('listingUpdated') dataOutput: EventEmitter<OneListingForm> = new EventEmitter();
+  // tslint:disable-next-line:no-output-rename
+  @Output('listingUpdated') public dataOutput: EventEmitter<OneListing> = new EventEmitter();
 
   // to access it from the view
   public ListingType = ListingType;
@@ -135,9 +141,11 @@ Then, within the `.component.html` we:
 - Use `ngSwitch` directive to create either a `DroidProductComponent` or a `VehicleProductComponent`
 
 ```html
+<!-- src/readme/listing.component.html -->
+
 <form [formGroup]="formGroup">
   <select [formControlName]="formControlNames.listingType">
-    <option *ngFor="let listingType of ListingType | keyvalue" [value]="listingType.value">
+    <option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
       {{ listingType.value }}
     </option>
   </select>
@@ -163,6 +171,8 @@ Every time the form changes, that component will `emit` a value from the `dataOu
 From the parent component you can do like the following:
 
 ```html
+<!-- src/readme/listing-form-usage.html -->
+
 <app-listing-form
   [disabled]="false"
   [listing]="listing$ | async"
@@ -180,6 +190,8 @@ Differences between:
 The method `handleEmissionRate` is available accross **all** the classes that `ngx-sub-form` offers. It takes an observable as input and expect another observable as output. One common case is to simply [`debounce`](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-debounce) the emission. If that's what you want to do, instead of manipulating the observable chain yourself you can just do:
 
 ```ts
+// src/readme/handle-emission-rate.ts#L6-L9
+
 protected handleEmissionRate(): (obs$: Observable<OneListingForm>) => Observable<OneListingForm> {
   // debounce by 500ms
   return NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES.debounce(500);
@@ -194,37 +206,28 @@ All you have to do is:
 
 1. Add required providers using the utility function `subformComponentProviders`:
 
-```diff
-+import { subformComponentProviders } from 'ngx-sub-form';
+```ts
+// src/readme/steps/add-providers.ts#L2-L10
+
+import { subformComponentProviders } from 'ngx-sub-form';
 
 @Component({
   selector: 'app-vehicle-product',
   templateUrl: './vehicle-product.component.html',
   styleUrls: ['./vehicle-product.component.scss'],
-+ providers: subformComponentProviders(VehicleProductComponent),
+  providers: subformComponentProviders(VehicleProductComponent), // <-- Add this
 })
 export class VehicleProductComponent {}
 ```
 
 2. Make your original class extend `NgxSubFormComponent` **or** `NgxSubFormRemapComponent` if you need to remap the data (will be explained later):
-
-```diff
-+import { subformComponentProviders } from 'ngx-sub-form';
-
-@Component({
-  selector: 'app-vehicle-product',
-  templateUrl: './vehicle-product.component.html',
-  styleUrls: ['./vehicle-product.component.scss'],
-+ providers: subformComponentProviders(VehicleProductComponent),
-})
-+export class VehicleProductComponent extends NgxSubFormComponent {}
-```
-
-Define the controls of your form (as we previously did in the top form component):
+3. Implement the required interface by defining the controls of your form (as we previously did in the top form component):
 
 ```ts
+// src/readme/steps/add-controls.ts#L12-L20
+
 export class VehicleProductComponent extends NgxSubFormComponent<OneVehicleForm> {
-  protected getFormControls(): Controls<OneVehicle> {
+  protected getFormControls(): Controls<OneVehicleForm> {
     return {
       speeder: new FormControl(null),
       spaceship: new FormControl(null),
@@ -244,9 +247,11 @@ which will require you to define two interfaces:
 - One to model the data going into the form
 - The other to describe the data that will be set as the value
 
-Example, take a look into [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts):
+Example, take a look at [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts):
 
 ```ts
+// src/readme/vehicle-product.component.simplified.ts#L7-L69
+
 // merged few files together to make it easier to follow
 export interface BaseVehicle {
   color: string;
@@ -317,10 +322,12 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 For a complete example of this see `https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts` (repeated below):
 
 ```ts
-interface OneVehicleForm {
-  speeder: Speeder;
-  spaceship: Spaceship;
-  vehicleType: VehicleType;
+// src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts#L7-L50
+
+export interface OneVehicleForm {
+  speeder: Speeder | null;
+  spaceship: Spaceship | null;
+  vehicleType: VehicleType | null;
 }
 
 @Component({
@@ -330,13 +337,15 @@ interface OneVehicleForm {
   providers: subformComponentProviders(VehicleProductComponent),
 })
 export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle, OneVehicleForm> {
-  protected formControls: Controls<OneVehicleForm> = {
-    speeder: new FormControl(null),
-    spaceship: new FormControl(null),
-    vehicleType: new FormControl(null, { validators: [Validators.required] }),
-  };
-
   public VehicleType = VehicleType;
+
+  protected getFormControls(): Controls<OneVehicleForm> {
+    return {
+      speeder: new FormControl(null),
+      spaceship: new FormControl(null),
+      vehicleType: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
 
   protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
     return {
@@ -346,12 +355,16 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle {
+  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle | null {
     switch (formValue.vehicleType) {
       case VehicleType.SPEEDER:
         return formValue.speeder;
       case VehicleType.SPACESHIP:
         return formValue.spaceship;
+      case null:
+        return null;
+      default:
+        throw new UnreachableCase(formValue.vehicleType);
     }
   }
 }
@@ -368,12 +381,20 @@ Our "incoming" object is of type `OneVehicle` but into that component we treat i
 e.g.
 
 ```ts
+// src/readme/password-sub-form.component.ts#L5-L39
+
 interface PasswordForm {
   password: string;
   passwordRepeat: string;
 }
 
-class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
+@Component({
+  selector: 'app-password-sub-form',
+  templateUrl: './password-sub-form.component.html',
+  styleUrls: ['./password-sub-form.component.scss'],
+  providers: subformComponentProviders(PasswordSubFormComponent),
+})
+class PasswordSubFormComponent extends NgxSubFormComponent<PasswordForm> {
   protected getFormControls() {
     return {
       password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
@@ -402,6 +423,8 @@ class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
 Errors are exposed under the key `errors.formGroup` e.g.
 
 ```html
+<!-- src/readme/password-sub-form.component.html -->
+
 <input type="text" placeholder="Password" [formControlName]="formControlNames.password" />
 <mat-error *ngIf="formControlErrors?.password?.minlength">Password too short</mat-error>
 

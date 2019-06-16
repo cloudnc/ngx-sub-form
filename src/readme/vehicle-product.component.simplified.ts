@@ -1,10 +1,29 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
-import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
-import { UnreachableCase } from 'src/app/shared/utils';
+import { VehicleType } from '../app/interfaces/vehicle.interface';
+import { UnreachableCase } from '../app/shared/utils';
 
-export interface OneVehicleForm {
+// merged few files together to make it easier to follow
+export interface BaseVehicle {
+  color: string;
+  canFire: boolean;
+  numberOfPeopleOnBoard: number;
+}
+
+export interface Spaceship extends BaseVehicle {
+  vehicleType: VehicleType.SPACESHIP;
+  numberOfWings: number;
+}
+
+export interface Speeder extends BaseVehicle {
+  vehicleType: VehicleType.SPEEDER;
+  maximumSpeed: number;
+}
+
+export type OneVehicle = Spaceship | Speeder;
+
+interface OneVehicleForm {
   speeder: Speeder | null;
   spaceship: Spaceship | null;
   vehicleType: VehicleType | null;

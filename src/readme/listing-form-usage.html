@@ -1,0 +1,5 @@
+<app-listing-form
+  [disabled]="false"
+  [listing]="listing$ | async"
+  (listingUpdated)="upsertListing($event)"
+></app-listing-form>

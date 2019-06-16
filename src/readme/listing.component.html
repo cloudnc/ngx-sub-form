@@ -1,0 +1,19 @@
+<form [formGroup]="formGroup">
+  <select [formControlName]="formControlNames.listingType">
+    <option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
+      {{ listingType.value }}
+    </option>
+  </select>
+
+  <div [ngSwitch]="formGroupValues.listingType">
+    <app-droid-product
+      *ngSwitchCase="ListingType.DROID"
+      [formControlName]="formControlNames.droidProduct"
+    ></app-droid-product>
+
+    <app-vehicle-product
+      *ngSwitchCase="ListingType.VEHICLE"
+      [formControlName]="formControlNames.vehicleProduct"
+    ></app-vehicle-product>
+  </div>
+</form>

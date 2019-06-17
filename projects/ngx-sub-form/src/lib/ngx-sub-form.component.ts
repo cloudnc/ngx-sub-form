@@ -19,6 +19,7 @@ import {
   MissingFormControlsError,
   FormErrors,
   isNullOrUndefined,
+  ControlsType,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
@@ -27,11 +28,11 @@ type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof F
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
-  public get formGroupControls(): ControlMap<FormInterface, AbstractControl> {
+  public get formGroupControls(): ControlsType<FormInterface> {
     // @note form-group-undefined we need the no-null-assertion here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
     // tslint:disable-next-line:no-non-null-assertion
-    return this.mapControls<AbstractControl>()!;
+    return this.mapControls<any>()!;
   }
 
   public get formGroupValues(): Required<FormInterface> {

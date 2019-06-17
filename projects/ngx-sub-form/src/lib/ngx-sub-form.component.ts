@@ -6,6 +6,8 @@ import {
   FormGroup,
   ValidationErrors,
   Validator,
+  FormArray,
+  FormControl,
 } from '@angular/forms';
 import { merge, Observable, Subscription } from 'rxjs';
 import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
@@ -15,7 +17,6 @@ import {
   ControlsNames,
   FormUpdate,
   MissingFormControlsError,
-  ArrayNotTransformedBeforeWriteValueError,
   FormErrors,
   isNullOrUndefined,
 } from './ngx-sub-form-utils';
@@ -188,22 +189,34 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     const transformedValue: FormInterface = this.transformToFormGroup(obj);
 
-    // for now we throw an error if the transformed value isn't an object with all the expect values
-    // there's an issue to track support for an array https://github.com/cloudnc/ngx-sub-form/issues/9
-    if (Array.isArray(transformedValue)) {
-      throw new ArrayNotTransformedBeforeWriteValueError();
-    }
-
     const missingKeys: (keyof FormInterface)[] = this.getMissingKeys(transformedValue);
     if (missingKeys.length > 0) {
       throw new MissingFormControlsError(missingKeys as string[]);
     }
+
+    this.handleFormArrayControls(transformedValue);
 
     this.formGroup.setValue(transformedValue, {
       emitEvent: false,
     });
     this.formGroup.markAsPristine();
     this.formGroup.markAsUntouched();
+  }
+
+  private handleFormArrayControls(obj: any) {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (this.formGroup.get(key) instanceof FormArray && Array.isArray(value)) {
+        const formArray: FormArray = this.formGroup.get(key) as FormArray;
+
+        while (formArray.length > value.length) {
+          formArray.removeAt(formArray.length - 1);
+        }
+
+        while (formArray.length < value.length) {
+          formArray.push(new FormControl());
+        }
+      }
+    });
   }
 
   private getMissingKeys(transformedValue: FormInterface | null) {

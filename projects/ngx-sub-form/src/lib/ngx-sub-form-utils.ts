@@ -18,6 +18,8 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
+export type ControlsType<T> = { [K in keyof T]-?: T[K] extends any[] ? FormArray : FormControl };
+
 export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
 
 export type FormErrors<FormInterface> = null | Partial<

@@ -16,6 +16,12 @@ It also works particularly well with polymorphic data structures.
 [![Build Status](https://travis-ci.org/cloudnc/ngx-sub-form.svg?branch=master)](https://travis-ci.org/cloudnc/ngx-sub-form)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://commitizen.github.io/cz-cli/)
 
+## Blog post
+
+This README focuses on explaining how to use `ngx-sub-form`.
+
+If you first want to know more about the context, what we tried before creating that library and discover it through detailed examples, you can read a blog post about it here: https://dev.to/maxime1992/building-scalable-robust-and-type-safe-forms-with-angular-3nf9
+
 ## Install
 
 Install the [npm package](https://www.npmjs.com/package/ngx-sub-form): `ngx-sub-form`

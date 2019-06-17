@@ -17,9 +17,9 @@ import {
   MissingFormControlsError,
   ArrayNotTransformedBeforeWriteValueError,
   FormErrors,
+  isNullOrUndefined,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
-import { isNil } from 'lodash-es';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
@@ -182,7 +182,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     // if the value is null or undefined it might be because we're
     // switching from one value of a polymorphic type to another
     // for ex and in that case we don't want to go further
-    if (isNil(obj)) {
+    if (isNullOrUndefined(obj)) {
       return;
     }
 
@@ -210,7 +210,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     // `controlKeys` can be an empty array, empty forms are allowed
     const missingKeys: (keyof FormInterface)[] = this.controlKeys.reduce(
       (keys, key) => {
-        if (isNil(transformedValue) || transformedValue[key] === undefined) {
+        if (isNullOrUndefined(transformedValue) || transformedValue[key] === undefined) {
           keys.push(key);
         }
 

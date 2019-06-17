@@ -1,9 +1,10 @@
 import {
-  AbstractControl,
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   NG_VALIDATORS,
   ValidationErrors,
+  FormControl,
+  FormArray,
 } from '@angular/forms';
 import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
@@ -11,7 +12,7 @@ import { takeUntil, debounce } from 'rxjs/operators';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 import { NgxSubFormComponent } from './ngx-sub-form.component';
 
-export type Controls<T> = { [K in keyof T]-?: AbstractControl };
+export type Controls<T> = { [K in keyof T]-?: FormControl | FormArray };
 
 export type ControlsNames<T> = { [K in keyof T]-?: K };
 

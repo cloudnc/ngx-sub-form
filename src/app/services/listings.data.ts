@@ -13,7 +13,7 @@ export const hardCodedListings: OneListing[] = [
     product: {
       color: '#cec80d',
       canFire: true,
-      numberOfPeopleOnBoard: 6,
+      peopleOnBoard: [{ firstName: 'Obi-Wan', lastName: 'Kenobi' }, { firstName: 'R2', lastName: 'D2' }],
       numberOfWings: 0,
       vehicleType: VehicleType.SPACESHIP,
     },
@@ -28,7 +28,7 @@ export const hardCodedListings: OneListing[] = [
     product: {
       color: '#2468f7',
       canFire: true,
-      numberOfPeopleOnBoard: 2,
+      peopleOnBoard: [{ firstName: 'Anakin', lastName: 'Skywalker' }],
       vehicleType: VehicleType.SPEEDER,
       maximumSpeed: 250,
     },

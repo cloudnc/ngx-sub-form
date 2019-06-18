@@ -1,5 +1,5 @@
 <fieldset [formGroup]="formGroup" class="container">
-  <legend>Vehicle Form</legend>
+  <legend>Vehicle form</legend>
 
   <mat-form-field>
     <mat-select
@@ -7,7 +7,11 @@
       placeholder="Select vehicle type"
       [formControlName]="formControlNames.vehicleType"
     >
-      <mat-option *ngFor="let vehicleType of (VehicleType | keyvalue)" [value]="vehicleType.value">
+      <mat-option
+        data-select-vehicle-type-option
+        *ngFor="let vehicleType of (VehicleType | keyvalue)"
+        [value]="vehicleType.value"
+      >
         {{ vehicleType.value }}
       </mat-option>
     </mat-select>

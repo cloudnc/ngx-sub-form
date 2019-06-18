@@ -196,25 +196,6 @@ describe(`NgxSubFormComponent`, () => {
 
     describe(`value is not null nor undefined`, () => {
       // we should be able to pass a value `false`, or an empty string for ex
-      // todo: array
-      // it(`should throw an error when the value is different than an object`, () => {
-      //   const invalidValues: any[] = [1, true, false, '', 'some random string'];
-
-      //   // this could happen when using the setValue of patchValue on the top form as those methods are not strongly typed
-      //   // but not using `subComponent.formGroup.patchValue` here as the error would not be caught here because not directly
-      //   // called by that method
-      //   invalidValues.forEach(value =>
-      //     expect(() => subComponent.writeValue(value)).toThrow(
-      //       new MissingFormControlsError(['color', 'canFire', 'numberOfPeopleOnBoard']),
-      //     ),
-      //   );
-
-      //   const invalidArrays: any[] = [[], [1, 2, 3]];
-      //   invalidArrays.forEach(value =>
-      //     expect(() => subComponent.writeValue(value)).toThrow(new ArrayNotTransformedBeforeWriteValueError()),
-      //   );
-      // });
-
       it(`should throw an error when the value is missing any of the required keys to create the form`, () => {
         expect(() => subComponent.writeValue({ randomValue: 'ok' } as any)).toThrow(
           new MissingFormControlsError(['color', 'canFire', 'numberOfPeopleOnBoard']),

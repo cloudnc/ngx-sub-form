@@ -1,5 +1,5 @@
 <fieldset [formGroup]="formGroup" class="container">
-  <legend>Spaceship Form</legend>
+  <legend>Spaceship form</legend>
 
   <mat-form-field>
     <input
@@ -25,14 +25,5 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
-    <input
-      matInput
-      data-input-number-of-people-on-board
-      type="number"
-      placeholder="Number of people on board"
-      [formControlName]="formControlNames.numberOfPeopleOnBoard"
-      autocomplete="off"
-    />
-  </mat-form-field>
+  <app-people [formControlName]="formControlNames.peopleOnBoard"></app-people>
 </fieldset>

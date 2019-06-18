@@ -27,6 +27,15 @@ const getToggleValue = (element: HTMLElement, tag: string): boolean =>
     .find(`*[data-${tag}]`)
     .hasClass('mat-checked');
 
+const getPeople = (element: HTMLElement): { firstName: string; lastName: string }[] =>
+  Cypress.$(element)
+    .find('*[data-person]')
+    .map((_, $element) => ({
+      firstName: getTextFromInput($element, 'input-person-first-name'),
+      lastName: getTextFromInput($element, 'input-person-last-name'),
+    }))
+    .get();
+
 export const expectAll = (selector: string, cb: (el: Cypress.Chainable) => void) =>
   cy.get(selector).then($elements => {
     $elements.each((_, $element) => {
@@ -88,14 +97,14 @@ export const DOM = {
       get noErrors() {
         return cy.get(`*[data-no-error]`);
       },
-      get obj(): Cypress.Chainable<FormElement> {
+      getObj(type: VehicleType): Cypress.Chainable<FormElement> {
         const getVehicleObj = (element: HTMLElement, type: VehicleType) =>
           ({
             Spaceship: {
               spaceshipForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                numberOfPeopleOnBoard: +getTextFromInput(element, 'input-number-of-people-on-board'),
+                peopleOnBoard: getPeople(element),
                 numberOfWings: +getTextFromInput(element, 'input-number-of-wings'),
               },
             },
@@ -103,7 +112,7 @@ export const DOM = {
               speederForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                numberOfPeopleOnBoard: +getTextFromInput(element, 'input-number-of-people-on-board'),
+                peopleOnBoard: getPeople(element),
                 maximumSpeed: +getTextFromInput(element, 'input-maximum-speed'),
               },
             },
@@ -122,7 +131,7 @@ export const DOM = {
                 listingType: getSelectedOptionFromSelect(element, 'select-listing-type'),
                 vehicleForm: {
                   vehicleType: getSelectedOptionFromSelect(element, 'select-vehicle-type'),
-                  ...getVehicleObj(element, getSelectedOptionFromSelect(element, 'select-vehicle-type') as VehicleType),
+                  ...getVehicleObj(element, type),
                 },
               },
             }))
@@ -160,6 +169,24 @@ export const DOM = {
                 DOM.form.elements.droidForm.selectDroidType.click();
 
                 return cy.get(`*[data-select-droid-type-option]`).within(() => cy.contains(type).click());
+              },
+            };
+          },
+          get vehicleForm() {
+            return {
+              get name() {
+                return cy.get(`*[data-input-name]`);
+              },
+              get selectVehicleType() {
+                return cy.get(`*[data-select-vehicle-type]`);
+              },
+              selectVehicleTypeByType: (type: VehicleType) => {
+                DOM.form.elements.vehicleForm.selectVehicleType.click();
+
+                return cy.get(`*[data-select-vehicle-type-option]`).within(() => cy.contains(type).click());
+              },
+              get addPersonButton() {
+                return cy.get(`*[data-btn-add-person]`);
               },
             };
           },

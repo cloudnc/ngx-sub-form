@@ -1,0 +1,25 @@
+<fieldset [formGroup]="formGroup" class="container" data-person>
+  <legend>Person form</legend>
+
+  <mat-form-field>
+    <input
+      matInput
+      data-input-person-first-name
+      type="text"
+      placeholder="First name"
+      [formControlName]="formControlNames.firstName"
+      autocomplete="off"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      matInput
+      data-input-person-last-name
+      type="text"
+      placeholder="Last name"
+      [formControlName]="formControlNames.lastName"
+      autocomplete="off"
+    />
+  </mat-form-field>
+</fieldset>

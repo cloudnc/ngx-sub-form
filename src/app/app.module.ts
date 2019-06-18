@@ -30,6 +30,9 @@ import { VehicleProductComponent } from './main/listing/listing-form/vehicle-lis
 import { ListingComponent } from './main/listing/listing.component';
 import { ListingsComponent } from './main/listings/listings.component';
 import { MainComponent } from './main/main.component';
+import { PeopleComponent } from './main/listing/listing-form/vehicle-listing/people/people.component';
+import { PersonComponent } from './main/listing/listing-form/vehicle-listing/people/person/person.component';
+import { DisplayPeopleOnBoardPipe } from './main/listings/display-people-on-board.pipe';
 
 const MATERIAL_MODULES = [
   LayoutModule,
@@ -60,6 +63,9 @@ const MATERIAL_MODULES = [
     AstromechDroidComponent,
     AssassinDroidComponent,
     ListingFormComponent,
+    PeopleComponent,
+    PersonComponent,
+    DisplayPeopleOnBoardPipe,
   ],
   exports: [DroidProductComponent],
   imports: [

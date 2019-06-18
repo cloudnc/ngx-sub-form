@@ -1,3 +1,5 @@
+import { Person } from './person.interface';
+
 export enum VehicleType {
   SPACESHIP = 'Spaceship',
   SPEEDER = 'Speeder',
@@ -6,7 +8,7 @@ export enum VehicleType {
 export interface BaseVehicle {
   color: string;
   canFire: boolean;
-  numberOfPeopleOnBoard: number;
+  peopleOnBoard: Person[];
 }
 
 export interface Spaceship extends BaseVehicle {

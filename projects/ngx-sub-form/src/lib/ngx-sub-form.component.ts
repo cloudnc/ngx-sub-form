@@ -29,10 +29,13 @@ type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof F
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
   public get formGroupControls(): ControlsType<FormInterface> {
-    // @note form-group-undefined we need the no-null-assertion here because we do not want to expose the fact that
+    // @note form-group-undefined we need the return null here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
-    // tslint:disable-next-line:no-non-null-assertion
-    return this.mapControls<any>()!;
+    if (!this.formGroup) {
+      return null as any;
+    }
+
+    return this.formGroup.controls as ControlsType<FormInterface>;
   }
 
   public get formGroupValues(): Required<FormInterface> {
@@ -42,9 +45,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public get formGroupErrors(): FormErrors<FormInterface> {
-    const errors: Partial<
-      ControlMap<FormInterface, ValidationErrors | null>
-    > | null = this.mapControls<ValidationErrors | null>(ctrl => ctrl.errors, ctrl => ctrl.invalid);
+    const errors: Partial<ControlMap<FormInterface, ValidationErrors | null>> | null = this.mapControls<
+      ValidationErrors | ValidationErrors[] | null
+    >(ctrl => ctrl.errors, ctrl => ctrl.invalid);
 
     if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
       return null;
@@ -101,30 +104,37 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   private mapControls<MapValue>(
     mapControl: MapControlFunction<FormInterface, MapValue>,
     filterControl: FilterControlFunction<FormInterface>,
-  ): Partial<ControlMap<FormInterface, MapValue>> | null;
+  ): Partial<ControlMap<FormInterface, MapValue | MapValue[]>> | null;
   private mapControls<MapValue>(
-    mapControl?: MapControlFunction<FormInterface, MapValue>,
-  ): ControlMap<FormInterface, MapValue> | null;
+    mapControl: MapControlFunction<FormInterface, MapValue>,
+  ): ControlMap<FormInterface, MapValue | MapValue[]> | null;
   private mapControls<MapValue>(
-    mapControl?: MapControlFunction<FormInterface, MapValue>,
+    mapControl: MapControlFunction<FormInterface, MapValue>,
     filterControl: FilterControlFunction<FormInterface> = () => true,
-  ): Partial<ControlMap<FormInterface, MapValue>> | null {
+  ): Partial<ControlMap<FormInterface, MapValue | MapValue[]>> | null {
     if (!this.formGroup) {
       return null;
     }
 
     const formControls: Controls<FormInterface> = this.formGroup.controls;
 
-    if (!mapControl) {
-      return formControls as any;
-    }
-
-    const controls: Partial<ControlMap<FormInterface, MapValue>> = {};
+    const controls: Partial<ControlMap<FormInterface, MapValue | MapValue[]>> = {};
 
     for (const key in formControls) {
       if (this.formGroup.controls.hasOwnProperty(key)) {
         const control = formControls[key];
-        if (control && filterControl(control, key)) {
+
+        if (control instanceof FormArray) {
+          const values: MapValue[] = [];
+
+          for (let i = 0; i < control.length; i++) {
+            if (filterControl(control.at(i), key)) {
+              values.push(mapControl(control.at(i), key));
+            }
+          }
+
+          controls[key] = values;
+        } else if (control && filterControl(control, key)) {
           controls[key] = mapControl(control, key);
         }
       }

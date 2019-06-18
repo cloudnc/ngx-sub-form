@@ -4,7 +4,7 @@ import { DOM, expectAll } from '../../cypress/helpers/dom.helper';
 import { hardCodedListings } from './services/listings.data';
 import { hardcodedElementsToTestList, FormElement } from '../../cypress/helpers/data.helper';
 import { VehicleListing, ListingType } from './interfaces/listing.interface';
-import { Spaceship, Speeder } from './interfaces/vehicle.interface';
+import { Spaceship, Speeder, VehicleType } from './interfaces/vehicle.interface';
 import { DroidType } from './interfaces/droid.interface';
 
 context(`EJawa demo`, () => {
@@ -37,13 +37,13 @@ context(`EJawa demo`, () => {
             color: v.color,
             canFire: v.canFire,
             numberOfWings: v.numberOfWings,
-            numberOfPeopleOnBoard: v.numberOfPeopleOnBoard,
+            peopleOnBoard: v.peopleOnBoard,
           },
         },
       },
     };
 
-    DOM.form.obj.should('eql', expectedObj);
+    DOM.form.getObj(VehicleType.SPACESHIP).should('eql', expectedObj);
   });
 
   it(`should be able to go from a spaceship to a speeder and update the form`, () => {
@@ -67,14 +67,14 @@ context(`EJawa demo`, () => {
           speederForm: {
             color: v.color,
             canFire: v.canFire,
-            numberOfPeopleOnBoard: v.numberOfPeopleOnBoard,
+            peopleOnBoard: v.peopleOnBoard,
             maximumSpeed: v.maximumSpeed,
           },
         },
       },
     };
 
-    DOM.form.obj.should('eql', expectedObj);
+    DOM.form.getObj(VehicleType.SPEEDER).should('eql', expectedObj);
   });
 
   it(`should display the (nested) errors from the form`, () => {
@@ -83,6 +83,88 @@ context(`EJawa demo`, () => {
     DOM.form.errors.obj.should('eql', {
       listingType: {
         required: true,
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
+
+    DOM.form.elements.selectListingTypeByType(ListingType.VEHICLE);
+
+    DOM.form.errors.obj.should('eql', {
+      vehicleProduct: {
+        vehicleType: {
+          required: true,
+        },
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
+
+    DOM.form.elements.vehicleForm.selectVehicleTypeByType(VehicleType.SPACESHIP);
+
+    DOM.form.errors.obj.should('eql', {
+      vehicleProduct: {
+        spaceship: {
+          color: {
+            required: true,
+          },
+          peopleOnBoard: {
+            required: true,
+          },
+          numberOfWings: {
+            required: true,
+          },
+        },
+      },
+      title: {
+        required: true,
+      },
+      imageUrl: {
+        required: true,
+      },
+      price: {
+        required: true,
+      },
+    });
+
+    DOM.form.elements.vehicleForm.addPersonButton.click();
+
+    DOM.form.errors.obj.should('eql', {
+      vehicleProduct: {
+        spaceship: {
+          color: {
+            required: true,
+          },
+          peopleOnBoard: {
+            people: [
+              {
+                firstName: {
+                  required: true,
+                },
+                lastName: {
+                  required: true,
+                },
+              },
+            ],
+          },
+          numberOfWings: {
+            required: true,
+          },
+        },
       },
       title: {
         required: true,
@@ -183,6 +265,7 @@ context(`EJawa demo`, () => {
         expectAll(`input`, el => el.should('be.enabled'));
         expectAll(`mat-select`, el => el.should('not.have.class', 'mat-select-disabled'));
         expectAll(`mat-slide-toggle`, el => el.should('not.have.class', 'mat-disabled'));
+        expectAll(`button`, el => el.should('be.enabled'));
       });
     });
 
@@ -193,6 +276,7 @@ context(`EJawa demo`, () => {
         expectAll(`input`, el => el.should('be.disabled'));
         expectAll(`mat-select`, el => el.should('have.class', 'mat-select-disabled'));
         expectAll(`mat-slide-toggle`, el => el.should('have.class', 'mat-disabled'));
+        expectAll(`button`, el => el.should('be.disabled'));
       });
     });
   });

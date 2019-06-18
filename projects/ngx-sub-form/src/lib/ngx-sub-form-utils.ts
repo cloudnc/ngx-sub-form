@@ -23,7 +23,7 @@ export type ControlsType<T> = { [K in keyof T]-?: T[K] extends any[] ? FormArray
 export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
 
 export type FormErrors<FormInterface> = null | Partial<
-  ControlMap<FormInterface, ValidationErrors | null> & { formGroup?: ValidationErrors }
+  ControlMap<FormInterface, ValidationErrors | ValidationErrors[] | null> & { formGroup?: ValidationErrors }
 >;
 
 export function subformComponentProviders(

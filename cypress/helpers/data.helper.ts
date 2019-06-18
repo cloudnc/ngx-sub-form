@@ -2,6 +2,7 @@ import { OneListing, ListingType } from '../../src/app/interfaces/listing.interf
 import { UnreachableCase } from '../../src/app/shared/utils';
 import { DroidType } from '../../src/app/interfaces/droid.interface';
 import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { Person } from '../../src/app/interfaces/person.interface';
 
 export interface ListElement {
   readonly title: string;
@@ -18,7 +19,7 @@ export type VehicleFormElement = {
       readonly spaceshipForm: {
         readonly color: string;
         readonly canFire: boolean;
-        readonly numberOfPeopleOnBoard: number;
+        readonly peopleOnBoard: Person[];
         readonly numberOfWings: number;
       };
     }
@@ -26,7 +27,7 @@ export type VehicleFormElement = {
       readonly speederForm: {
         readonly color: string;
         readonly canFire: boolean;
-        readonly numberOfPeopleOnBoard: number;
+        readonly peopleOnBoard: Person[];
         readonly maximumSpeed: number;
       };
     });
@@ -97,7 +98,9 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
       switch (item.product.vehicleType) {
         case VehicleType.SPACESHIP:
           details = [
-            `Maximum people on board: ${item.product.numberOfPeopleOnBoard}`,
+            `People on board: ${item.product.peopleOnBoard
+              .map(person => `${person.firstName} ${person.lastName}`)
+              .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,
             `number of wings: ${item.product.numberOfWings}`,
           ].join(', ');
@@ -105,7 +108,9 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
 
         case VehicleType.SPEEDER:
           details = [
-            `Maximum people on board: ${item.product.numberOfPeopleOnBoard}`,
+            `People on board: ${item.product.peopleOnBoard
+              .map(person => `${person.firstName} ${person.lastName}`)
+              .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,
             `maximum speed: ${item.product.maximumSpeed}kph`,
           ].join(', ');

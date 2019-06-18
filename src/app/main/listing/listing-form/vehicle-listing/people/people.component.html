@@ -1,0 +1,22 @@
+<fieldset [formGroup]="formGroup" class="container">
+  <legend>People form</legend>
+
+  <div class="person" formArrayName="people" *ngFor="let person of formGroupControls.people.controls; let i = index">
+    <app-person [formControl]="person"></app-person>
+
+    <button mat-mini-fab color="primary" (click)="removePerson(i)" [disabled]="formGroup.disabled">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+  <button
+    mat-raised-button
+    data-btn-add-person
+    color="primary"
+    class="add-person"
+    (click)="addPerson()"
+    [disabled]="formGroup.disabled"
+  >
+    Add a person
+  </button>
+</fieldset>

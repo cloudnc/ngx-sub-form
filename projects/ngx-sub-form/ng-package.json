@@ -3,5 +3,6 @@
   "dest": "../../dist/ngx-sub-form",
   "lib": {
     "entryFile": "src/public_api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": ["lodash-es"]
 }

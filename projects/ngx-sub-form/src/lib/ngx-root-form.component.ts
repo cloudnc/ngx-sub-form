@@ -2,9 +2,8 @@ import { EventEmitter, OnInit, Input } from '@angular/core';
 import isEqual from 'lodash-es/isEqual';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
-import { isNil } from 'lodash-es';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
-import { takeUntilDestroyed } from './ngx-sub-form-utils';
+import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
 
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
@@ -44,7 +43,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
       .pipe(
         filter(newValue => !isEqual(newValue, this.formGroup.value)),
         tap(newValue => {
-          if (!isNil(newValue)) {
+          if (!isNullOrUndefined(newValue)) {
             this.writeValue(newValue);
           }
         }),
@@ -90,7 +89,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
   }
 
   public manualSave(): void {
-    if (!isNil(this.dataValue)) {
+    if (!isNullOrUndefined(this.dataValue)) {
       this._dataOutput$.next(this.dataValue);
     }
   }

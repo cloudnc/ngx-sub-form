@@ -95,3 +95,8 @@ export function takeUntilDestroyed<T>(component: OnDestroy): (source: Observable
     return source.pipe(takeUntil(onDestroy));
   };
 }
+
+/** @internal */
+export function isNullOrUndefined(obj: any): obj is null | undefined {
+  return obj === null || obj === undefined;
+}

@@ -2,6 +2,9 @@
   "name": "ngx-sub-form",
   "version": "0.0.1",
   "license": "MIT",
+  "dependencies": {
+    "lodash-es": "^4.17.0"
+  },
   "peerDependencies": {
     "@angular/common": "^8.0.0",
     "@angular/core": "^8.0.0"

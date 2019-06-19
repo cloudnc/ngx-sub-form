@@ -378,6 +378,104 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 
 Our "incoming" object is of type `OneVehicle` but into that component we treat it as a `OneVehicleForm` to split the vehicle (either a `speeder` or `spaceship`) in 2 **separated** properties.
 
+### Dealing with arrays
+
+When your data structure contains array(s), you may want to simply display the values in the view but chances are: You want to bind them to the form.
+
+In that case, working with a `FormArray` is the right way to go and for that, we will take advantage of the remap principles explained in the previous section.
+
+Example:
+
+```ts
+// src/app/main/listing/listing-form/vehicle-listing/people/people.component.ts#L6-L40
+
+interface PeopleForm {
+  people: Person[];
+}
+
+@Component({
+  selector: 'app-people',
+  templateUrl: './people.component.html',
+  styleUrls: ['./people.component.scss'],
+  providers: subformComponentProviders(PeopleComponent),
+})
+export class PeopleComponent extends NgxSubFormRemapComponent<Person[], PeopleForm> {
+  protected getFormControls(): Controls<PeopleForm> {
+    return {
+      people: new FormArray([]),
+    };
+  }
+
+  protected transformToFormGroup(obj: Person[] | null): PeopleForm {
+    return {
+      people: obj ? obj : [],
+    };
+  }
+
+  protected transformFromFormGroup(formValue: PeopleForm): Person[] | null {
+    return formValue.people;
+  }
+
+  public removePerson(index: number): void {
+    this.formGroupControls.people.removeAt(index);
+  }
+
+  public addPerson(): void {
+    this.formGroupControls.people.push(new FormControl());
+  }
+}
+```
+
+Then our view will look like the following:
+
+```html
+<!-- src/app/main/listing/listing-form/vehicle-listing/people/people.component.html#L1-L22 -->
+
+<fieldset [formGroup]="formGroup" class="container">
+  <legend>People form</legend>
+
+  <div class="person" formArrayName="people" *ngFor="let person of formGroupControls.people.controls; let i = index">
+    <app-person [formControl]="person"></app-person>
+
+    <button mat-mini-fab color="primary" (click)="removePerson(i)" [disabled]="formGroup.disabled">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+  <button
+    mat-raised-button
+    data-btn-add-person
+    color="primary"
+    class="add-person"
+    (click)="addPerson()"
+    [disabled]="formGroup.disabled"
+  >
+    Add a person
+  </button>
+</fieldset>
+```
+
+The `app-person` component is a simple `NgxSubFormComponent` as you can imagine:
+
+```ts
+// src/app/main/listing/listing-form/vehicle-listing/people/person/person.component.ts#L6-L19
+
+@Component({
+  selector: 'app-person',
+  templateUrl: './person.component.html',
+  styleUrls: ['./person.component.scss'],
+  providers: subformComponentProviders(PersonComponent),
+})
+export class PersonComponent extends NgxSubFormComponent<Person> {
+  protected getFormControls(): Controls<Person> {
+    return {
+      firstName: new FormControl(null, [Validators.required]),
+      lastName: new FormControl(null, [Validators.required]),
+    };
+  }
+}
+```
+
 ### Helpers
 
 - `onFormUpdate` hook: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered

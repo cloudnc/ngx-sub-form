@@ -20,6 +20,7 @@ import {
   FormErrors,
   isNullOrUndefined,
   ControlsType,
+  ArrayPropertyOf,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
@@ -224,7 +225,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         }
 
         while (formArray.length < value.length) {
-          formArray.push(new FormControl());
+          formArray.push(this.createFormArrayControl(key as ArrayPropertyOf<FormInterface>));
         }
       }
     });
@@ -244,6 +245,11 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     );
 
     return missingKeys;
+  }
+
+  // override this hook to customize the creation of a FormControl within a FormArray
+  protected createFormArrayControl(key: ArrayPropertyOf<FormInterface>): FormControl {
+    return new FormControl();
   }
 
   // when customizing the emission rate of your sub form component, remember not to **mutate** the stream

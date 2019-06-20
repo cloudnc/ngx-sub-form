@@ -26,6 +26,10 @@ export type FormErrors<FormInterface> = null | Partial<
   ControlMap<FormInterface, ValidationErrors | ValidationErrors[] | null> & { formGroup?: ValidationErrors }
 >;
 
+export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
+
+export type ArrayPropertyOf<T> = KeysWithType<T, Array<any>>;
+
 export function subformComponentProviders(
   component: any,
 ): {

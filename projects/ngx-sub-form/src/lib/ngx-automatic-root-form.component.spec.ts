@@ -55,7 +55,11 @@ class TestWrapperComponent {
       <input type="text" data-color [formControlName]="formControlNames.color" />
       <input type="radio" data-can-fire [formControlName]="formControlNames.canFire" value="true" />
       <input type="radio" data-can-fire [formControlName]="formControlNames.canFire" value="false" />
-      <input type="number" data-number-of-crew-members-on-board [formControlName]="formControlNames.numberOfCrewMembersOnBoard" />
+      <input
+        type="number"
+        data-number-of-crew-members-on-board
+        [formControlName]="formControlNames.numberOfCrewMembersOnBoard"
+      />
     </form>
   `,
 })

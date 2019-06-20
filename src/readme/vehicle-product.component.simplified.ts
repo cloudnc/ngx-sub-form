@@ -8,7 +8,7 @@ import { UnreachableCase } from '../app/shared/utils';
 export interface BaseVehicle {
   color: string;
   canFire: boolean;
-  numberOfPeopleOnBoard: number;
+  numberOfCrewMembersOnBoard: number;
 }
 
 export interface Spaceship extends BaseVehicle {

@@ -27,12 +27,12 @@ const getToggleValue = (element: HTMLElement, tag: string): boolean =>
     .find(`*[data-${tag}]`)
     .hasClass('mat-checked');
 
-const getPeople = (element: HTMLElement): { firstName: string; lastName: string }[] =>
+const getCrewMembers = (element: HTMLElement): { firstName: string; lastName: string }[] =>
   Cypress.$(element)
-    .find('*[data-person]')
+    .find('*[data-crew-member]')
     .map((_, $element) => ({
-      firstName: getTextFromInput($element, 'input-person-first-name'),
-      lastName: getTextFromInput($element, 'input-person-last-name'),
+      firstName: getTextFromInput($element, 'input-crew-member-first-name'),
+      lastName: getTextFromInput($element, 'input-crew-member-last-name'),
     }))
     .get();
 
@@ -104,7 +104,7 @@ export const DOM = {
               spaceshipForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                peopleOnBoard: getPeople(element),
+                crewMembersOnBoard: getCrewMembers(element),
                 numberOfWings: +getTextFromInput(element, 'input-number-of-wings'),
               },
             },
@@ -112,7 +112,7 @@ export const DOM = {
               speederForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                peopleOnBoard: getPeople(element),
+                crewMembersOnBoard: getCrewMembers(element),
                 maximumSpeed: +getTextFromInput(element, 'input-maximum-speed'),
               },
             },
@@ -185,8 +185,8 @@ export const DOM = {
 
                 return cy.get(`*[data-select-vehicle-type-option]`).within(() => cy.contains(type).click());
               },
-              get addPersonButton() {
-                return cy.get(`*[data-btn-add-person]`);
+              get addCrewMemberButton() {
+                return cy.get(`*[data-btn-add-crew-member]`);
               },
             };
           },

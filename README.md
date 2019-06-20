@@ -262,7 +262,7 @@ Example, take a look at [`VehicleProductComponent`](https://github.com/cloudnc/n
 export interface BaseVehicle {
   color: string;
   canFire: boolean;
-  numberOfPeopleOnBoard: number;
+  numberOfCrewMembersOnBoard: number;
 }
 
 export interface Spaceship extends BaseVehicle {
@@ -387,41 +387,41 @@ In that case, working with a `FormArray` is the right way to go and for that, we
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/people/people.component.ts#L6-L40
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L6-L40
 
-interface PeopleForm {
-  people: Person[];
+interface CrewMembersForm {
+  crewMembers: CrewMember[];
 }
 
 @Component({
-  selector: 'app-people',
-  templateUrl: './people.component.html',
-  styleUrls: ['./people.component.scss'],
-  providers: subformComponentProviders(PeopleComponent),
+  selector: 'app-crew-members',
+  templateUrl: './crew-members.component.html',
+  styleUrls: ['./crew-members.component.scss'],
+  providers: subformComponentProviders(CrewMembersComponent),
 })
-export class PeopleComponent extends NgxSubFormRemapComponent<Person[], PeopleForm> {
-  protected getFormControls(): Controls<PeopleForm> {
+export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm> {
+  protected getFormControls(): Controls<CrewMembersForm> {
     return {
-      people: new FormArray([]),
+      crewMembers: new FormArray([]),
     };
   }
 
-  protected transformToFormGroup(obj: Person[] | null): PeopleForm {
+  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm {
     return {
-      people: obj ? obj : [],
+      crewMembers: obj ? obj : [],
     };
   }
 
-  protected transformFromFormGroup(formValue: PeopleForm): Person[] | null {
-    return formValue.people;
+  protected transformFromFormGroup(formValue: CrewMembersForm): CrewMember[] | null {
+    return formValue.crewMembers;
   }
 
-  public removePerson(index: number): void {
-    this.formGroupControls.people.removeAt(index);
+  public removeCrewMember(index: number): void {
+    this.formGroupControls.crewMembers.removeAt(index);
   }
 
-  public addPerson(): void {
-    this.formGroupControls.people.push(new FormControl());
+  public addCrewMember(): void {
+    this.formGroupControls.crewMembers.push(new FormControl());
   }
 }
 ```
@@ -429,45 +429,49 @@ export class PeopleComponent extends NgxSubFormRemapComponent<Person[], PeopleFo
 Then our view will look like the following:
 
 ```html
-<!-- src/app/main/listing/listing-form/vehicle-listing/people/people.component.html#L1-L22 -->
+<!-- src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.html#L1-L22 -->
 
 <fieldset [formGroup]="formGroup" class="container">
-  <legend>People form</legend>
+  <legend>Crew members form</legend>
 
-  <div class="person" formArrayName="people" *ngFor="let person of formGroupControls.people.controls; let i = index">
-    <app-person [formControl]="person"></app-person>
+  <div
+    class="crew-member"
+    formArrayName="crewMembers"
+    *ngFor="let crewMember of formGroupControls.crewMembers.controls; let i = index"
+  >
+    <app-crew-member [formControl]="crewMember"></app-crew-member>
 
-    <button mat-mini-fab color="primary" (click)="removePerson(i)" [disabled]="formGroup.disabled">
+    <button mat-mini-fab color="primary" (click)="removeCrewMember(i)" [disabled]="formGroup.disabled">
       <mat-icon>delete</mat-icon>
     </button>
   </div>
 
   <button
     mat-raised-button
-    data-btn-add-person
+    data-btn-add-crew-member
     color="primary"
-    class="add-person"
-    (click)="addPerson()"
+    class="add-crew-member"
+    (click)="addCrewMember()"
     [disabled]="formGroup.disabled"
   >
-    Add a person
+    Add a crew member
   </button>
 </fieldset>
 ```
 
-The `app-person` component is a simple `NgxSubFormComponent` as you can imagine:
+The `app-crew-member` component is a simple `NgxSubFormComponent` as you can imagine:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/people/person/person.component.ts#L6-L19
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-member/crew-member.component.ts#L6-L19
 
 @Component({
-  selector: 'app-person',
-  templateUrl: './person.component.html',
-  styleUrls: ['./person.component.scss'],
-  providers: subformComponentProviders(PersonComponent),
+  selector: 'app-crew-member',
+  templateUrl: './crew-member.component.html',
+  styleUrls: ['./crew-member.component.scss'],
+  providers: subformComponentProviders(CrewMemberComponent),
 })
-export class PersonComponent extends NgxSubFormComponent<Person> {
-  protected getFormControls(): Controls<Person> {
+export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
+  protected getFormControls(): Controls<CrewMember> {
     return {
       firstName: new FormControl(null, [Validators.required]),
       lastName: new FormControl(null, [Validators.required]),

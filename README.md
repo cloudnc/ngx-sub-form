@@ -387,7 +387,7 @@ In that case, working with a `FormArray` is the right way to go and for that, we
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L6-L40
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L5-L54
 
 interface CrewMembersForm {
   crewMembers: CrewMember[];
@@ -423,13 +423,27 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   public addCrewMember(): void {
     this.formGroupControls.crewMembers.push(new FormControl());
   }
+
+  // following method is not required and return by default a simple FormControl
+  // if needed, you can use the `createFormArrayControl` hook to customize the creation
+  // of your `FormControl`s that will be added to the `FormArray`
+  protected createFormArrayControl(key: ArrayPropertyOf<CrewMembersForm>): FormControl {
+    switch (key) {
+      // note: the following string is type safe based on your form properties!
+      case 'crewMembers':
+        return new FormControl(null, [Validators.required]);
+
+      default:
+        return new FormControl(null);
+    }
+  }
 }
 ```
 
 Then our view will look like the following:
 
 ```html
-<!-- src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.html#L1-L22 -->
+<!-- src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.html#L1-L26 -->
 
 <fieldset [formGroup]="formGroup" class="container">
   <legend>Crew members form</legend>
@@ -484,6 +498,7 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 
 - `onFormUpdate` hook: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered
 - `getFormGroupControlOptions` hook: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
+- `createFormArrayControl` hook: Allows you to create the `FormControl` of a given property of your form (to define validators for example)
 - `handleEmissionRate` hook: Allows you to define a custom emission rate (top level or any sub level)
 
 e.g.

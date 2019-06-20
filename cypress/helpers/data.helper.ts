@@ -2,7 +2,7 @@ import { OneListing, ListingType } from '../../src/app/interfaces/listing.interf
 import { UnreachableCase } from '../../src/app/shared/utils';
 import { DroidType } from '../../src/app/interfaces/droid.interface';
 import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
-import { Person } from '../../src/app/interfaces/person.interface';
+import { CrewMember } from '../../src/app/interfaces/crew-member.interface';
 
 export interface ListElement {
   readonly title: string;
@@ -19,7 +19,7 @@ export type VehicleFormElement = {
       readonly spaceshipForm: {
         readonly color: string;
         readonly canFire: boolean;
-        readonly peopleOnBoard: Person[];
+        readonly crewMembersOnBoard: CrewMember[];
         readonly numberOfWings: number;
       };
     }
@@ -27,7 +27,7 @@ export type VehicleFormElement = {
       readonly speederForm: {
         readonly color: string;
         readonly canFire: boolean;
-        readonly peopleOnBoard: Person[];
+        readonly crewMembersOnBoard: CrewMember[];
         readonly maximumSpeed: number;
       };
     });
@@ -98,8 +98,8 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
       switch (item.product.vehicleType) {
         case VehicleType.SPACESHIP:
           details = [
-            `People on board: ${item.product.peopleOnBoard
-              .map(person => `${person.firstName} ${person.lastName}`)
+            `Crew members on board: ${item.product.crewMembersOnBoard
+              .map(crewMember => `${crewMember.firstName} ${crewMember.lastName}`)
               .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,
             `number of wings: ${item.product.numberOfWings}`,
@@ -108,8 +108,8 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
 
         case VehicleType.SPEEDER:
           details = [
-            `People on board: ${item.product.peopleOnBoard
-              .map(person => `${person.firstName} ${person.lastName}`)
+            `Crew members on board: ${item.product.crewMembersOnBoard
+              .map(crewMember => `${crewMember.firstName} ${crewMember.lastName}`)
               .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,
             `maximum speed: ${item.product.maximumSpeed}kph`,

@@ -1,0 +1,26 @@
+<fieldset [formGroup]="formGroup" class="container">
+  <legend>Crew members form</legend>
+
+  <div
+    class="crew-member"
+    formArrayName="crewMembers"
+    *ngFor="let crewMember of formGroupControls.crewMembers.controls; let i = index"
+  >
+    <app-crew-member [formControl]="crewMember"></app-crew-member>
+
+    <button mat-mini-fab color="primary" (click)="removeCrewMember(i)" [disabled]="formGroup.disabled">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+  <button
+    mat-raised-button
+    data-btn-add-crew-member
+    color="primary"
+    class="add-crew-member"
+    (click)="addCrewMember()"
+    [disabled]="formGroup.disabled"
+  >
+    Add a crew member
+  </button>
+</fieldset>

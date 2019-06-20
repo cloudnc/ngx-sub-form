@@ -13,16 +13,16 @@ import { Observable } from 'rxjs';
 interface Vehicle {
   color?: string | null;
   canFire: boolean | null;
-  numberOfPeopleOnBoard: number | null;
+  numberOfCrewMembersOnBoard: number | null;
 }
 
-const MIN_NUMBER_OF_PEOPLE_ON_BOARD = 5;
-const MAX_NUMBER_OF_PEOPLE_ON_BOARD = 15;
+const MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD = 5;
+const MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD = 15;
 
 const getDefaultValues = (): Required<Vehicle> => ({
   color: '#ffffff',
   canFire: true,
-  numberOfPeopleOnBoard: 10,
+  numberOfCrewMembersOnBoard: 10,
 });
 
 class SubComponent extends NgxSubFormComponent<Vehicle> {
@@ -31,9 +31,9 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
     return {
       color: new FormControl(getDefaultValues().color),
       canFire: new FormControl(getDefaultValues().canFire),
-      numberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard, [
-        Validators.min(MIN_NUMBER_OF_PEOPLE_ON_BOARD),
-        Validators.max(MAX_NUMBER_OF_PEOPLE_ON_BOARD),
+      numberOfCrewMembersOnBoard: new FormControl(getDefaultValues().numberOfCrewMembersOnBoard, [
+        Validators.min(MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD),
+        Validators.max(MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD),
       ]),
     };
   }
@@ -82,7 +82,7 @@ describe(`NgxSubFormComponent`, () => {
       expect(subComponent.formControlNames).toEqual({
         color: 'color',
         canFire: 'canFire',
-        numberOfPeopleOnBoard: 'numberOfPeopleOnBoard',
+        numberOfCrewMembersOnBoard: 'numberOfCrewMembersOnBoard',
       });
     });
 
@@ -91,7 +91,7 @@ describe(`NgxSubFormComponent`, () => {
 
       expect(subComponent.formGroup.get(subComponent.formControlNames.canFire)).not.toBeNull();
       expect(subComponent.formGroup.get(subComponent.formControlNames.color)).not.toBeNull();
-      expect(subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard)).not.toBeNull();
+      expect(subComponent.formGroup.get(subComponent.formControlNames.numberOfCrewMembersOnBoard)).not.toBeNull();
     });
 
     it(`should create a formGroupControls property to easily access all the formControls`, () => {
@@ -100,7 +100,7 @@ describe(`NgxSubFormComponent`, () => {
 
       expect(subComponent.formGroupControls.canFire).not.toBeNull();
       expect(subComponent.formGroupControls.color).not.toBeNull();
-      expect(subComponent.formGroupControls.numberOfPeopleOnBoard).not.toBeNull();
+      expect(subComponent.formGroupControls.numberOfCrewMembersOnBoard).not.toBeNull();
     });
 
     it(`should create a formGroupValues property to easily access all the values individually`, () => {
@@ -109,7 +109,7 @@ describe(`NgxSubFormComponent`, () => {
 
       expect(subComponent.formGroupValues.canFire).toEqual(true);
       expect(subComponent.formGroupValues.color).toEqual('#ffffff');
-      expect(subComponent.formGroupValues.numberOfPeopleOnBoard).toEqual(10);
+      expect(subComponent.formGroupValues.numberOfCrewMembersOnBoard).toEqual(10);
     });
   });
 
@@ -144,21 +144,21 @@ describe(`NgxSubFormComponent`, () => {
   describe(`validation`, () => {
     it(`should validate the field and return an object containing the errors if the formGroup is defined and invalid`, () => {
       // set one of the control to be invalid
-      (subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
-        MIN_NUMBER_OF_PEOPLE_ON_BOARD - 1,
+      (subComponent.formGroup.get(subComponent.formControlNames.numberOfCrewMembersOnBoard) as FormControl).setValue(
+        MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD - 1,
       );
       expect(subComponent.validate()).toEqual({
-        [subComponent.formControlNames.numberOfPeopleOnBoard]: { min: { min: 5, actual: 4 } },
+        [subComponent.formControlNames.numberOfCrewMembersOnBoard]: { min: { min: 5, actual: 4 } },
       });
     });
 
     it(`should give access to a formGroupErrors property`, () => {
       // set one of the control to be invalid
-      (subComponent.formGroup.get(subComponent.formControlNames.numberOfPeopleOnBoard) as FormControl).setValue(
-        MIN_NUMBER_OF_PEOPLE_ON_BOARD - 1,
+      (subComponent.formGroup.get(subComponent.formControlNames.numberOfCrewMembersOnBoard) as FormControl).setValue(
+        MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD - 1,
       );
       expect(subComponent.formGroupErrors).toEqual({
-        [subComponent.formControlNames.numberOfPeopleOnBoard]: { min: { min: 5, actual: 4 } },
+        [subComponent.formControlNames.numberOfCrewMembersOnBoard]: { min: { min: 5, actual: 4 } },
       } as any);
     });
 
@@ -198,13 +198,13 @@ describe(`NgxSubFormComponent`, () => {
       // we should be able to pass a value `false`, or an empty string for ex
       it(`should throw an error when the value is missing any of the required keys to create the form`, () => {
         expect(() => subComponent.writeValue({ randomValue: 'ok' } as any)).toThrow(
-          new MissingFormControlsError(['color', 'canFire', 'numberOfPeopleOnBoard']),
+          new MissingFormControlsError(['color', 'canFire', 'numberOfCrewMembersOnBoard']),
         );
         expect(() => subComponent.writeValue({ color: '' } as any)).toThrow(
-          new MissingFormControlsError(['canFire', 'numberOfPeopleOnBoard']),
+          new MissingFormControlsError(['canFire', 'numberOfCrewMembersOnBoard']),
         );
         expect(() => subComponent.writeValue({ color: '', canFire: true } as any)).toThrow(
-          new MissingFormControlsError(['numberOfPeopleOnBoard']),
+          new MissingFormControlsError(['numberOfCrewMembersOnBoard']),
         );
       });
 
@@ -230,7 +230,7 @@ describe(`NgxSubFormComponent`, () => {
         subComponent.formGroup.markAsDirty();
         expect(subComponent.formGroup.pristine).toBe(false);
 
-        subComponent.writeValue({ canFire: true, color: '#ffffff', numberOfPeopleOnBoard: 10 });
+        subComponent.writeValue({ canFire: true, color: '#ffffff', numberOfCrewMembersOnBoard: 10 });
         expect(subComponent.formGroup.pristine).toBe(true);
       });
     });
@@ -370,7 +370,7 @@ describe(`NgxSubFormComponent`, () => {
         });
 
         expect(spyOnChange).toHaveBeenCalledTimes(1);
-        expect(spyOnChange).toHaveBeenCalledWith({ color: 'red', canFire: false, numberOfPeopleOnBoard: 10 });
+        expect(spyOnChange).toHaveBeenCalledWith({ color: 'red', canFire: false, numberOfCrewMembersOnBoard: 10 });
 
         done();
       }, 0);
@@ -477,7 +477,7 @@ describe(`NgxSubFormComponent`, () => {
 interface VehicleForm {
   vehicleColor: Vehicle['color'] | null;
   vehicleCanFire: Vehicle['canFire'] | null;
-  vehicleNumberOfPeopleOnBoard: Vehicle['numberOfPeopleOnBoard'] | null;
+  vehicleNumberOfCrewMembersOnBoard: Vehicle['numberOfCrewMembersOnBoard'] | null;
 }
 
 class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
@@ -486,7 +486,7 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
     return {
       vehicleColor: new FormControl(getDefaultValues().color),
       vehicleCanFire: new FormControl(getDefaultValues().canFire),
-      vehicleNumberOfPeopleOnBoard: new FormControl(getDefaultValues().numberOfPeopleOnBoard),
+      vehicleNumberOfCrewMembersOnBoard: new FormControl(getDefaultValues().numberOfCrewMembersOnBoard),
     };
   }
 
@@ -494,7 +494,7 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
     return {
       vehicleColor: obj ? obj.color : null,
       vehicleCanFire: obj ? obj.canFire : null,
-      vehicleNumberOfPeopleOnBoard: obj ? obj.numberOfPeopleOnBoard : null,
+      vehicleNumberOfCrewMembersOnBoard: obj ? obj.numberOfCrewMembersOnBoard : null,
     };
   }
 
@@ -502,7 +502,7 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
     return {
       color: formValue.vehicleColor,
       canFire: formValue.vehicleCanFire,
-      numberOfPeopleOnBoard: formValue.vehicleNumberOfPeopleOnBoard,
+      numberOfCrewMembersOnBoard: formValue.vehicleNumberOfCrewMembersOnBoard,
     };
   }
 }
@@ -530,7 +530,7 @@ describe(`NgxSubFormRemapComponent`, () => {
           {
             vehicleColor: getDefaultValues().color,
             vehicleCanFire: getDefaultValues().canFire,
-            vehicleNumberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
+            vehicleNumberOfCrewMembersOnBoard: getDefaultValues().numberOfCrewMembersOnBoard,
           },
           {
             emitEvent: false,
@@ -550,7 +550,7 @@ describe(`NgxSubFormRemapComponent`, () => {
       const expectedValue: Vehicle = {
         color: getDefaultValues().color,
         canFire: getDefaultValues().canFire,
-        numberOfPeopleOnBoard: getDefaultValues().numberOfPeopleOnBoard,
+        numberOfCrewMembersOnBoard: getDefaultValues().numberOfCrewMembersOnBoard,
       };
 
       expect(onChangeSpy).not.toHaveBeenCalled();
@@ -563,13 +563,13 @@ describe(`NgxSubFormRemapComponent`, () => {
         const newExpectation = {
           color: 'green',
           canFire: false,
-          numberOfPeopleOnBoard: 12,
+          numberOfCrewMembersOnBoard: 12,
         };
 
         subRemapComponent.formGroup.setValue({
           vehicleColor: newExpectation.color,
           vehicleCanFire: newExpectation.canFire,
-          vehicleNumberOfPeopleOnBoard: newExpectation.numberOfPeopleOnBoard,
+          vehicleNumberOfCrewMembersOnBoard: newExpectation.numberOfCrewMembersOnBoard,
         });
 
         setTimeout(() => {

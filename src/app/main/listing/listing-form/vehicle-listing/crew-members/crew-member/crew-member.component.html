@@ -1,10 +1,10 @@
-<fieldset [formGroup]="formGroup" class="container" data-person>
-  <legend>Person form</legend>
+<fieldset [formGroup]="formGroup" class="container" data-crew-member>
+  <legend>Crew member form</legend>
 
   <mat-form-field>
     <input
       matInput
-      data-input-person-first-name
+      data-input-crew-member-first-name
       type="text"
       placeholder="First name"
       [formControlName]="formControlNames.firstName"
@@ -15,7 +15,7 @@
   <mat-form-field>
     <input
       matInput
-      data-input-person-last-name
+      data-input-crew-member-last-name
       type="text"
       placeholder="Last name"
       [formControlName]="formControlNames.lastName"

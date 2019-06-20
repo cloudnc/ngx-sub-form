@@ -37,7 +37,7 @@ context(`EJawa demo`, () => {
             color: v.color,
             canFire: v.canFire,
             numberOfWings: v.numberOfWings,
-            peopleOnBoard: v.peopleOnBoard,
+            crewMembersOnBoard: v.crewMembersOnBoard,
           },
         },
       },
@@ -67,7 +67,7 @@ context(`EJawa demo`, () => {
           speederForm: {
             color: v.color,
             canFire: v.canFire,
-            peopleOnBoard: v.peopleOnBoard,
+            crewMembersOnBoard: v.crewMembersOnBoard,
             maximumSpeed: v.maximumSpeed,
           },
         },
@@ -122,7 +122,7 @@ context(`EJawa demo`, () => {
           color: {
             required: true,
           },
-          peopleOnBoard: {
+          crewMembersOnBoard: {
             required: true,
           },
           numberOfWings: {
@@ -141,7 +141,7 @@ context(`EJawa demo`, () => {
       },
     });
 
-    DOM.form.elements.vehicleForm.addPersonButton.click();
+    DOM.form.elements.vehicleForm.addCrewMemberButton.click();
 
     DOM.form.errors.obj.should('eql', {
       vehicleProduct: {
@@ -149,8 +149,8 @@ context(`EJawa demo`, () => {
           color: {
             required: true,
           },
-          peopleOnBoard: {
-            people: [
+          crewMembersOnBoard: {
+            crewMembers: [
               {
                 firstName: {
                   required: true,

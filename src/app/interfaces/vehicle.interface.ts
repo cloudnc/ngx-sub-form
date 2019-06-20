@@ -1,4 +1,4 @@
-import { Person } from './person.interface';
+import { CrewMember } from './crew-member.interface';
 
 export enum VehicleType {
   SPACESHIP = 'Spaceship',
@@ -8,7 +8,7 @@ export enum VehicleType {
 export interface BaseVehicle {
   color: string;
   canFire: boolean;
-  peopleOnBoard: Person[];
+  crewMembersOnBoard: CrewMember[];
 }
 
 export interface Spaceship extends BaseVehicle {

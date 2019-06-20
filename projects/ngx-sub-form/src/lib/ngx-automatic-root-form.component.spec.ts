@@ -10,28 +10,28 @@ import { NgxAutomaticRootFormComponent } from './ngx-automatic-root-form.compone
 interface Vehicle {
   color?: string | null;
   canFire: boolean | null;
-  numberOfPeopleOnBoard: number | null;
+  numberOfCrewMembersOnBoard: number | null;
 }
 
-const MIN_NUMBER_OF_PEOPLE_ON_BOARD = 5;
-const MAX_NUMBER_OF_PEOPLE_ON_BOARD = 15;
+const MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD = 5;
+const MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD = 15;
 
 const getDefaultValues = (): Required<Vehicle> => ({
   color: '#ffffff',
   canFire: true,
-  numberOfPeopleOnBoard: 10,
+  numberOfCrewMembersOnBoard: 10,
 });
 
 const getNewCorrectValues = (): Required<Vehicle> => ({
   color: '#000000',
   canFire: false,
-  numberOfPeopleOnBoard: 15,
+  numberOfCrewMembersOnBoard: 15,
 });
 
 const getNewIncorrectValues = (): Required<Vehicle> => ({
   color: '#000000',
   canFire: false,
-  numberOfPeopleOnBoard: MAX_NUMBER_OF_PEOPLE_ON_BOARD + 1,
+  numberOfCrewMembersOnBoard: MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD + 1,
 });
 
 @Component({
@@ -55,7 +55,7 @@ class TestWrapperComponent {
       <input type="text" data-color [formControlName]="formControlNames.color" />
       <input type="radio" data-can-fire [formControlName]="formControlNames.canFire" value="true" />
       <input type="radio" data-can-fire [formControlName]="formControlNames.canFire" value="false" />
-      <input type="number" data-number-of-people-on-board [formControlName]="formControlNames.numberOfPeopleOnBoard" />
+      <input type="number" data-number-of-crew-members-on-board [formControlName]="formControlNames.numberOfCrewMembersOnBoard" />
     </form>
   `,
 })
@@ -73,9 +73,9 @@ class AutomaticRootFormComponent extends NgxAutomaticRootFormComponent<Vehicle> 
     return {
       color: new FormControl(null),
       canFire: new FormControl(null, [Validators.required]),
-      numberOfPeopleOnBoard: new FormControl(null, [
-        Validators.min(MIN_NUMBER_OF_PEOPLE_ON_BOARD),
-        Validators.max(MAX_NUMBER_OF_PEOPLE_ON_BOARD),
+      numberOfCrewMembersOnBoard: new FormControl(null, [
+        Validators.min(MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD),
+        Validators.max(MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD),
       ]),
     };
   }
@@ -127,13 +127,13 @@ describe(`NgxAutomaticRootFormComponent`, () => {
     setTimeout(() => {
       expect(vehicleUpdatedSpy).not.toHaveBeenCalled();
 
-      componentForm.formGroupControls.numberOfPeopleOnBoard.setValue(MAX_NUMBER_OF_PEOPLE_ON_BOARD);
+      componentForm.formGroupControls.numberOfCrewMembersOnBoard.setValue(MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD);
       // shouldn't require to call `componentForm.manualSave()`!
 
       setTimeout(() => {
         expect(vehicleUpdatedSpy).toHaveBeenCalledWith({
           ...getNewIncorrectValues(),
-          numberOfPeopleOnBoard: MAX_NUMBER_OF_PEOPLE_ON_BOARD,
+          numberOfCrewMembersOnBoard: MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD,
         });
         done();
       }, 0);

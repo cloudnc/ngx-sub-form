@@ -220,6 +220,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       if (this.formGroup.get(key) instanceof FormArray && Array.isArray(value)) {
         const formArray: FormArray = this.formGroup.get(key) as FormArray;
 
+        // instead of creating a new array every time and push a new FormControl
+        // we just remove or add what is necessary so that:
+        // - it is as efficient as possible and do not create unnecessary FormControl every time
+        // - validators are not destroyed/created again and eventually fire again for no reason
         while (formArray.length > value.length) {
           formArray.removeAt(formArray.length - 1);
         }
@@ -248,7 +252,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   // override this hook to customize the creation of a FormControl within a FormArray
-  protected createFormArrayControl(key: ArrayPropertyOf<FormInterface>): FormControl {
+  // the undefined is required here as otherwise classes that are not overriding that hook
+  // and do not have an array in the `FormInterface` would error as the type of key would be undefined
+  protected createFormArrayControl(key: ArrayPropertyOf<FormInterface> | undefined): FormControl {
     return new FormControl();
   }
 

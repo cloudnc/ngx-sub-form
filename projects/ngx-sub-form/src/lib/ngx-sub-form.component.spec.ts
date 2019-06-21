@@ -1,12 +1,14 @@
 /// <reference types="jasmine" />
 
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormArray } from '@angular/forms';
 import {
   FormGroupOptions,
   NgxSubFormComponent,
   NgxSubFormRemapComponent,
   MissingFormControlsError,
   NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
+  Controls,
+  ArrayPropertyOf,
 } from '../public_api';
 import { Observable } from 'rxjs';
 
@@ -579,5 +581,107 @@ describe(`NgxSubFormRemapComponent`, () => {
         }, 0);
       }, 0);
     });
+  });
+});
+
+interface VehiclesArrayForm {
+  vehicles: Vehicle[];
+}
+
+class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm> {
+  protected getFormControls(): Controls<VehiclesArrayForm> {
+    return {
+      vehicles: new FormArray([]),
+    };
+  }
+
+  protected transformToFormGroup(obj: Vehicle[] | null): VehiclesArrayForm {
+    return {
+      vehicles: obj ? obj : [],
+    };
+  }
+
+  protected transformFromFormGroup(formValue: VehiclesArrayForm): Vehicle[] | null {
+    return formValue.vehicles;
+  }
+
+  public createFormArrayControl(key: ArrayPropertyOf<VehiclesArrayForm> | undefined): FormControl {
+    return new FormControl(null, [Validators.required]);
+  }
+}
+
+describe(`NgxSubFormArrayComponent`, () => {
+  let subArrayComponent: SubArrayComponent;
+
+  beforeEach((done: () => void) => {
+    subArrayComponent = new SubArrayComponent();
+
+    // we have to call `updateValueAndValidity` within the constructor in an async way
+    // and here we need to wait for it to run
+    setTimeout(() => {
+      done();
+    }, 0);
+  });
+
+  it(`should have the correct values within the 'FormArray'`, () => {
+    const onChangeSpy = jasmine.createSpy('onChangeSpy');
+
+    subArrayComponent.registerOnChange(onChangeSpy);
+
+    const values = [
+      { canFire: true, color: 'color-1', numberOfCrewMembersOnBoard: 1 },
+      { canFire: false, color: 'color-2', numberOfCrewMembersOnBoard: 2 },
+    ];
+
+    subArrayComponent.writeValue(values);
+
+    expect(subArrayComponent.formGroupControls.vehicles.value).toEqual(values);
+
+    const newValue = { canFire: true, color: 'color-3', numberOfCrewMembersOnBoard: 3 };
+
+    subArrayComponent.writeValue([...values, newValue]);
+
+    expect(subArrayComponent.formGroupControls.vehicles.value).toEqual([...values, newValue]);
+  });
+
+  it(`should keep existing 'FormControl's within the array when removing or adding values to the array`, () => {
+    const onChangeSpy = jasmine.createSpy('onChangeSpy');
+
+    subArrayComponent.registerOnChange(onChangeSpy);
+
+    const values = [
+      { canFire: true, color: 'color-1', numberOfCrewMembersOnBoard: 1 },
+      { canFire: false, color: 'color-2', numberOfCrewMembersOnBoard: 2 },
+    ];
+
+    subArrayComponent.writeValue(values);
+
+    const fc1: FormControl = subArrayComponent.formGroupControls.vehicles.at(0) as FormControl;
+    const fc2: FormControl = subArrayComponent.formGroupControls.vehicles.at(1) as FormControl;
+
+    const newValue = { canFire: true, color: 'color-3', numberOfCrewMembersOnBoard: 3 };
+
+    subArrayComponent.writeValue([...values, newValue]);
+
+    expect(subArrayComponent.formGroupControls.vehicles.at(0)).toBe(fc1);
+    expect(subArrayComponent.formGroupControls.vehicles.at(1)).toBe(fc2);
+  });
+
+  it(`should be possible to create a FormControl from the 'createFormArrayControl' hook based on the current property`, () => {
+    const onChangeSpy = jasmine.createSpy('onChangeSpy');
+
+    subArrayComponent.registerOnChange(onChangeSpy);
+
+    const createFormArrayControl = spyOn(subArrayComponent, 'createFormArrayControl').and.callThrough();
+
+    const values = [
+      { canFire: true, color: 'color-1', numberOfCrewMembersOnBoard: 1 },
+      { canFire: false, color: 'color-2', numberOfCrewMembersOnBoard: 2 },
+    ];
+
+    subArrayComponent.writeValue(values);
+
+    expect(createFormArrayControl).toHaveBeenCalledTimes(2);
+    expect(createFormArrayControl).toHaveBeenCalledWith('vehicles');
   });
 });

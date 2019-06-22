@@ -5,6 +5,7 @@ import {
   ValidationErrors,
   FormControl,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
@@ -12,13 +13,13 @@ import { takeUntil, debounce } from 'rxjs/operators';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 import { NgxSubFormComponent } from './ngx-sub-form.component';
 
-export type Controls<T> = { [K in keyof T]-?: FormControl | FormArray };
+export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
 export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
-export type ControlsType<T> = { [K in keyof T]-?: T[K] extends any[] ? FormArray : FormControl };
+export type ControlsType<T> = { [K in keyof T]-?: T[K] extends any[] ? FormArray : AbstractControl };
 
 export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
 

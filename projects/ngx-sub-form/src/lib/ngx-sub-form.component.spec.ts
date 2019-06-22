@@ -8,7 +8,7 @@ import {
   MissingFormControlsError,
   NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
   Controls,
-  ArrayPropertyOf,
+  ArrayPropertyOf, ArrayTypeOfPropertyOf, NgxFormWithArrayControls,
 } from '../public_api';
 import { Observable } from 'rxjs';
 
@@ -74,9 +74,7 @@ describe(`NgxSubFormComponent`, () => {
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
-    setTimeout(() => {
-      done();
-    }, 0);
+    setTimeout(done);
   });
 
   describe(`created`, () => {
@@ -588,7 +586,7 @@ interface VehiclesArrayForm {
   vehicles: Vehicle[];
 }
 
-class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm> {
+class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm> implements NgxFormWithArrayControls<VehiclesArrayForm> {
   protected getFormControls(): Controls<VehiclesArrayForm> {
     return {
       vehicles: new FormArray([]),
@@ -605,12 +603,12 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
     return formValue.vehicles;
   }
 
-  public createFormArrayControl(key: ArrayPropertyOf<VehiclesArrayForm> | undefined): FormControl {
-    return new FormControl(null, [Validators.required]);
+  public createFormArrayControl(key: ArrayPropertyOf<VehiclesArrayForm> | undefined, initialValue: ArrayTypeOfPropertyOf<VehiclesArrayForm>): FormControl {
+    return new FormControl(initialValue, [Validators.required]);
   }
 }
 
-describe(`NgxSubFormArrayComponent`, () => {
+describe(`SubArrayComponent`, () => {
   let subArrayComponent: SubArrayComponent;
 
   beforeEach((done: () => void) => {
@@ -618,9 +616,7 @@ describe(`NgxSubFormArrayComponent`, () => {
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
-    setTimeout(() => {
-      done();
-    }, 0);
+    setTimeout(done);
   });
 
   it(`should have the correct values within the 'FormArray'`, () => {
@@ -663,14 +659,17 @@ describe(`NgxSubFormArrayComponent`, () => {
 
     subArrayComponent.writeValue([...values, newValue]);
 
+    // check the form controls are the exact same instances
     expect(subArrayComponent.formGroupControls.vehicles.at(0)).toBe(fc1);
     expect(subArrayComponent.formGroupControls.vehicles.at(1)).toBe(fc2);
+
+    // check the values are unchanged
+    expect(subArrayComponent.formGroupControls.vehicles.at(0).value).toBe(values[0]);
+    expect(subArrayComponent.formGroupControls.vehicles.at(1).value).toBe(values[1]);
+    expect(subArrayComponent.formGroupControls.vehicles.at(2).value).toBe(newValue);
   });
 
   it(`should be possible to create a FormControl from the 'createFormArrayControl' hook based on the current property`, () => {
-    const onChangeSpy = jasmine.createSpy('onChangeSpy');
-
-    subArrayComponent.registerOnChange(onChangeSpy);
 
     const createFormArrayControl = spyOn(subArrayComponent, 'createFormArrayControl').and.callThrough();
 
@@ -682,6 +681,11 @@ describe(`NgxSubFormArrayComponent`, () => {
     subArrayComponent.writeValue(values);
 
     expect(createFormArrayControl).toHaveBeenCalledTimes(2);
-    expect(createFormArrayControl).toHaveBeenCalledWith('vehicles');
+    // check values
+    expect(createFormArrayControl).toHaveBeenCalledWith('vehicles', values[0]);
+    expect(createFormArrayControl).toHaveBeenCalledWith('vehicles', values[1]);
+    // check non-default control was created
+    expect(subArrayComponent.formGroupControls.vehicles.at(0).validator).not.toBe(null);
   });
+
 });

@@ -15,7 +15,7 @@
         <span data-details [ngSwitch]="listing.product.droidType">
           <span *ngSwitchCase="DroidType.ASSASSIN">Weapons: {{ listing.product.weapons.join(', ') }}</span>
 
-          <span *ngSwitchCase="DroidType.ASTROMECH">Number of tools: {{ listing.product.numberOfToolsCarried }}</span>
+          <span *ngSwitchCase="DroidType.ASTROMECH">Number of tools: {{ listing.product.toolCount }}</span>
 
           <span *ngSwitchCase="DroidType.MEDICAL">
             {{ listing.product.canHealHumans ? 'Can' : "Can't" }} heal humans,
@@ -33,12 +33,12 @@
         -
 
         <span data-details [ngSwitch]="listing.product.vehicleType">
-          Crew members on board: {{ listing.product.crewMembersOnBoard | displayCrewMembersOnBoard }},
+          Crew members on board: {{ listing.product.crewMembers | displayCrewMembersOnBoard }},
           {{ listing.product.canFire ? 'can' : "can't" }} fire,
 
           <span *ngSwitchCase="VehicleType.SPEEDER">maximum speed: {{ listing.product.maximumSpeed }}kph</span>
 
-          <span *ngSwitchCase="VehicleType.SPACESHIP">number of wings: {{ listing.product.numberOfWings }}</span>
+          <span *ngSwitchCase="VehicleType.SPACESHIP">number of wings: {{ listing.product.wingCount }}</span>
         </span>
       </span>
     </p>

@@ -8,12 +8,12 @@ export enum VehicleType {
 export interface BaseVehicle {
   color: string;
   canFire: boolean;
-  crewMembersOnBoard: CrewMember[];
+  crewMembers: CrewMember[];
 }
 
 export interface Spaceship extends BaseVehicle {
   vehicleType: VehicleType.SPACESHIP;
-  numberOfWings: number;
+  wingCount: number;
 }
 
 export interface Speeder extends BaseVehicle {

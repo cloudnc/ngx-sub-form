@@ -30,6 +30,8 @@ export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[
 
 export type ArrayPropertyOf<T> = KeysWithType<T, Array<any>>;
 
+export type ArrayTypeOfPropertyOf<T, K extends keyof T = keyof T> = T[K] extends Array<infer U> ? U : never;
+
 export function subformComponentProviders(
   component: any,
 ): {

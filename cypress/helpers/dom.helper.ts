@@ -104,15 +104,15 @@ export const DOM = {
               spaceshipForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                crewMembersOnBoard: getCrewMembers(element),
-                numberOfWings: +getTextFromInput(element, 'input-number-of-wings'),
+                crewMembers: getCrewMembers(element),
+                wingCount: +getTextFromInput(element, 'input-number-of-wings'),
               },
             },
             Speeder: {
               speederForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                crewMembersOnBoard: getCrewMembers(element),
+                crewMembers: getCrewMembers(element),
                 maximumSpeed: +getTextFromInput(element, 'input-maximum-speed'),
               },
             },

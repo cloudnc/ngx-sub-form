@@ -37,7 +37,7 @@ export enum AstromechDroidShape {
 
 export interface AstromechDroid extends BaseDroid {
   droidType: DroidType.ASTROMECH;
-  numberOfToolsCarried: number;
+  toolCount: number;
   shape: AstromechDroidShape;
 }
 

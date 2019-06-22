@@ -13,8 +13,8 @@ export const hardCodedListings: OneListing[] = [
     product: {
       color: '#cec80d',
       canFire: true,
-      crewMembersOnBoard: [{ firstName: 'Obi-Wan', lastName: 'Kenobi' }, { firstName: 'R2', lastName: 'D2' }],
-      numberOfWings: 0,
+      crewMembers: [{ firstName: 'Obi-Wan', lastName: 'Kenobi' }, { firstName: 'R2', lastName: 'D2' }],
+      wingCount: 0,
       vehicleType: VehicleType.SPACESHIP,
     },
   },
@@ -28,7 +28,7 @@ export const hardCodedListings: OneListing[] = [
     product: {
       color: '#2468f7',
       canFire: true,
-      crewMembersOnBoard: [{ firstName: 'Anakin', lastName: 'Skywalker' }],
+      crewMembers: [{ firstName: 'Anakin', lastName: 'Skywalker' }],
       vehicleType: VehicleType.SPEEDER,
       maximumSpeed: 250,
     },
@@ -73,7 +73,7 @@ export const hardCodedListings: OneListing[] = [
       color: '#ff0a0a',
       name: 'Test',
       droidType: DroidType.ASTROMECH,
-      numberOfToolsCarried: 15,
+      toolCount: 15,
       shape: AstromechDroidShape.REGULAR,
     },
   },

@@ -36,8 +36,8 @@ context(`EJawa demo`, () => {
           spaceshipForm: {
             color: v.color,
             canFire: v.canFire,
-            numberOfWings: v.numberOfWings,
-            crewMembersOnBoard: v.crewMembersOnBoard,
+            wingCount: v.wingCount,
+            crewMembers: v.crewMembers,
           },
         },
       },
@@ -67,7 +67,7 @@ context(`EJawa demo`, () => {
           speederForm: {
             color: v.color,
             canFire: v.canFire,
-            crewMembersOnBoard: v.crewMembersOnBoard,
+            crewMembers: v.crewMembers,
             maximumSpeed: v.maximumSpeed,
           },
         },
@@ -122,10 +122,10 @@ context(`EJawa demo`, () => {
           color: {
             required: true,
           },
-          crewMembersOnBoard: {
+          crewMembers: {
             required: true,
           },
-          numberOfWings: {
+          wingCount: {
             required: true,
           },
         },
@@ -149,7 +149,7 @@ context(`EJawa demo`, () => {
           color: {
             required: true,
           },
-          crewMembersOnBoard: {
+          crewMembers: {
             crewMembers: [
               {
                 firstName: {
@@ -161,7 +161,7 @@ context(`EJawa demo`, () => {
               },
             ],
           },
-          numberOfWings: {
+          wingCount: {
             required: true,
           },
         },

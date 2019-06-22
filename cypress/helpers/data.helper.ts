@@ -19,7 +19,7 @@ export type VehicleFormElement = {
       readonly spaceshipForm: {
         readonly color: string;
         readonly canFire: boolean;
-        readonly crewMembersOnBoard: CrewMember[];
+        readonly crewMembers: CrewMember[];
         readonly numberOfWings: number;
       };
     }
@@ -27,7 +27,7 @@ export type VehicleFormElement = {
       readonly speederForm: {
         readonly color: string;
         readonly canFire: boolean;
-        readonly crewMembersOnBoard: CrewMember[];
+        readonly crewMembers: CrewMember[];
         readonly maximumSpeed: number;
       };
     });
@@ -72,7 +72,7 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
           break;
 
         case DroidType.ASTROMECH:
-          details = `Number of tools: ${item.product.numberOfToolsCarried}`;
+          details = `Number of tools: ${item.product.toolCount}`;
           break;
 
         case DroidType.MEDICAL:
@@ -98,17 +98,17 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
       switch (item.product.vehicleType) {
         case VehicleType.SPACESHIP:
           details = [
-            `Crew members on board: ${item.product.crewMembersOnBoard
+            `Crew members on board: ${item.product.crewMembers
               .map(crewMember => `${crewMember.firstName} ${crewMember.lastName}`)
               .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,
-            `number of wings: ${item.product.numberOfWings}`,
+            `number of wings: ${item.product.wingCount}`,
           ].join(', ');
           break;
 
         case VehicleType.SPEEDER:
           details = [
-            `Crew members on board: ${item.product.crewMembersOnBoard
+            `Crew members on board: ${item.product.crewMembers
               .map(crewMember => `${crewMember.firstName} ${crewMember.lastName}`)
               .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,

@@ -20,7 +20,7 @@ export type VehicleFormElement = {
         readonly color: string;
         readonly canFire: boolean;
         readonly crewMembers: CrewMember[];
-        readonly numberOfWings: number;
+        readonly wingCount: number;
       };
     }
   | {

@@ -389,14 +389,7 @@ If you have custom validations on the form controls, implement the `NgxFormWithA
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L5-L63
-
-  NgxSubFormRemapComponent,
-  subformComponentProviders,
-  ArrayPropertyOf,
-  ArrayTypeOfPropertyOf, NgxFormWithArrayControls,
-} from 'ngx-sub-form';
-import { CrewMember } from '../../../../../interfaces/crew-member.interface';
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L69
 
 interface CrewMembersForm {
   crewMembers: CrewMember[];
@@ -408,7 +401,8 @@ interface CrewMembersForm {
   styleUrls: ['./crew-members.component.scss'],
   providers: subformComponentProviders(CrewMembersComponent),
 })
-export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm> implements NgxFormWithArrayControls<CrewMembersForm> {
+export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm>
+  implements NgxFormWithArrayControls<CrewMembersForm> {
   protected getFormControls(): Controls<CrewMembersForm> {
     return {
       crewMembers: new FormArray([]),
@@ -430,17 +424,21 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   }
 
   public addCrewMember(): void {
-    this.formGroupControls.crewMembers.push(this.createFormArrayControl('crewMembers', {
-      firstName: '',
-      lastName: '',
-    }));
+    this.formGroupControls.crewMembers.push(
+      this.createFormArrayControl('crewMembers', {
+        firstName: '',
+        lastName: '',
+      }),
+    );
   }
 
   // following method is not required and return by default a simple FormControl
   // if needed, you can use the `createFormArrayControl` hook to customize the creation
   // of your `FormControl`s that will be added to the `FormArray`
-  public createFormArrayControl(key: ArrayPropertyOf<CrewMembersForm> | undefined, initialValue: ArrayTypeOfPropertyOf<CrewMembersForm>): FormControl {
-
+  public createFormArrayControl(
+    key: ArrayPropertyOf<CrewMembersForm> | undefined,
+    initialValue: ArrayTypeOfPropertyOf<CrewMembersForm>,
+  ): FormControl {
     switch (key) {
       // note: the following string is type safe based on your form properties!
       case 'crewMembers':

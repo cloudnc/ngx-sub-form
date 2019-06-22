@@ -262,12 +262,12 @@ Example, take a look at [`VehicleProductComponent`](https://github.com/cloudnc/n
 export interface BaseVehicle {
   color: string;
   canFire: boolean;
-  numberOfCrewMembersOnBoard: number;
+  crewMemberCount: number;
 }
 
 export interface Spaceship extends BaseVehicle {
   vehicleType: VehicleType.SPACESHIP;
-  numberOfWings: number;
+  wingCount: number;
 }
 
 export interface Speeder extends BaseVehicle {
@@ -376,18 +376,27 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 }
 ```
 
-Our "incoming" object is of type `OneVehicle` but into that component we treat it as a `OneVehicleForm` to split the vehicle (either a `speeder` or `spaceship`) in 2 **separated** properties.
+Our "incoming" object is of type `OneVehicle` but into that component we treat it as a `OneVehicleForm` to split the vehicle (either a `speeder` or `spaceship`) in 2 **separate** properties.
 
 ### Dealing with arrays
 
-When your data structure contains array(s), you may want to simply display the values in the view but chances are: You want to bind them to the form.
+When your data structure contains one or more arrays, you may want to simply display the values in the view but chances are you want to bind them to the form.
 
 In that case, working with a `FormArray` is the right way to go and for that, we will take advantage of the remap principles explained in the previous section.
+
+If you have custom validations on the form controls, implement the `NgxFormWithArrayControls<FormType>` interface, which gives the library a hook with which to construct new form controls for the form array with the correct validators applied.
 
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L5-L54
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L5-L63
+
+  NgxSubFormRemapComponent,
+  subformComponentProviders,
+  ArrayPropertyOf,
+  ArrayTypeOfPropertyOf, NgxFormWithArrayControls,
+} from 'ngx-sub-form';
+import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
 interface CrewMembersForm {
   crewMembers: CrewMember[];
@@ -399,7 +408,7 @@ interface CrewMembersForm {
   styleUrls: ['./crew-members.component.scss'],
   providers: subformComponentProviders(CrewMembersComponent),
 })
-export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm> {
+export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm> implements NgxFormWithArrayControls<CrewMembersForm> {
   protected getFormControls(): Controls<CrewMembersForm> {
     return {
       crewMembers: new FormArray([]),
@@ -421,20 +430,23 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   }
 
   public addCrewMember(): void {
-    this.formGroupControls.crewMembers.push(new FormControl());
+    this.formGroupControls.crewMembers.push(this.createFormArrayControl('crewMembers', {
+      firstName: '',
+      lastName: '',
+    }));
   }
 
   // following method is not required and return by default a simple FormControl
   // if needed, you can use the `createFormArrayControl` hook to customize the creation
   // of your `FormControl`s that will be added to the `FormArray`
-  protected createFormArrayControl(key: ArrayPropertyOf<CrewMembersForm>): FormControl {
+  public createFormArrayControl(key: ArrayPropertyOf<CrewMembersForm> | undefined, initialValue: ArrayTypeOfPropertyOf<CrewMembersForm>): FormControl {
+
     switch (key) {
       // note: the following string is type safe based on your form properties!
       case 'crewMembers':
-        return new FormControl(null, [Validators.required]);
-
+        return new FormControl(initialValue, [Validators.required]);
       default:
-        return new FormControl(null);
+        return new FormControl(initialValue);
     }
   }
 }

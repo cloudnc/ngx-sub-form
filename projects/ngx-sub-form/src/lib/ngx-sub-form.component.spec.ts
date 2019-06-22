@@ -8,7 +8,9 @@ import {
   MissingFormControlsError,
   NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
   Controls,
-  ArrayPropertyOf, ArrayTypeOfPropertyOf, NgxFormWithArrayControls,
+  ArrayPropertyOf,
+  ArrayTypeOfPropertyOf,
+  NgxFormWithArrayControls,
 } from '../public_api';
 import { Observable } from 'rxjs';
 
@@ -586,7 +588,8 @@ interface VehiclesArrayForm {
   vehicles: Vehicle[];
 }
 
-class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm> implements NgxFormWithArrayControls<VehiclesArrayForm> {
+class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm>
+  implements NgxFormWithArrayControls<VehiclesArrayForm> {
   protected getFormControls(): Controls<VehiclesArrayForm> {
     return {
       vehicles: new FormArray([]),
@@ -603,7 +606,10 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
     return formValue.vehicles;
   }
 
-  public createFormArrayControl(key: ArrayPropertyOf<VehiclesArrayForm> | undefined, initialValue: ArrayTypeOfPropertyOf<VehiclesArrayForm>): FormControl {
+  public createFormArrayControl(
+    key: ArrayPropertyOf<VehiclesArrayForm> | undefined,
+    initialValue: ArrayTypeOfPropertyOf<VehiclesArrayForm>,
+  ): FormControl {
     return new FormControl(initialValue, [Validators.required]);
   }
 }
@@ -670,7 +676,6 @@ describe(`SubArrayComponent`, () => {
   });
 
   it(`should be possible to create a FormControl from the 'createFormArrayControl' hook based on the current property`, () => {
-
     const createFormArrayControl = spyOn(subArrayComponent, 'createFormArrayControl').and.callThrough();
 
     const values = [
@@ -687,5 +692,4 @@ describe(`SubArrayComponent`, () => {
     // check non-default control was created
     expect(subArrayComponent.formGroupControls.vehicles.at(0).validator).not.toBe(null);
   });
-
 });

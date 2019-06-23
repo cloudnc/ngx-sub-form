@@ -4,8 +4,8 @@ import {
   Controls,
   NgxSubFormRemapComponent,
   subformComponentProviders,
-  ArrayPropertyOf,
-  ArrayTypeOfPropertyOf,
+  ArrayPropertyKey,
+  ArrayPropertyValue,
   NgxFormWithArrayControls,
 } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
@@ -55,8 +55,8 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   // if needed, you can use the `createFormArrayControl` hook to customize the creation
   // of your `FormControl`s that will be added to the `FormArray`
   public createFormArrayControl(
-    key: ArrayPropertyOf<CrewMembersForm> | undefined,
-    value: ArrayTypeOfPropertyOf<CrewMembersForm>,
+    key: ArrayPropertyKey<CrewMembersForm> | undefined,
+    value: ArrayPropertyValue<CrewMembersForm>,
   ): FormControl {
     switch (key) {
       // note: the following string is type safe based on your form properties!

@@ -8,8 +8,8 @@ import {
   MissingFormControlsError,
   NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
   Controls,
-  ArrayPropertyOf,
-  ArrayTypeOfPropertyOf,
+  ArrayPropertyKey,
+  ArrayPropertyValue,
   NgxFormWithArrayControls,
 } from '../public_api';
 import { Observable } from 'rxjs';
@@ -607,8 +607,8 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
   }
 
   public createFormArrayControl(
-    key: ArrayPropertyOf<VehiclesArrayForm> | undefined,
-    value: ArrayTypeOfPropertyOf<VehiclesArrayForm>,
+    key: ArrayPropertyKey<VehiclesArrayForm> | undefined,
+    value: ArrayPropertyValue<VehiclesArrayForm>,
   ): FormControl {
     return new FormControl(value, [Validators.required]);
   }

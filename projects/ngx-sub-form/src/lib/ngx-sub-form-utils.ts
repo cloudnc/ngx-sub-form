@@ -29,9 +29,9 @@ export type FormErrors<FormInterface> = null | Partial<
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
 
-export type ArrayPropertyOf<T> = KeysWithType<T, Array<any>>;
+export type ArrayPropertyKey<T> = KeysWithType<T, Array<any>>;
 
-export type ArrayTypeOfPropertyOf<T, K extends ArrayPropertyOf<T> = ArrayPropertyOf<T>> = T[K] extends Array<infer U>
+export type ArrayPropertyValue<T, K extends ArrayPropertyKey<T> = ArrayPropertyKey<T>> = T[K] extends Array<infer U>
   ? U
   : never;
 

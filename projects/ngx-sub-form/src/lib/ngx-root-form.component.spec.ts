@@ -10,22 +10,22 @@ import { DataInput } from './ngx-sub-form.decorators';
 interface Vehicle {
   color?: string | null;
   canFire: boolean | null;
-  numberOfCrewMembersOnBoard: number | null;
+  crewMemberCount: number | null;
 }
 
-const MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD = 5;
-const MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD = 15;
+const MIN_CREW_MEMBER_COUNT = 5;
+const MAX_CREW_MEMBER_COUNT = 15;
 
 const getDefaultValues = (): Required<Vehicle> => ({
   color: '#ffffff',
   canFire: true,
-  numberOfCrewMembersOnBoard: 10,
+  crewMemberCount: 10,
 });
 
 const getNewValues = (): Required<Vehicle> => ({
   color: '#000000',
   canFire: false,
-  numberOfCrewMembersOnBoard: 100,
+  crewMemberCount: 100,
 });
 
 @Component({
@@ -52,11 +52,7 @@ class TestWrapperComponent {
       <input type="text" data-color [formControlName]="formControlNames.color" />
       <input type="radio" data-can-fire [formControlName]="formControlNames.canFire" value="true" />
       <input type="radio" data-can-fire [formControlName]="formControlNames.canFire" value="false" />
-      <input
-        type="number"
-        data-number-of-crew-members-on-board
-        [formControlName]="formControlNames.numberOfCrewMembersOnBoard"
-      />
+      <input type="number" data-crew-member-count [formControlName]="formControlNames.crewMemberCount" />
     </form>
   `,
 })
@@ -74,9 +70,9 @@ class RootFormComponent extends NgxRootFormComponent<Vehicle> {
     return {
       color: new FormControl(null),
       canFire: new FormControl(null, [Validators.required]),
-      numberOfCrewMembersOnBoard: new FormControl(null, [
-        Validators.min(MIN_NUMBER_OF_CREW_MEMBERS_ON_BOARD),
-        Validators.max(MAX_NUMBER_OF_CREW_MEMBERS_ON_BOARD),
+      crewMemberCount: new FormControl(null, [
+        Validators.min(MIN_CREW_MEMBER_COUNT),
+        Validators.max(MAX_CREW_MEMBER_COUNT),
       ]),
     };
   }

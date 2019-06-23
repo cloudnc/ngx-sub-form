@@ -508,7 +508,7 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 
 - `onFormUpdate` hook: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered
 - `getFormGroupControlOptions` hook: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
-- `createFormArrayControl` hook: Allows you to create the `FormControl` of a given property of your form (to define validators for example)
+- `createFormArrayControl` hook: Allows you to create the `FormControl` of a given property of your form (to define validators for example). When you want to use this hook, implement the following interface `NgxFormWithArrayControls`
 - `handleEmissionRate` hook: Allows you to define a custom emission rate (top level or any sub level)
 
 e.g.

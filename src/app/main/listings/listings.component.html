@@ -33,7 +33,7 @@
         -
 
         <span data-details [ngSwitch]="listing.product.vehicleType">
-          Crew members on board: {{ listing.product.crewMembers | displayCrewMembersOnBoard }},
+          Crew members: {{ listing.product.crewMembers | displayCrewMembers }},
           {{ listing.product.canFire ? 'can' : "can't" }} fire,
 
           <span *ngSwitchCase="VehicleType.SPEEDER">maximum speed: {{ listing.product.maximumSpeed }}kph</span>

@@ -20,8 +20,8 @@ import {
   FormErrors,
   isNullOrUndefined,
   ControlsType,
-  ArrayPropertyOf,
-  ArrayTypeOfPropertyOf,
+  ArrayPropertyKey,
+  ArrayPropertyValue,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
@@ -231,7 +231,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
         for (let i = formArray.length; i < value.length; i++) {
           if (this.formIsFormWithArrayControls()) {
-            formArray.insert(i, this.createFormArrayControl(key as ArrayPropertyOf<FormInterface>, value[i]));
+            formArray.insert(i, this.createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]));
           } else {
             formArray.insert(i, new FormControl(value[i]));
           }

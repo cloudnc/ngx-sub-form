@@ -44,5 +44,5 @@ export interface FormGroupOptions<T> {
 // Unfortunately due to https://github.com/microsoft/TypeScript/issues/13995#issuecomment-504664533 the initial value
 // cannot be fully type narrowed to the exact type that will be passed.
 export interface NgxFormWithArrayControls<T> {
-  createFormArrayControl(key: ArrayPropertyOf<T>, initialValue: ArrayTypeOfPropertyOf<T>): FormControl;
+  createFormArrayControl(key: ArrayPropertyOf<T>, value: ArrayTypeOfPropertyOf<T>): FormControl;
 }

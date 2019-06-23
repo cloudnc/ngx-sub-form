@@ -98,7 +98,7 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
       switch (item.product.vehicleType) {
         case VehicleType.SPACESHIP:
           details = [
-            `Crew members on board: ${item.product.crewMembers
+            `Crew members: ${item.product.crewMembers
               .map(crewMember => `${crewMember.firstName} ${crewMember.lastName}`)
               .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,
@@ -108,7 +108,7 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
 
         case VehicleType.SPEEDER:
           details = [
-            `Crew members on board: ${item.product.crewMembers
+            `Crew members: ${item.product.crewMembers
               .map(crewMember => `${crewMember.firstName} ${crewMember.lastName}`)
               .join(', ')}`,
             item.product.canFire ? `can fire` : `can't fire`,

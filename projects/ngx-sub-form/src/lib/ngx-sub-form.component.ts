@@ -21,8 +21,9 @@ import {
   isNullOrUndefined,
   ControlsType,
   ArrayPropertyOf,
+  ArrayTypeOfPropertyOf,
 } from './ngx-sub-form-utils';
-import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
@@ -228,11 +229,19 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
           formArray.removeAt(formArray.length - 1);
         }
 
-        while (formArray.length < value.length) {
-          formArray.push(this.createFormArrayControl(key as ArrayPropertyOf<FormInterface>));
+        for (let i = formArray.length; i < value.length; i++) {
+          if (this.formIsFormWithArrayControls()) {
+            formArray.insert(i, this.createFormArrayControl(key as ArrayPropertyOf<FormInterface>, value[i]));
+          } else {
+            formArray.insert(i, new FormControl(value[i]));
+          }
         }
       }
     });
+  }
+
+  private formIsFormWithArrayControls(): this is NgxFormWithArrayControls<FormInterface> {
+    return typeof ((this as unknown) as NgxFormWithArrayControls<FormInterface>).createFormArrayControl === 'function';
   }
 
   private getMissingKeys(transformedValue: FormInterface | null) {
@@ -249,13 +258,6 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     );
 
     return missingKeys;
-  }
-
-  // override this hook to customize the creation of a FormControl within a FormArray
-  // the undefined is required here as otherwise classes that are not overriding that hook
-  // and do not have an array in the `FormInterface` would error as the type of key would be undefined
-  protected createFormArrayControl(key: ArrayPropertyOf<FormInterface> | undefined): FormControl {
-    return new FormControl();
   }
 
   // when customizing the emission rate of your sub form component, remember not to **mutate** the stream

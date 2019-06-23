@@ -14,8 +14,8 @@ export class SpaceshipComponent extends NgxSubFormComponent<Spaceship> {
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
       canFire: new FormControl(false, { validators: [Validators.required] }),
-      crewMembersOnBoard: new FormControl(null, { validators: [Validators.required] }),
-      numberOfWings: new FormControl(null, { validators: [Validators.required] }),
+      crewMembers: new FormControl(null, { validators: [Validators.required] }),
+      wingCount: new FormControl(null, { validators: [Validators.required] }),
       vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
     };
   }

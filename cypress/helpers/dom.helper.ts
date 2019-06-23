@@ -1,9 +1,9 @@
 /// <reference types="Cypress" />
 
-import { ListElement, FormElement, extractErrors } from './data.helper';
-import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
-import { ListingType } from '../../src/app/interfaces/listing.interface';
 import { DroidType } from '../../src/app/interfaces/droid.interface';
+import { ListingType } from '../../src/app/interfaces/listing.interface';
+import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { extractErrors, FormElement, ListElement } from './data.helper';
 
 const getTextFromTag = (element: HTMLElement, tag: string): string =>
   Cypress.$(element)
@@ -98,25 +98,25 @@ export const DOM = {
         return cy.get(`*[data-no-error]`);
       },
       getObj(type: VehicleType): Cypress.Chainable<FormElement> {
-        const getVehicleObj = (element: HTMLElement, type: VehicleType) =>
+        const getVehicleObj = (element: HTMLElement, vehicleType: VehicleType) =>
           ({
             Spaceship: {
               spaceshipForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                crewMembersOnBoard: getCrewMembers(element),
-                numberOfWings: +getTextFromInput(element, 'input-number-of-wings'),
+                crewMembers: getCrewMembers(element),
+                wingCount: +getTextFromInput(element, 'input-number-of-wings'),
               },
             },
             Speeder: {
               speederForm: {
                 color: getTextFromInput(element, 'input-color'),
                 canFire: getToggleValue(element, 'input-can-fire'),
-                crewMembersOnBoard: getCrewMembers(element),
+                crewMembers: getCrewMembers(element),
                 maximumSpeed: +getTextFromInput(element, 'input-maximum-speed'),
               },
             },
-          }[type]);
+          }[vehicleType]);
 
         return DOM.form.cy.then($element => {
           return $element

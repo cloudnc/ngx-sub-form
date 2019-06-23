@@ -1,6 +1,6 @@
-import { FormGroup, ValidationErrors } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Controls, FormUpdate } from './ngx-sub-form-utils';
+import { ArrayPropertyOf, ArrayTypeOfPropertyOf, Controls, FormUpdate } from './ngx-sub-form-utils';
 
 export interface OnFormUpdate<FormInterface> {
   onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
@@ -39,4 +39,10 @@ export interface FormGroupOptions<T> {
    * The event name for control to update upon.
    */
   updateOn?: 'change' | 'blur' | 'submit';
+}
+
+// Unfortunately due to https://github.com/microsoft/TypeScript/issues/13995#issuecomment-504664533 the initial value
+// cannot be fully type narrowed to the exact type that will be passed.
+export interface NgxFormWithArrayControls<T> {
+  createFormArrayControl(key: ArrayPropertyOf<T>, value: ArrayTypeOfPropertyOf<T>): FormControl;
 }

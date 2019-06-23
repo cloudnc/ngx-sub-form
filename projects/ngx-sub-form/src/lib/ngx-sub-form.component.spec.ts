@@ -608,9 +608,9 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
 
   public createFormArrayControl(
     key: ArrayPropertyOf<VehiclesArrayForm> | undefined,
-    initialValue: ArrayTypeOfPropertyOf<VehiclesArrayForm>,
+    value: ArrayTypeOfPropertyOf<VehiclesArrayForm>,
   ): FormControl {
-    return new FormControl(initialValue, [Validators.required]);
+    return new FormControl(value, [Validators.required]);
   }
 }
 

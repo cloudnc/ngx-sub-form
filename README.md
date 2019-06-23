@@ -437,14 +437,14 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   // of your `FormControl`s that will be added to the `FormArray`
   public createFormArrayControl(
     key: ArrayPropertyOf<CrewMembersForm> | undefined,
-    initialValue: ArrayTypeOfPropertyOf<CrewMembersForm>,
+    value: ArrayTypeOfPropertyOf<CrewMembersForm>,
   ): FormControl {
     switch (key) {
       // note: the following string is type safe based on your form properties!
       case 'crewMembers':
-        return new FormControl(initialValue, [Validators.required]);
+        return new FormControl(value, [Validators.required]);
       default:
-        return new FormControl(initialValue);
+        return new FormControl(value);
     }
   }
 }

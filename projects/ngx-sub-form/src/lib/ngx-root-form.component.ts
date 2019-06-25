@@ -4,6 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
+import { format } from 'util';
 
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
@@ -57,6 +58,11 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
         takeUntilDestroyed(this),
       )
       .subscribe();
+  }
+
+  // This method will allow for a smart component to reset the dumb form.
+  public reset() {
+    this.formGroup.reset()
   }
 
   /** @internal */

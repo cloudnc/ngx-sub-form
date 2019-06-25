@@ -30,6 +30,12 @@ import { VehicleProductComponent } from './main/listing/listing-form/vehicle-lis
 import { ListingComponent } from './main/listing/listing.component';
 import { ListingsComponent } from './main/listings/listings.component';
 import { MainComponent } from './main/main.component';
+import { ResetExampleComponent } from './reset-example/reset-example.component';
+
+import { PersonalDetailsFormComponent } from './reset-example/personal-details-form/personal-details-form.component';
+import { NameFormComponent } from './reset-example/personal-details-form/name-form/name-form.component';
+import { AddressFormComponent } from './reset-example/personal-details-form/address-form/address-form.component';
+import { PhoneFormComponent } from './reset-example/personal-details-form/phone-form/phone-form.component';
 
 const MATERIAL_MODULES = [
   LayoutModule,
@@ -60,6 +66,8 @@ const MATERIAL_MODULES = [
     AstromechDroidComponent,
     AssassinDroidComponent,
     ListingFormComponent,
+    ResetExampleComponent,
+    PersonalDetailsFormComponent, NameFormComponent, AddressFormComponent, PhoneFormComponent
   ],
   exports: [DroidProductComponent],
   imports: [

@@ -1,0 +1,15 @@
+<form [formGroup]="formGroup">
+  <app-personal-details-form [formControlName]="formControlNames.personalDetails"></app-personal-details-form>
+</form>
+
+<h1>Values:</h1>
+<pre>{{ formGroupValues | json }}</pre>
+
+<!-- let see if there's any error (works with nested ones!) -->
+<h1>Errors:</h1>
+<pre>{{ formGroupErrors | json }}</pre>
+
+<h1>States:</h1>
+<pre>{{ {pristine: formGroup.pristine, touched: formGroup.touched} | json }}</pre>
+
+

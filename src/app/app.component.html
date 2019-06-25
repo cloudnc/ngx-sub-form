@@ -1,1 +1,12 @@
-<app-main></app-main>
+<!-- <app-main></app-main> -->
+
+<button style="background-color: red;" (click)="rootForm.reset()"> --> RESET THE ENTIRE FORM <-- </button>
+<button style="background-color: green;" (click)="data$.next(this.initialValues)"> --> REFILL THE ENTIRE FORM <-- </button>
+
+<app-reset-example #rootForm [resetExample]="data$ | async"></app-reset-example>
+
+
+
+
+
+

@@ -20,6 +20,7 @@ import {
   isNullOrUndefined,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import { resetFakeAsyncZone } from '@angular/core/testing';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
@@ -174,6 +175,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   public writeValue(obj: Required<ControlInterface> | null): void {
     // @hack see where defining this.formGroup to undefined
+
     if (!this.formGroup) {
       return;
     }
@@ -182,9 +184,20 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     // if the value is null or undefined it might be because we're
     // switching from one value of a polymorphic type to another
     // for ex and in that case we don't want to go further
-    if (isNullOrUndefined(obj)) {
+    if (obj === undefined) {
       return;
     }
+
+    // if a sub-form receives null we can say that the parent form has called FormGroup.reset().
+    // A sub-forms value is expected to be an object of at least one control e.g { mySubFormControl: value } because it generates a FormGroup.
+    if (obj === null) {
+      // Could we still have a "if ( resetIsReallyWanted )" check. Not sure yet how to make this.
+      this.formGroup.reset();
+
+      return;
+    }
+
+
 
     const transformedValue: FormInterface = this.transformToFormGroup(obj);
 

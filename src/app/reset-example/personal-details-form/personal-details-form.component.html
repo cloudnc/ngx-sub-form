@@ -1,0 +1,11 @@
+<div [formGroup]="formGroup">
+	<app-name-form [formControlName]="formControlNames.name"></app-name-form>
+
+	<select [formControlName]="formControlNames.gender">
+    <option *ngFor="let gender of Gender | keyvalue" [value]="gender.value">{{ gender.value }}</option>
+  </select>
+
+  <app-address-form [formControlName]="formControlNames.address"></app-address-form>
+
+  <app-phone-form [formControlName]="formControlNames.phone"></app-phone-form>
+</div>

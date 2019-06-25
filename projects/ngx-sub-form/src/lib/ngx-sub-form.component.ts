@@ -191,6 +191,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     // if a sub-form receives null we can say that the parent form has called FormGroup.reset().
     // A sub-forms value is expected to be an object of at least one control e.g { mySubFormControl: value } because it generates a FormGroup.
     if (obj === null) {
+
       // Could we still have a "if ( resetIsReallyWanted )" check. Not sure yet how to make this.
       this.formGroup.reset();
 

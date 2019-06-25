@@ -62,7 +62,8 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
 
   // This method will allow for a smart component to reset the dumb form.
   public reset() {
-    this.formGroup.reset()
+    const nullVal = JSON.parse(JSON.stringify(this.formGroup.value).replace(/(?<=:\s?)[^\s\]\[}{,]+/g, 'null'));
+    this.formGroup.reset(nullVal);
   }
 
   /** @internal */

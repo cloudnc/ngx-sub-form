@@ -6,6 +6,42 @@ import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
 import { format } from 'util';
 
+/** @internal
+ *
+ *  This function is used in `ngx-root-form.component` in order to generate an object where every primitive type
+ * (a value in json or entry in array) is changed to null.
+ *
+*/
+function nullifyObject(obj: any): any {
+
+  if ( Array.isArray(obj) ) {
+    obj.forEach((entry, i) => {
+      if ( entry !== Object(entry) ) {
+        obj[i] = null;
+      } else {
+        obj[i] = nullifyObject(entry);
+      }
+    })
+    return obj;
+
+  } else {
+
+    const _keys = Object.keys(obj);
+
+    _keys.forEach(key => {
+
+      if ( obj[key] !== Object(obj[key]) ) {
+        obj[key] = null;
+      } else {
+        obj[key] = nullifyObject(obj[key])
+      }
+    })
+
+    return obj;
+
+  }
+}
+
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
   implements OnInit {
@@ -62,7 +98,8 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
 
   // This method will allow for a smart component to reset the dumb form.
   public reset() {
-    const nullVal = JSON.parse(JSON.stringify(this.formGroup.value).replace(/(?<=:\s?)(?:(["']).*?(?<!\\)\1|\w+|[.0-9]+)(?=[, \]}])/g, 'null'));
+    const nullVal = JSON.parse(JSON.stringify(this.formGroup.value));
+    nullifyObject(nullVal);
     this.formGroup.reset(nullVal);
   }
 

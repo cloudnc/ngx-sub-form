@@ -21,7 +21,6 @@ import {
   isNullOrUndefined,
   ControlsType,
   ArrayPropertyKey,
-  ArrayPropertyValue,
 } from './ngx-sub-form-utils';
 import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
@@ -47,9 +46,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public get formGroupErrors(): FormErrors<FormInterface> {
-    const errors: Partial<ControlMap<FormInterface, ValidationErrors | null>> | null = this.mapControls<
-      ValidationErrors | ValidationErrors[] | null
-    >(ctrl => ctrl.errors, ctrl => ctrl.invalid);
+    const errors: FormErrors<FormInterface> = this.mapControls<ValidationErrors | ValidationErrors[] | null>(
+      ctrl => ctrl.errors,
+      ctrl => ctrl.invalid,
+    ) as FormErrors<FormInterface>;
 
     if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
       return null;

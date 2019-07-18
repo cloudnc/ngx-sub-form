@@ -625,6 +625,13 @@ describe(`SubArrayComponent`, () => {
     setTimeout(done);
   });
 
+  it(`should have the 'formControlNames' property returning the name of the 'FormArray' instead of an array`, () => {
+    const onChangeSpy = jasmine.createSpy('onChangeSpy');
+    subArrayComponent.registerOnChange(onChangeSpy);
+
+    expect(subArrayComponent.formControlNames).toEqual({ vehicles: 'vehicles' });
+  });
+
   it(`should have the correct values within the 'FormArray'`, () => {
     const onChangeSpy = jasmine.createSpy('onChangeSpy');
 

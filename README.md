@@ -460,7 +460,7 @@ Then our view will look like the following:
 
   <div
     class="crew-member"
-    formArrayName="crewMembers"
+    [formArrayName]="formControlNames.crewMembers"
     *ngFor="let crewMember of formGroupControls.crewMembers.controls; let i = index"
   >
     <app-crew-member [formControl]="crewMember"></app-crew-member>

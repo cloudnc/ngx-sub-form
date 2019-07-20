@@ -26,6 +26,11 @@ If you first want to know more about the context, what we tried before creating 
 
 Install the [npm package](https://www.npmjs.com/package/ngx-sub-form): `ngx-sub-form`
 
+_Note about the versions:_
+
+Angular <= 7: `2.7.1`  
+Angular >= 8: Latest
+
 ## Demo
 
 _Before we get started with how to use the library and give some examples, a complete demo is available on [this repo](https://github.com/cloudnc/ngx-sub-form), within the [`src`](https://github.com/cloudnc/ngx-sub-form/tree/master/src) folder.  

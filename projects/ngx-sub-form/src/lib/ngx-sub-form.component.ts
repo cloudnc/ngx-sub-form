@@ -49,6 +49,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     const errors: FormErrors<FormInterface> = this.mapControls<ValidationErrors | ValidationErrors[] | null>(
       ctrl => ctrl.errors,
       ctrl => ctrl.invalid,
+      true,
     ) as FormErrors<FormInterface>;
 
     if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
@@ -60,7 +61,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   public get formControlNames(): ControlsNames<FormInterface> {
     // see @note form-group-undefined for as syntax
-    return this.mapControls((_, key) => key) as ControlsNames<FormInterface>;
+    return this.mapControls((_, key) => key, () => true, false) as ControlsNames<FormInterface>;
   }
 
   private controlKeys: (keyof FormInterface)[] = [];
@@ -106,6 +107,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   private mapControls<MapValue>(
     mapControl: MapControlFunction<FormInterface, MapValue>,
     filterControl: FilterControlFunction<FormInterface>,
+    recursiveIfArray: boolean,
   ): Partial<ControlMap<FormInterface, MapValue | MapValue[]>> | null;
   private mapControls<MapValue>(
     mapControl: MapControlFunction<FormInterface, MapValue>,
@@ -113,6 +115,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   private mapControls<MapValue>(
     mapControl: MapControlFunction<FormInterface, MapValue>,
     filterControl: FilterControlFunction<FormInterface> = () => true,
+    recursiveIfArray: boolean = true,
   ): Partial<ControlMap<FormInterface, MapValue | MapValue[]>> | null {
     if (!this.formGroup) {
       return null;
@@ -126,7 +129,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       if (this.formGroup.controls.hasOwnProperty(key)) {
         const control = formControls[key];
 
-        if (control instanceof FormArray) {
+        if (recursiveIfArray && control instanceof FormArray) {
           const values: MapValue[] = [];
 
           for (let i = 0; i < control.length; i++) {

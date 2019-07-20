@@ -512,10 +512,17 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 
 ### Helpers
 
-- `onFormUpdate` hook: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered
-- `getFormGroupControlOptions` hook: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
-- `createFormArrayControl` hook: Allows you to create the `FormControl` of a given property of your form (to define validators for example). When you want to use this hook, implement the following interface `NgxFormWithArrayControls`
-- `handleEmissionRate` hook: Allows you to define a custom emission rate (top level or any sub level)
+**Properties**
+
+- `emitNullOnDestroy`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, if the sub form component is being destroyed, it will emit one last value: `null`. It might be useful to set it to `false` for e.g. when you've got a form accross multiple tabs and once a part of the form is filled you want to destroy it
+- `emitInitialValueOnInit`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, the sub form component will emit the first value straight away (default one unless the component above as a value already set on the `formControl`)
+
+**Hooks**
+
+- `onFormUpdate`: Allows you to react whenever the form is being modified. Instead of subscribing to `this.formGroup.valueChanges` or `this.formControls.someProp.valueChanges` you will not have to deal with anything asynchronous nor have to worry about subscriptions and memory leaks. Just implement the method `onFormUpdate(formUpdate: FormUpdate<FormInterface>): void` and if you need to know which property changed do a check like the following: `if (formUpdate.yourProperty) {}`. Be aware that this method will be called only when there are either local changes to the form or changes coming from subforms. If the parent `setValue` or `patchValue` this method won't be triggered
+- `getFormGroupControlOptions`: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
+- `createFormArrayControl`: Allows you to create the `FormControl` of a given property of your form (to define validators for example). When you want to use this hook, implement the following interface `NgxFormWithArrayControls`
+- `handleEmissionRate`: Allows you to define a custom emission rate (top level or any sub level)
 
 e.g.
 

@@ -6,7 +6,16 @@ language: node_js
 node_js:
   - '10'
 
-cache: yarn
+# https://github.com/cypress-io/cypress/issues/4069
+addons:
+  apt:
+    packages:
+      - libgconf-2-4
+
+cache:
+  directories:
+    - ~/.cache
+    - node_modules
 
 install:
   - yarn --frozen-lockfile --non-interactive --no-progress
@@ -27,7 +36,7 @@ script:
   - sleep 5
   - yarn run demo:test:e2e:ci
   - sed -i 's/<base href="\/">/<base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/">/g' dist/ngx-sub-form-demo/index.html
-
+  # copy the readme so it can be accessible from npm
   - cp README.md LICENSE dist/ngx-sub-form
 
 deploy:

@@ -77,6 +77,12 @@ You'll have access to the following properties (within your `.ts` **and** `.html
 With AOT turned on you'll get proper type checking within your TS **and** HTML files.  
 When refactoring your interfaces/classes, your form will error at build time if a property should no longer be here or if one is missing.
 
+### Angular hooks
+
+ngx-sub-form uses `ngOnInit` and `ngOnDestroy` internally.  
+If you need to use them too, do not forget to call `super.ngOnInit()` and `super.ngOnDestroy()` otherwise you might end with with the form not working correctly or a memory leak.  
+Unfortunately, there's currently no way of making sure that inheriting classes call these methods, so keep that in mind.
+
 ### First component level
 
 Within the component where the (top) form will be handled, you have to define the top level structure. You can do it manually as you'd usually do (by defining your own `FormGroup`), but it's better to extend from either `NgxRootFormComponent` or `NgxAutomaticRootFormComponent` as you'll get some type safety and other useful helpers. If dealing with polymorphic data, **each type must have it's own form control**:  

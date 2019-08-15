@@ -699,4 +699,25 @@ describe(`SubArrayComponent`, () => {
     // check non-default control was created
     expect(subArrayComponent.formGroupControls.vehicles.at(0).validator).not.toBe(null);
   });
+
+  it(`should disable all the controls within an array`, () => {
+    subArrayComponent.registerOnChange(jasmine.createSpy());
+
+    const values = [
+      { canFire: true, color: 'color-1', crewMemberCount: 1 },
+      { canFire: false, color: 'color-2', crewMemberCount: 2 },
+    ];
+
+    subArrayComponent.writeValue(values);
+
+    expect(subArrayComponent.formGroupControls.vehicles.disabled).toBe(false);
+    expect(subArrayComponent.formGroupControls.vehicles.at(0).disabled).toBe(false);
+    expect(subArrayComponent.formGroupControls.vehicles.at(1).disabled).toBe(false);
+
+    subArrayComponent.setDisabledState(true);
+
+    expect(subArrayComponent.formGroupControls.vehicles.disabled).toBe(true);
+    expect(subArrayComponent.formGroupControls.vehicles.at(0).disabled).toBe(true);
+    expect(subArrayComponent.formGroupControls.vehicles.at(1).disabled).toBe(true);
+  });
 });

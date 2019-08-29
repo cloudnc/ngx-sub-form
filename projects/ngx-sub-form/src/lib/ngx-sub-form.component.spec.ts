@@ -1,6 +1,6 @@
 /// <reference types="jasmine" />
 
-import { FormControl, Validators, FormArray } from '@angular/forms';
+import { FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
 import {
   FormGroupOptions,
   NgxSubFormComponent,
@@ -11,6 +11,8 @@ import {
   ArrayPropertyKey,
   ArrayPropertyValue,
   NgxFormWithArrayControls,
+  OneOfValidatorRequiresMoreThanOneFieldError,
+  OneOfValidatorUnknownFieldError,
 } from '../public_api';
 import { Observable } from 'rxjs';
 
@@ -442,10 +444,37 @@ describe(`NgxSubFormComponent`, () => {
       }
     }
 
+    interface DroidForm {
+      assassinDroid: { type: 'Assassin' };
+      medicalDroid: { type: 'Medical' };
+    }
+
+    class DroidFormComponent extends NgxSubFormComponent<DroidForm> {
+      protected getFormControls() {
+        return {
+          assassinDroid: new FormControl(null),
+          medicalDroid: new FormControl(null),
+        };
+      }
+
+      public getFormGroupControlOptions(): FormGroupOptions<DroidForm> {
+        return {
+          validators: [this.ngxSubFormValidators.oneOf([['assassinDroid', 'medicalDroid']])],
+        };
+      }
+
+      // testing utility
+      public setValidatorOneOf(keysArray: (keyof DroidForm)[][]): void {
+        this.formGroup.setValidators([(this.ngxSubFormValidators.oneOf(keysArray) as unknown) as ValidatorFn]);
+      }
+    }
+
     let validatedSubComponent: ValidatedSubComponent;
+    let droidFormComponent: DroidFormComponent;
 
     beforeEach((done: () => void) => {
       validatedSubComponent = new ValidatedSubComponent();
+      droidFormComponent = new DroidFormComponent();
 
       // we have to call `updateValueAndValidity` within the constructor in an async way
       // and here we need to wait for it to run
@@ -472,6 +501,97 @@ describe(`NgxSubFormComponent`, () => {
           done();
         }, 0);
       }, 0);
+    });
+
+    describe('ngxSubFormValidators', () => {
+      it('oneOf should throw an error if no value or only one in the array', () => {
+        expect(() => droidFormComponent.setValidatorOneOf(undefined as any)).toThrow(
+          new OneOfValidatorRequiresMoreThanOneFieldError(),
+        );
+
+        expect(() => droidFormComponent.setValidatorOneOf([])).toThrow(
+          new OneOfValidatorRequiresMoreThanOneFieldError(),
+        );
+
+        expect(() => droidFormComponent.setValidatorOneOf([[]])).toThrow(
+          new OneOfValidatorRequiresMoreThanOneFieldError(),
+        );
+
+        expect(() => droidFormComponent.setValidatorOneOf([['assassinDroid']])).toThrow(
+          new OneOfValidatorRequiresMoreThanOneFieldError(),
+        );
+
+        expect(() => droidFormComponent.setValidatorOneOf([['assassinDroid', 'medicalDroid']])).not.toThrow();
+      });
+
+      it('oneOf should throw an error if there is an unknown key', () => {
+        droidFormComponent.setValidatorOneOf([['unknown 1' as any, 'unknown 2' as any]]);
+        expect(() => droidFormComponent.formGroup.updateValueAndValidity()).toThrow(
+          new OneOfValidatorUnknownFieldError('unknown 1'),
+        );
+
+        droidFormComponent.setValidatorOneOf([['assassinDroid', 'unknown 2' as any]]);
+        expect(() => droidFormComponent.formGroup.updateValueAndValidity()).toThrow(
+          new OneOfValidatorUnknownFieldError('unknown 2'),
+        );
+      });
+
+      it('oneOf should return an object (representing the error) if all the values are null', (done: () => void) => {
+        const spyOnChange = jasmine.createSpy();
+        droidFormComponent.registerOnChange(spyOnChange);
+
+        droidFormComponent.formGroup.patchValue({ assassinDroid: null, medicalDroid: null });
+
+        setTimeout(() => {
+          expect(droidFormComponent.validate()).toEqual({ formGroup: { oneOf: [['assassinDroid', 'medicalDroid']] } });
+          expect(droidFormComponent.formGroupErrors).toEqual({
+            formGroup: { oneOf: [['assassinDroid', 'medicalDroid']] },
+          });
+
+          droidFormComponent.formGroup.patchValue({
+            assassinDroid: { type: 'Assassin' },
+            medicalDroid: null,
+          });
+          setTimeout(() => {
+            expect(droidFormComponent.validate()).toEqual(null);
+            expect(droidFormComponent.formGroupErrors).toEqual(null);
+            done();
+          }, 0);
+        }, 0);
+      });
+
+      it('oneOf should return an object (error) if more than one value are not [null or undefined]', (done: () => void) => {
+        const spyOnChange = jasmine.createSpy();
+        droidFormComponent.registerOnChange(spyOnChange);
+
+        droidFormComponent.formGroup.patchValue({ assassinDroid: null, medicalDroid: null });
+
+        setTimeout(() => {
+          expect(droidFormComponent.validate()).toEqual({ formGroup: { oneOf: [['assassinDroid', 'medicalDroid']] } });
+
+          droidFormComponent.formGroup.patchValue({
+            assassinDroid: { type: 'Assassin' },
+            medicalDroid: { type: 'Medical' },
+          });
+
+          setTimeout(() => {
+            expect(droidFormComponent.validate()).toEqual({
+              formGroup: { oneOf: [['assassinDroid', 'medicalDroid']] },
+            });
+
+            droidFormComponent.formGroup.patchValue({
+              assassinDroid: null,
+              medicalDroid: { type: 'Medical' },
+            });
+
+            setTimeout(() => {
+              expect(droidFormComponent.validate()).toEqual(null);
+
+              done();
+            }, 0);
+          }, 0);
+        }, 0);
+      });
     });
   });
 });

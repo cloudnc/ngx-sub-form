@@ -521,6 +521,7 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 
 - `emitNullOnDestroy`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, if the sub form component is being destroyed, it will emit one last value: `null`. It might be useful to set it to `false` for e.g. when you've got a form accross multiple tabs and once a part of the form is filled you want to destroy it
 - `emitInitialValueOnInit`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, the sub form component will emit the first value straight away (default one unless the component above as a value already set on the `formControl`)
+- `ngxSubFormValidators`: An object containing validator methods. Currently, only`oneOf`is available. It lets you specify on a`formGroup`using`getFormGroupControlOptions` that amongst some properties, exactly one should be defined (nothing more, nothing less)
 
 **Hooks**
 
@@ -553,7 +554,7 @@ class PasswordSubFormComponent extends NgxSubFormComponent<PasswordForm> {
     };
   }
 
-  public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+  protected getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
     return {
       validators: [
         formGroup => {

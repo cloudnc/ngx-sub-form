@@ -81,6 +81,9 @@ context(`EJawa demo`, () => {
     DOM.createNewButton.click();
 
     DOM.form.errors.obj.should('eql', {
+      formGroup: {
+        oneOf: [['vehicleProduct', 'droidProduct']],
+      },
       listingType: {
         required: true,
       },
@@ -98,7 +101,13 @@ context(`EJawa demo`, () => {
     DOM.form.elements.selectListingTypeByType(ListingType.VEHICLE);
 
     DOM.form.errors.obj.should('eql', {
+      formGroup: {
+        oneOf: [['vehicleProduct', 'droidProduct']],
+      },
       vehicleProduct: {
+        formGroup: {
+          oneOf: [['speeder', 'spaceship']],
+        },
         vehicleType: {
           required: true,
         },
@@ -180,7 +189,13 @@ context(`EJawa demo`, () => {
     DOM.form.elements.selectListingTypeByType(ListingType.DROID);
 
     DOM.form.errors.obj.should('eql', {
+      formGroup: {
+        oneOf: [['vehicleProduct', 'droidProduct']],
+      },
       droidProduct: {
+        formGroup: {
+          oneOf: [['assassinDroid', 'astromechDroid', 'protocolDroid', 'medicalDroid']],
+        },
         droidType: {
           required: true,
         },

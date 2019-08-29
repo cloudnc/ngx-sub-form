@@ -21,7 +21,7 @@ class PasswordSubFormComponent extends NgxSubFormComponent<PasswordForm> {
     };
   }
 
-  public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+  protected getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
     return {
       validators: [
         formGroup => {

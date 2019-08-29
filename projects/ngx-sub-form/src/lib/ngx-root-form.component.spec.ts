@@ -1,11 +1,12 @@
 import { NgxRootFormComponent } from './ngx-root-form.component';
 import { EventEmitter, Input, Component, Output, DebugElement } from '@angular/core';
-import { Controls } from './ngx-sub-form-utils';
-import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Controls, ArrayPropertyKey, ArrayPropertyValue } from './ngx-sub-form-utils';
+import { FormControl, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DataInput } from './ngx-sub-form.decorators';
+import { NgxFormWithArrayControls } from './ngx-sub-form.types';
 
 interface Vehicle {
   color?: string | null;
@@ -144,5 +145,100 @@ describe(`NgxRootFormComponent`, () => {
     component.disabled = true;
     componentFixture.detectChanges();
     expect(componentForm.formGroup.disabled).toBe(true);
+  });
+});
+
+@Component({
+  template: `
+    <app-root-form
+      [disabled]="disabled"
+      [vehicles]="vehicles$ | async"
+      (vehiclesUpdated)="vehiclesUpdated($event)"
+    ></app-root-form>
+  `,
+})
+class ArrayTestWrapperComponent {
+  public disabled: boolean | null | undefined = false;
+
+  public vehicles$: BehaviorSubject<Required<Vehicle>[]> = new BehaviorSubject([getDefaultValues()]);
+
+  public vehiclesUpdated(vehicle: Required<Vehicle>): void {}
+}
+
+interface VehiclesArrayForm {
+  vehicles: Vehicle[];
+}
+
+@Component({
+  selector: `app-root-form`,
+  template: ``,
+})
+class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArrayForm>
+  implements NgxFormWithArrayControls<VehiclesArrayForm> {
+  @DataInput()
+  // tslint:disable-next-line:no-input-rename
+  @Input('vehicles')
+  public dataInput: Required<Vehicle[]> | null | undefined = null;
+
+  // tslint:disable-next-line:no-output-rename
+  @Output('vehiclesUpdated')
+  public dataOutput: EventEmitter<Vehicle[]> = new EventEmitter();
+
+  protected getFormControls(): Controls<VehiclesArrayForm> {
+    return {
+      vehicles: new FormArray([]),
+    };
+  }
+
+  protected transformToFormGroup(obj: Vehicle[] | null): VehiclesArrayForm {
+    return {
+      vehicles: obj ? obj : [],
+    };
+  }
+
+  protected transformFromFormGroup(formValue: VehiclesArrayForm): Vehicle[] | null {
+    return formValue.vehicles;
+  }
+
+  public createFormArrayControl(
+    key: ArrayPropertyKey<VehiclesArrayForm> | undefined,
+    value: ArrayPropertyValue<VehiclesArrayForm>,
+  ): FormControl {
+    return new FormControl(value, [Validators.required]);
+  }
+}
+
+describe(`NgxRootFormComponent with an array`, () => {
+  let componentFixture: ComponentFixture<ArrayTestWrapperComponent>;
+  let componentDebug: DebugElement;
+  let component: ArrayTestWrapperComponent;
+  let componentForm: RootFormArrayComponent;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
+      declarations: [ArrayTestWrapperComponent, RootFormArrayComponent],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    componentFixture = TestBed.createComponent(ArrayTestWrapperComponent);
+    componentDebug = componentFixture.debugElement;
+    component = componentFixture.componentInstance;
+
+    componentFixture.detectChanges();
+
+    componentForm = componentDebug.query(By.directive(RootFormArrayComponent)).componentInstance;
+  });
+
+  it(`should disable all the controls within an array when the disabled property is passed`, () => {
+    expect(componentForm.formGroupControls.vehicles.disabled).toBe(false);
+    expect(componentForm.formGroupControls.vehicles.at(0).disabled).toBe(false);
+
+    component.disabled = true;
+    componentFixture.detectChanges();
+
+    expect(componentForm.formGroupControls.vehicles.disabled).toBe(true);
+    expect(componentForm.formGroupControls.vehicles.at(0).disabled).toBe(true);
   });
 });

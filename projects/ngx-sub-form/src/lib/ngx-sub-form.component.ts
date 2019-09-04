@@ -318,14 +318,23 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         filter(() => !!this.formGroup),
         // detect which stream emitted last
         withLatestFrom(lastKeyEmitted$),
-        map(([changes, keyLastEmit], index) => {
+        map(([_, keyLastEmit], index) => {
           if (index > 0 && this.onTouched) {
             this.onTouched();
           }
 
           if (index > 0 || (index === 0 && this.emitInitialValueOnInit)) {
             if (this.onChange) {
-              this.onChange(this.transformFromFormGroup(changes));
+              this.onChange(
+                this.transformFromFormGroup(
+                  // do not use the changes passed by `this.formGroup.valueChanges` here
+                  // as we've got a delay(0) above, on the next tick the form data might
+                  // be outdated and might result into an inconsistent state where a form
+                  // state is valid (base on latest value) but the previous value
+                  // (the one passed by `this.formGroup.valueChanges` would be the previous one)
+                  this.formGroup.value,
+                ),
+              );
             }
 
             const formUpdate: FormUpdate<FormInterface> = {};

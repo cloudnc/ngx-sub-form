@@ -270,7 +270,7 @@ describe(`NgxSubFormComponent`, () => {
       setTimeout(() => {
         expect(onTouchedSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy).toHaveBeenCalledTimes(2);
-        expect(onChangeSpy).toHaveBeenCalledWith(getDefaultValues());
+        expect(onChangeSpy).toHaveBeenCalledWith({ ...getDefaultValues(), color: 'red' });
         expect(onChangeSpy).toHaveBeenCalledWith({ ...getDefaultValues(), color: 'red' });
 
         done();
@@ -296,6 +296,36 @@ describe(`NgxSubFormComponent`, () => {
 
         done();
       }, DEBOUNCE_TIMING + 100);
+    });
+
+    it(`should always have the latest value of the form when it changes`, (done: () => void) => {
+      const onTouchedSpy = jasmine.createSpy('onTouchedSpy');
+      const onChangeSpy = jasmine.createSpy('onChangeSpy');
+
+      subComponent.registerOnTouched(onTouchedSpy);
+      subComponent.registerOnChange(onChangeSpy);
+
+      const crewMemberCount: number = getDefaultValues().crewMemberCount || 0;
+
+      setTimeout(() => {
+        expect(onChangeSpy.calls.count()).toEqual(1);
+        expect(onChangeSpy.calls.argsFor(0)).toEqual([getDefaultValues()]);
+
+        subComponent.formGroupControls.crewMemberCount.setValue(crewMemberCount + 1);
+        subComponent.formGroupControls.crewMemberCount.setValue(crewMemberCount + 2);
+
+        setTimeout(() => {
+          expect(onChangeSpy.calls.count()).toEqual(3);
+          expect(onChangeSpy.calls.argsFor(1)).toEqual([
+            { ...getDefaultValues(), crewMemberCount: crewMemberCount + 2 },
+          ]);
+          expect(onChangeSpy.calls.argsFor(2)).toEqual([
+            { ...getDefaultValues(), crewMemberCount: crewMemberCount + 2 },
+          ]);
+
+          done();
+        }, 0);
+      }, 0);
     });
   });
 

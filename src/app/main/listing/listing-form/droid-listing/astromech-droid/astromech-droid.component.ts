@@ -16,9 +16,15 @@ export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid>
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
       name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
+      droidType: new FormControl(null, { validators: [Validators.required] }),
       toolCount: new FormControl(null, { validators: [Validators.required] }),
       shape: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
+
+  public getDefaultValues(): Partial<AstromechDroid> | undefined {
+    return {
+      droidType: DroidType.ASTROMECH,
     };
   }
 }

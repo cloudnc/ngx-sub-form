@@ -420,6 +420,12 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     };
   }
 
+  public getDefaultValues(): Partial<CrewMembersForm> | undefined {
+    return {
+      crewMembers: [],
+    };
+  }
+
   protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm {
     return {
       crewMembers: obj ? obj : [],
@@ -453,12 +459,6 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     switch (key) {
       // note: the following string is type safe based on your form properties!
       case 'crewMembers':
-        return new FormControl(value, [Validators.required]);
-      default:
-        return new FormControl(value);
-    }
-  }
-}
 ```
 
 Then our view will look like the following:
@@ -528,6 +528,7 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 - `getFormGroupControlOptions`: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
 - `createFormArrayControl`: Allows you to create the `FormControl` of a given property of your form (to define validators for example). When you want to use this hook, implement the following interface `NgxFormWithArrayControls`
 - `handleEmissionRate`: Allows you to define a custom emission rate (top level or any sub level)
+- `getDefaultValues`: Allows you to set defaults values for the form. This method **will be called when the form is created** and applied to the form straight away. To avoid any confusion or repetitions when defining that method, we recommend in the `getFormControls` method to set all the default values of the controls to `null`. This method will also be called to reset the sub form if you try to set a `formControl` from the parent to `null` (which in some cases might be useful). You can also use that method to reset your form with default values, e.g. `this.formGroup.reset(this.getDefaultValues())`
 
 e.g.
 

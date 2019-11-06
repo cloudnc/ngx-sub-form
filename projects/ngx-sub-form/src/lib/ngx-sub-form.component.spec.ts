@@ -20,6 +20,12 @@ interface Vehicle {
   crewMemberCount: number | null;
 }
 
+const vehicleNullValues: Readonly<{ [key in keyof Vehicle]-?: null }> = {
+  color: null,
+  canFire: null,
+  crewMemberCount: null,
+};
+
 const MIN_CREW_MEMBER_COUNT = 5;
 const MAX_CREW_MEMBER_COUNT = 15;
 
@@ -51,6 +57,28 @@ class DebouncedSubComponent extends SubComponent {
   }
 }
 
+class SubComponentWithDefaultValues extends NgxSubFormComponent<Vehicle> {
+  protected getFormControls() {
+    return {
+      color: new FormControl(),
+      canFire: new FormControl(),
+      crewMemberCount: new FormControl(null, [
+        Validators.min(MIN_CREW_MEMBER_COUNT),
+        Validators.max(MAX_CREW_MEMBER_COUNT),
+      ]),
+    };
+  }
+
+  protected getDefaultValues(): Partial<Vehicle> | undefined {
+    const defaultValues = getDefaultValues();
+    return {
+      color: defaultValues.color,
+      canFire: defaultValues.canFire,
+      crewMemberCount: defaultValues.crewMemberCount,
+    };
+  }
+}
+
 describe(`Common`, () => {
   it(`should call formGroup.updateValueAndValidity only if formGroup is defined`, (done: () => void) => {
     const subComponent: SubComponent = new SubComponent();
@@ -69,10 +97,12 @@ describe(`Common`, () => {
 describe(`NgxSubFormComponent`, () => {
   let subComponent: SubComponent;
   let debouncedSubComponent: DebouncedSubComponent;
+  let subComponentWithDefaultValues: SubComponentWithDefaultValues;
 
   beforeEach((done: () => void) => {
     subComponent = new SubComponent();
     debouncedSubComponent = new DebouncedSubComponent();
+    subComponentWithDefaultValues = new SubComponentWithDefaultValues();
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
@@ -193,6 +223,18 @@ describe(`NgxSubFormComponent`, () => {
           subComponent.writeValue(value as any);
           expect(transformToFormGroupSpy).not.toHaveBeenCalled();
         });
+      });
+
+      it(`should set all the form values to null if "getDefaultValues" method is not provided`, () => {
+        subComponent.writeValue(null);
+
+        expect(subComponent.formGroupValues).toEqual(vehicleNullValues);
+      });
+
+      it(`should set the form to the default values provided by "getDefaultValues" method if provided`, () => {
+        subComponentWithDefaultValues.writeValue(null);
+
+        expect(subComponent.formGroupValues).toEqual(getDefaultValues());
       });
     });
 

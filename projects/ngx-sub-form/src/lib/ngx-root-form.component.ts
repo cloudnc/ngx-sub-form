@@ -80,10 +80,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
     super.writeValue(obj);
   }
 
-  // @todo
-  // @breakingChange
-  // remove the `| null` because the `obj` can never be null
-  protected transformToFormGroup(obj: ControlInterface | null): FormInterface {
+  protected transformToFormGroup(obj: ControlInterface | null): FormInterface | null {
     return (obj as unknown) as FormInterface;
   }
 

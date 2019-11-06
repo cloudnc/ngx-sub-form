@@ -267,7 +267,7 @@ which will require you to define two interfaces:
 Example, take a look at [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts):
 
 ```ts
-// src/readme/vehicle-product.component.simplified.ts#L7-L69
+// src/readme/vehicle-product.component.simplified.ts#L7-L74
 
 // merged few files together to make it easier to follow
 export interface BaseVehicle {
@@ -311,7 +311,11 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
+  protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm | null {
+    if (!obj) {
+      return null;
+    }
+
     return {
       speeder: obj.vehicleType === VehicleType.SPEEDER ? obj : null,
       spaceship: obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
@@ -339,7 +343,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 For a complete example of this see `https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts` (repeated below):
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts#L7-L50
+// src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts#L7-L55
 
 export interface OneVehicleForm {
   speeder: Speeder | null;
@@ -364,7 +368,11 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
+  protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm | null {
+    if (!obj) {
+      return null;
+    }
+
     return {
       speeder: obj.vehicleType === VehicleType.SPEEDER ? obj : null,
       spaceship: obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
@@ -400,7 +408,7 @@ If you have custom validations on the form controls, implement the `NgxFormWithA
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L69
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L76
 
 interface CrewMembersForm {
   crewMembers: CrewMember[];
@@ -420,15 +428,15 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     };
   }
 
-  public getDefaultValues(): Partial<CrewMembersForm> | undefined {
+  public getDefaultValues(): Partial<CrewMembersForm> | null {
     return {
       crewMembers: [],
     };
   }
 
-  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm {
+  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm | null {
     return {
-      crewMembers: obj ? obj : [],
+      crewMembers: !obj ? [] : obj,
     };
   }
 
@@ -459,6 +467,12 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     switch (key) {
       // note: the following string is type safe based on your form properties!
       case 'crewMembers':
+        return new FormControl(value, [Validators.required]);
+      default:
+        return new FormControl(value);
+    }
+  }
+}
 ```
 
 Then our view will look like the following:

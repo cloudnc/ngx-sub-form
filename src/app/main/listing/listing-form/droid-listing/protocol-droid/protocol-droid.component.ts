@@ -21,7 +21,7 @@ export class ProtocolDroidComponent extends NgxSubFormComponent<ProtocolDroid> {
     };
   }
 
-  public getDefaultValues(): Partial<ProtocolDroid> | undefined {
+  public getDefaultValues(): Partial<ProtocolDroid> | null {
     return {
       droidType: DroidType.PROTOCOL,
     };

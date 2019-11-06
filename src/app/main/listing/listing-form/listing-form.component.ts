@@ -79,7 +79,11 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
     }
   }
 
-  protected transformToFormGroup(obj: OneListing): OneListingForm {
+  protected transformToFormGroup(obj: OneListing | null): OneListingForm | null {
+    if (!obj) {
+      return null;
+    }
+
     const { listingType, product, ...commonValues } = obj;
 
     return {

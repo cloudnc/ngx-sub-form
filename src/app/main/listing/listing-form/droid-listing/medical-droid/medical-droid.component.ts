@@ -20,7 +20,7 @@ export class MedicalDroidComponent extends NgxSubFormComponent<MedicalDroid> {
     };
   }
 
-  public getDefaultValues(): Partial<MedicalDroid> | undefined {
+  public getDefaultValues(): Partial<MedicalDroid> | null {
     return { droidType: DroidType.MEDICAL, canHealHumans: false, canFixRobots: false };
   }
 }

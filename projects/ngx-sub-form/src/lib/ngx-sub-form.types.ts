@@ -7,7 +7,6 @@ export interface OnFormUpdate<FormInterface> {
 }
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
-
 type Nullable<T> = T | null;
 
 export type NullableObject<T> = { [P in keyof T]: Nullable<T[P]> };

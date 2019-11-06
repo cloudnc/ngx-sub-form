@@ -20,7 +20,7 @@ export class SpeederComponent extends NgxSubFormComponent<Speeder> {
     };
   }
 
-  protected getDefaultValues(): Partial<Speeder> | undefined {
+  protected getDefaultValues(): Partial<Speeder> | null {
     return { vehicleType: VehicleType.SPEEDER, canFire: false };
   }
 }

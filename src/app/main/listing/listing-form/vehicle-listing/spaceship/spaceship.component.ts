@@ -20,7 +20,7 @@ export class SpaceshipComponent extends NgxSubFormComponent<Spaceship> {
     };
   }
 
-  public getDefaultValues(): Partial<Spaceship> | undefined {
+  public getDefaultValues(): Partial<Spaceship> | null {
     return { canFire: false, vehicleType: VehicleType.SPACESHIP };
   }
 }

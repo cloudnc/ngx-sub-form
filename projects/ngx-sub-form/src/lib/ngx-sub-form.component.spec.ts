@@ -69,13 +69,8 @@ class SubComponentWithDefaultValues extends NgxSubFormComponent<Vehicle> {
     };
   }
 
-  protected getDefaultValues(): Partial<Vehicle> | undefined {
-    const defaultValues = getDefaultValues();
-    return {
-      color: defaultValues.color,
-      canFire: defaultValues.canFire,
-      crewMemberCount: defaultValues.crewMemberCount,
-    };
+  protected getDefaultValues(): Partial<Vehicle> | null {
+    return getDefaultValues();
   }
 }
 
@@ -142,6 +137,14 @@ describe(`NgxSubFormComponent`, () => {
       expect(subComponent.formGroupValues.canFire).toEqual(true);
       expect(subComponent.formGroupValues.color).toEqual('#ffffff');
       expect(subComponent.formGroupValues.crewMemberCount).toEqual(10);
+    });
+
+    it(`should keep all the form values to their default if "getDefaultValues" method is not provided`, () => {
+      expect(subComponent.formGroupValues).toEqual(getDefaultValues());
+    });
+
+    it(`should set the form to the default values provided by "getDefaultValues" method if provided`, () => {
+      expect(subComponentWithDefaultValues.formGroupValues).toEqual(getDefaultValues());
     });
   });
 
@@ -216,25 +219,16 @@ describe(`NgxSubFormComponent`, () => {
 
   describe(`value updated by the parent (write)`, () => {
     describe(`value is null or undefined`, () => {
-      it(`should not even call transformToFormGroup hook`, () => {
-        const transformToFormGroupSpy = spyOn(subComponent, 'transformToFormGroup' as any);
-
-        [null, undefined].forEach(value => {
-          subComponent.writeValue(value as any);
-          expect(transformToFormGroupSpy).not.toHaveBeenCalled();
-        });
-      });
-
-      it(`should set all the form values to null if "getDefaultValues" method is not provided`, () => {
+      it(`should reset all form values to null if "getDefaultValues" method is not provided`, () => {
         subComponent.writeValue(null);
 
         expect(subComponent.formGroupValues).toEqual(vehicleNullValues);
       });
 
-      it(`should set the form to the default values provided by "getDefaultValues" method if provided`, () => {
+      it(`should reset the form to the default values provided by "getDefaultValues" method if provided`, () => {
         subComponentWithDefaultValues.writeValue(null);
 
-        expect(subComponent.formGroupValues).toEqual(getDefaultValues());
+        expect(subComponentWithDefaultValues.formGroupValues).toEqual(getDefaultValues());
       });
     });
 

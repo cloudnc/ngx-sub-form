@@ -22,7 +22,7 @@ export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid>
     };
   }
 
-  public getDefaultValues(): Partial<AstromechDroid> | undefined {
+  public getDefaultValues(): Partial<AstromechDroid> | null {
     return {
       droidType: DroidType.ASTROMECH,
     };

@@ -30,7 +30,7 @@ export class AssassinDroidComponent extends NgxSubFormComponent<AssassinDroid> {
     };
   }
 
-  public getDefaultValues(): Partial<AssassinDroid> | undefined {
+  public getDefaultValues(): Partial<AssassinDroid> | null {
     return {
       droidType: DroidType.ASSASSIN,
       weapons: [],

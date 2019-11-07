@@ -13,10 +13,14 @@ export class SpaceshipComponent extends NgxSubFormComponent<Spaceship> {
   protected getFormControls(): Controls<Spaceship> {
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
-      canFire: new FormControl(false, { validators: [Validators.required] }),
+      canFire: new FormControl(null, { validators: [Validators.required] }),
       crewMembers: new FormControl(null, { validators: [Validators.required] }),
       wingCount: new FormControl(null, { validators: [Validators.required] }),
-      vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
+      vehicleType: new FormControl(null, { validators: [Validators.required] }),
     };
+  }
+
+  public getDefaultValues(): Partial<Spaceship> | null {
+    return { canFire: false, vehicleType: VehicleType.SPACESHIP };
   }
 }

@@ -82,6 +82,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   private subscription: Subscription | undefined = undefined;
 
   constructor() {
+    // if the form has default values, they should be applied straight away
+    const defaultValues: Partial<FormInterface> | null = this.getDefaultValues();
+    if (!!defaultValues) {
+      this.formGroup.reset(defaultValues, { emitEvent: false });
+    }
+
     // `setTimeout` and `updateValueAndValidity` are both required here
     // indeed, if you check the demo you'll notice that without it, if
     // you select `Droid` and `Assassin` for example the displayed errors
@@ -189,32 +195,45 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onChange = undefined;
   }
 
+  // when getDefaultValues is defined, you do not need to specify the default values
+  // in your form (the ones defined within the `getFormControls` method)
+  protected getDefaultValues(): Partial<FormInterface> | null {
+    return null;
+  }
+
   public writeValue(obj: Required<ControlInterface> | null): void {
     // @hack see where defining this.formGroup to undefined
     if (!this.formGroup) {
       return;
     }
 
-    // should accept falsy values like `false` or empty string
-    // if the value is null or undefined it might be because we're
-    // switching from one value of a polymorphic type to another
-    // for ex and in that case we don't want to go further
-    if (isNullOrUndefined(obj)) {
-      return;
+    const defaultValues: Partial<FormInterface> | null = this.getDefaultValues();
+
+    const transformedValue: FormInterface | null = this.transformToFormGroup(
+      obj === undefined ? null : obj,
+      defaultValues,
+    );
+
+    if (isNullOrUndefined(transformedValue)) {
+      this.formGroup.reset(
+        // calling `reset` on a form with `null` throws an error but if nothing is passed
+        // (undefined) it will reset all the form values to null (as expected)
+        defaultValues === null ? undefined : defaultValues,
+        { emitEvent: false },
+      );
+    } else {
+      const missingKeys: (keyof FormInterface)[] = this.getMissingKeys(transformedValue);
+      if (missingKeys.length > 0) {
+        throw new MissingFormControlsError(missingKeys as string[]);
+      }
+
+      this.handleFormArrayControls(transformedValue);
+
+      this.formGroup.setValue(transformedValue, {
+        emitEvent: false,
+      });
     }
 
-    const transformedValue: FormInterface = this.transformToFormGroup(obj);
-
-    const missingKeys: (keyof FormInterface)[] = this.getMissingKeys(transformedValue);
-    if (missingKeys.length > 0) {
-      throw new MissingFormControlsError(missingKeys as string[]);
-    }
-
-    this.handleFormArrayControls(transformedValue);
-
-    this.formGroup.setValue(transformedValue, {
-      emitEvent: false,
-    });
     this.formGroup.markAsPristine();
     this.formGroup.markAsUntouched();
   }
@@ -272,7 +291,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformToFormGroup(obj: ControlInterface): FormInterface {
+  protected transformToFormGroup(
+    obj: ControlInterface | null,
+    defaultValues: Partial<FormInterface> | null,
+  ): FormInterface | null {
     return (obj as any) as FormInterface;
   }
 
@@ -367,6 +389,6 @@ export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> 
   ControlInterface,
   FormInterface
 > {
-  protected abstract transformToFormGroup(obj: ControlInterface | null): FormInterface;
+  protected abstract transformToFormGroup(obj: ControlInterface | null): FormInterface | null;
   protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface | null;
 }

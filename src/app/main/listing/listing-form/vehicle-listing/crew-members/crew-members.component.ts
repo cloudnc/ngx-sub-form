@@ -28,9 +28,15 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     };
   }
 
-  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm {
+  public getDefaultValues(): Partial<CrewMembersForm> | null {
     return {
-      crewMembers: obj ? obj : [],
+      crewMembers: [],
+    };
+  }
+
+  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm | null {
+    return {
+      crewMembers: !obj ? [] : obj,
     };
   }
 

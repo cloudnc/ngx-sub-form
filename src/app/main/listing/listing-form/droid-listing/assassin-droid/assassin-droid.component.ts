@@ -25,8 +25,15 @@ export class AssassinDroidComponent extends NgxSubFormComponent<AssassinDroid> {
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
       name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
-      weapons: new FormControl([], { validators: [Validators.required] }),
+      droidType: new FormControl(null, { validators: [Validators.required] }),
+      weapons: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
+
+  public getDefaultValues(): Partial<AssassinDroid> | null {
+    return {
+      droidType: DroidType.ASSASSIN,
+      weapons: [],
     };
   }
 }

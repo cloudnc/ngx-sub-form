@@ -267,7 +267,7 @@ which will require you to define two interfaces:
 Example, take a look at [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts):
 
 ```ts
-// src/readme/vehicle-product.component.simplified.ts#L7-L69
+// src/readme/vehicle-product.component.simplified.ts#L7-L74
 
 // merged few files together to make it easier to follow
 export interface BaseVehicle {
@@ -311,7 +311,11 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
+  protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm | null {
+    if (!obj) {
+      return null;
+    }
+
     return {
       speeder: obj.vehicleType === VehicleType.SPEEDER ? obj : null,
       spaceship: obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
@@ -339,7 +343,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
 For a complete example of this see `https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts` (repeated below):
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts#L7-L50
+// src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts#L7-L55
 
 export interface OneVehicleForm {
   speeder: Speeder | null;
@@ -364,7 +368,11 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformToFormGroup(obj: OneVehicle): OneVehicleForm {
+  protected transformToFormGroup(obj: OneVehicle | null): OneVehicleForm | null {
+    if (!obj) {
+      return null;
+    }
+
     return {
       speeder: obj.vehicleType === VehicleType.SPEEDER ? obj : null,
       spaceship: obj.vehicleType === VehicleType.SPACESHIP ? obj : null,
@@ -400,7 +408,7 @@ If you have custom validations on the form controls, implement the `NgxFormWithA
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L69
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L76
 
 interface CrewMembersForm {
   crewMembers: CrewMember[];
@@ -420,9 +428,15 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     };
   }
 
-  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm {
+  public getDefaultValues(): Partial<CrewMembersForm> | null {
     return {
-      crewMembers: obj ? obj : [],
+      crewMembers: [],
+    };
+  }
+
+  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm | null {
+    return {
+      crewMembers: !obj ? [] : obj,
     };
   }
 
@@ -528,6 +542,7 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 - `getFormGroupControlOptions`: Allows you to define control options for construction of the internal FormGroup. Use this to define form-level validators
 - `createFormArrayControl`: Allows you to create the `FormControl` of a given property of your form (to define validators for example). When you want to use this hook, implement the following interface `NgxFormWithArrayControls`
 - `handleEmissionRate`: Allows you to define a custom emission rate (top level or any sub level)
+- `getDefaultValues`: Allows you to set defaults values for the form. This method **will be called when the form is created** and applied to the form straight away. To avoid any confusion or repetitions when defining that method, we recommend in the `getFormControls` method to set all the default values of the controls to `null`. This method will also be called to reset the sub form if you try to set a `formControl` from the parent to `null` (which in some cases might be useful). You can also use that method to reset your form with default values, e.g. `this.formGroup.reset(this.getDefaultValues())`
 
 e.g.
 

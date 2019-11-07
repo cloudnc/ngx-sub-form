@@ -20,6 +20,12 @@ interface Vehicle {
   crewMemberCount: number | null;
 }
 
+const vehicleNullValues: Readonly<{ [key in keyof Vehicle]-?: null }> = {
+  color: null,
+  canFire: null,
+  crewMemberCount: null,
+};
+
 const MIN_CREW_MEMBER_COUNT = 5;
 const MAX_CREW_MEMBER_COUNT = 15;
 
@@ -51,6 +57,23 @@ class DebouncedSubComponent extends SubComponent {
   }
 }
 
+class SubComponentWithDefaultValues extends NgxSubFormComponent<Vehicle> {
+  protected getFormControls() {
+    return {
+      color: new FormControl(),
+      canFire: new FormControl(),
+      crewMemberCount: new FormControl(null, [
+        Validators.min(MIN_CREW_MEMBER_COUNT),
+        Validators.max(MAX_CREW_MEMBER_COUNT),
+      ]),
+    };
+  }
+
+  protected getDefaultValues(): Partial<Vehicle> | null {
+    return getDefaultValues();
+  }
+}
+
 describe(`Common`, () => {
   it(`should call formGroup.updateValueAndValidity only if formGroup is defined`, (done: () => void) => {
     const subComponent: SubComponent = new SubComponent();
@@ -69,10 +92,12 @@ describe(`Common`, () => {
 describe(`NgxSubFormComponent`, () => {
   let subComponent: SubComponent;
   let debouncedSubComponent: DebouncedSubComponent;
+  let subComponentWithDefaultValues: SubComponentWithDefaultValues;
 
   beforeEach((done: () => void) => {
     subComponent = new SubComponent();
     debouncedSubComponent = new DebouncedSubComponent();
+    subComponentWithDefaultValues = new SubComponentWithDefaultValues();
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
@@ -112,6 +137,14 @@ describe(`NgxSubFormComponent`, () => {
       expect(subComponent.formGroupValues.canFire).toEqual(true);
       expect(subComponent.formGroupValues.color).toEqual('#ffffff');
       expect(subComponent.formGroupValues.crewMemberCount).toEqual(10);
+    });
+
+    it(`should keep all the form values to their default if "getDefaultValues" method is not provided`, () => {
+      expect(subComponent.formGroupValues).toEqual(getDefaultValues());
+    });
+
+    it(`should set the form to the default values provided by "getDefaultValues" method if provided`, () => {
+      expect(subComponentWithDefaultValues.formGroupValues).toEqual(getDefaultValues());
     });
   });
 
@@ -186,13 +219,16 @@ describe(`NgxSubFormComponent`, () => {
 
   describe(`value updated by the parent (write)`, () => {
     describe(`value is null or undefined`, () => {
-      it(`should not even call transformToFormGroup hook`, () => {
-        const transformToFormGroupSpy = spyOn(subComponent, 'transformToFormGroup' as any);
+      it(`should reset all form values to null if "getDefaultValues" method is not provided`, () => {
+        subComponent.writeValue(null);
 
-        [null, undefined].forEach(value => {
-          subComponent.writeValue(value as any);
-          expect(transformToFormGroupSpy).not.toHaveBeenCalled();
-        });
+        expect(subComponent.formGroupValues).toEqual(vehicleNullValues);
+      });
+
+      it(`should reset the form to the default values provided by "getDefaultValues" method if provided`, () => {
+        subComponentWithDefaultValues.writeValue(null);
+
+        expect(subComponentWithDefaultValues.formGroupValues).toEqual(getDefaultValues());
       });
     });
 

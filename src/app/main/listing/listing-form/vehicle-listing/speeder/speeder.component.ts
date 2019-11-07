@@ -13,10 +13,14 @@ export class SpeederComponent extends NgxSubFormComponent<Speeder> {
   protected getFormControls(): Controls<Speeder> {
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
-      canFire: new FormControl(false, { validators: [Validators.required] }),
+      canFire: new FormControl(null, { validators: [Validators.required] }),
       crewMembers: new FormControl(null, { validators: [Validators.required] }),
-      vehicleType: new FormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
+      vehicleType: new FormControl(null, { validators: [Validators.required] }),
       maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
     };
+  }
+
+  protected getDefaultValues(): Partial<Speeder> | null {
+    return { vehicleType: VehicleType.SPEEDER, canFire: false };
   }
 }

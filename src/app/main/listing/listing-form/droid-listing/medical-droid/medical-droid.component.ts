@@ -14,9 +14,13 @@ export class MedicalDroidComponent extends NgxSubFormComponent<MedicalDroid> {
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
       name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(DroidType.MEDICAL, { validators: [Validators.required] }),
-      canHealHumans: new FormControl(false, { validators: [Validators.required] }),
-      canFixRobots: new FormControl(false, { validators: [Validators.required] }),
+      droidType: new FormControl(null, { validators: [Validators.required] }),
+      canHealHumans: new FormControl(null, { validators: [Validators.required] }),
+      canFixRobots: new FormControl(null, { validators: [Validators.required] }),
     };
+  }
+
+  public getDefaultValues(): Partial<MedicalDroid> | null {
+    return { droidType: DroidType.MEDICAL, canHealHumans: false, canFixRobots: false };
   }
 }

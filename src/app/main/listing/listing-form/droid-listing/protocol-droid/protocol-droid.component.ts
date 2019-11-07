@@ -16,8 +16,14 @@ export class ProtocolDroidComponent extends NgxSubFormComponent<ProtocolDroid> {
     return {
       color: new FormControl(null, { validators: [Validators.required] }),
       name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(DroidType.PROTOCOL, { validators: [Validators.required] }),
+      droidType: new FormControl(null, { validators: [Validators.required] }),
       spokenLanguages: new FormControl(null, { validators: [Validators.required] }),
+    };
+  }
+
+  public getDefaultValues(): Partial<ProtocolDroid> | null {
+    return {
+      droidType: DroidType.PROTOCOL,
     };
   }
 }

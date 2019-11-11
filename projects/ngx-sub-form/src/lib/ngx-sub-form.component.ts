@@ -1,4 +1,4 @@
-import { OnDestroy } from '@angular/core';
+import { OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -28,7 +28,7 @@ type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: 
 type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
-  implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
+  implements OnInit, ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
   public get formGroupControls(): ControlsType<FormInterface> {
     // @note form-group-undefined we need the return null here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
@@ -69,10 +69,11 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
-  public formGroup: TypedFormGroup<FormInterface> = (new FormGroup(
-    this._getFormControls(),
-    this.getFormGroupControlOptions() as AbstractControlOptions,
-  ) as unknown) as TypedFormGroup<FormInterface>;
+  // formGroup will only be defined after ngOnInit
+  // otherwise it's impossible to access class properties
+  // from the `getFormControls` method which is an issue with validators
+  // see https://github.com/cloudnc/ngx-sub-form/issues/82
+  public formGroup!: TypedFormGroup<FormInterface>;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -81,7 +82,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   private subscription: Subscription | undefined = undefined;
 
-  constructor() {
+  public ngOnInit(): void {
+    this.formGroup = (new FormGroup(
+      this._getFormControls(),
+      this.getFormGroupControlOptions() as AbstractControlOptions,
+    ) as unknown) as TypedFormGroup<FormInterface>;
+
     // if the form has default values, they should be applied straight away
     const defaultValues: Partial<FormInterface> | null = this.getDefaultValues();
     if (!!defaultValues) {

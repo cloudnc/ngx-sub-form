@@ -77,6 +77,7 @@ class SubComponentWithDefaultValues extends NgxSubFormComponent<Vehicle> {
 describe(`Common`, () => {
   it(`should call formGroup.updateValueAndValidity only if formGroup is defined`, (done: () => void) => {
     const subComponent: SubComponent = new SubComponent();
+    subComponent.ngOnInit();
 
     const formGroupSpy = spyOn(subComponent.formGroup, 'updateValueAndValidity');
 
@@ -96,8 +97,11 @@ describe(`NgxSubFormComponent`, () => {
 
   beforeEach((done: () => void) => {
     subComponent = new SubComponent();
+    subComponent.ngOnInit();
     debouncedSubComponent = new DebouncedSubComponent();
+    debouncedSubComponent.ngOnInit();
     subComponentWithDefaultValues = new SubComponentWithDefaultValues();
+    subComponentWithDefaultValues.ngOnInit();
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
@@ -512,6 +516,7 @@ describe(`NgxSubFormComponent`, () => {
 
     beforeEach((done: () => void) => {
       validatedSubComponent = new ValidatedSubComponent();
+      validatedSubComponent.ngOnInit();
 
       // we have to call `updateValueAndValidity` within the constructor in an async way
       // and here we need to wait for it to run
@@ -580,6 +585,7 @@ describe(`NgxSubFormRemapComponent`, () => {
 
   beforeEach((done: () => void) => {
     subRemapComponent = new SubRemapComponent();
+    subRemapComponent.ngOnInit();
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run
@@ -685,6 +691,7 @@ describe(`SubArrayComponent`, () => {
 
   beforeEach((done: () => void) => {
     subArrayComponent = new SubArrayComponent();
+    subArrayComponent.ngOnInit();
 
     // we have to call `updateValueAndValidity` within the constructor in an async way
     // and here we need to wait for it to run

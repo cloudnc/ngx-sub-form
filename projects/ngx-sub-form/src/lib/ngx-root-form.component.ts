@@ -34,6 +34,8 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
   protected dataValue: ControlInterface | null = null;
 
   public ngOnInit(): void {
+    super.ngOnInit();
+
     // we need to manually call registerOnChange because that function
     // handles most of the logic from NgxSubForm and when it's called
     // as a ControlValueAccessor that function is called by Angular itself

@@ -20,13 +20,13 @@ const MAX_CREW_MEMBER_COUNT = 15;
 const getDefaultValues = (): Required<Vehicle> => ({
   color: '#ffffff',
   canFire: true,
-  crewMemberCount: 10,
+  crewMemberCount: MIN_CREW_MEMBER_COUNT + 1,
 });
 
 const getNewValues = (): Required<Vehicle> => ({
   color: '#000000',
   canFire: false,
-  crewMemberCount: 100,
+  crewMemberCount: MAX_CREW_MEMBER_COUNT - 1,
 });
 
 @Component({
@@ -145,6 +145,19 @@ describe(`NgxRootFormComponent`, () => {
     component.disabled = true;
     componentFixture.detectChanges();
     expect(componentForm.formGroup.disabled).toBe(true);
+  });
+
+  it(`should not emit the form value when calling manualSave if the form is not valid`, () => {
+    component.vehicle$.next({
+      ...getDefaultValues(),
+      // following property is required
+      canFire: null,
+    });
+    componentFixture.detectChanges();
+
+    const vehicleUpdatedSpy = spyOn(component, 'vehicleUpdated');
+    componentForm.manualSave();
+    expect(vehicleUpdatedSpy).not.toHaveBeenCalled();
   });
 });
 

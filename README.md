@@ -8,7 +8,7 @@ Really small bundle (< 15kb) and no module to setup. Pick the class you need and
 
 Built for **all your different forms** (tiny to extra large!), this library will deal with all the boilerplate required to use a [`ControlValueAccessor`](https://blog.angularindepth.com/never-again-be-confused-when-implementing-controlvalueaccessor-in-angular-forms-93b9eee9ee83) internally and let you manage your most complex forms in a fast and easy way.
 
-From creating a small custom input, to breaking down a form into multiple sub components, `ngx-sub-form` will give you a lot of functionalities like better type safety to survive futur refactors (from both `TS` and `HTML`), remapping external data to the shape you need within your form, access nested errors and many more. It'll also save you from passing a `FormGroup` to an `@Input` :pray:.
+From creating a small custom input, to breaking down a form into multiple sub components, `ngx-sub-form` will give you a lot of functionalities like better type safety to survive future refactors (from both `TS` and `HTML`), remapping external data to the shape you need within your form, access nested errors and many more. It'll also save you from passing a `FormGroup` to an `@Input` :pray:.
 
 It also works particularly well with polymorphic data structures.
 
@@ -122,7 +122,7 @@ export interface OneListingForm {
 })
 export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm> {
   // as we're renaming the input, it'd be impossible for ngx-sub-form to guess
-  // the name of your input to then check within the `ngOnChanges` hook wheter
+  // the name of your input to then check within the `ngOnChanges` hook whether
   // it has been updated or not
   // another solution would be to ask you to use a setter and call a hook but
   // this is too verbose, that's why we created a decorator `@DataInput`
@@ -202,9 +202,9 @@ _Note the presence of disabled, this is an optional input provided by both `NgxR
 Differences between:
 
 - `NgxRootFormComponent`: Will never emit the form value automatically when it changes, to emit the value you'll have to call the method `manualSave` when needed
-- `NgxAutomaticRootFormComponent`: Will emit the form value as soon as there's a change. It's possible to customize the emission rate by overidding the `handleEmissionRate` method
+- `NgxAutomaticRootFormComponent`: Will emit the form value as soon as there's a change. It's possible to customize the emission rate by overriding the `handleEmissionRate` method
 
-The method `handleEmissionRate` is available accross **all** the classes that `ngx-sub-form` offers. It takes an observable as input and expect another observable as output. One common case is to simply [`debounce`](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-debounce) the emission. If that's what you want to do, instead of manipulating the observable chain yourself you can just do:
+The method `handleEmissionRate` is available across **all** the classes that `ngx-sub-form` offers. It takes an observable as input and expect another observable as output. One common case is to simply [`debounce`](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-debounce) the emission. If that's what you want to do, instead of manipulating the observable chain yourself you can just do:
 
 ```ts
 // src/readme/handle-emission-rate.ts#L6-L9
@@ -258,7 +258,7 @@ _Simplified from the original example into src folder to keep the example as min
 
 ### Remapping Data
 
-It is a frequent pattern to have the data that you're trying to modify in a format that is incovenient to the angular forms structural constraints. For this reason, `ngx-form-component` offers a separate class `NgxSubFormRemapComponent`
+It is a frequent pattern to have the data that you're trying to modify in a format that is inconvenient to the angular forms structural constraints. For this reason, `ngx-form-component` offers a separate class `NgxSubFormRemapComponent`
 which will require you to define two interfaces:
 
 - One to model the data going into the form
@@ -533,7 +533,7 @@ export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
 
 **Properties**
 
-- `emitNullOnDestroy`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, if the sub form component is being destroyed, it will emit one last value: `null`. It might be useful to set it to `false` for e.g. when you've got a form accross multiple tabs and once a part of the form is filled you want to destroy it
+- `emitNullOnDestroy`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, if the sub form component is being destroyed, it will emit one last value: `null`. It might be useful to set it to `false` for e.g. when you've got a form across multiple tabs and once a part of the form is filled you want to destroy it
 - `emitInitialValueOnInit`: By default is set to `true` for `NgxSubFormComponent`, `NgxSubFormRemapComponent` and to `false` for `NgxRootFormComponent` and `NgxAutomaticRootFormComponent`. When set to `true`, the sub form component will emit the first value straight away (default one unless the component above as a value already set on the `formControl`)
 
 **Hooks**

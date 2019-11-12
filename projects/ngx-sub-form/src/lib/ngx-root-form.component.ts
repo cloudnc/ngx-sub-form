@@ -53,6 +53,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
 
     this._dataOutput$
       .pipe(
+        filter(() => this.formGroup.valid),
         tap(value => this.dataOutput.emit(value)),
         takeUntilDestroyed(this),
       )
@@ -89,7 +90,7 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
   }
 
   public manualSave(): void {
-    if (!isNullOrUndefined(this.dataValue)) {
+    if (!isNullOrUndefined(this.dataValue) && this.formGroup.valid) {
       this._dataOutput$.next(this.dataValue);
     }
   }

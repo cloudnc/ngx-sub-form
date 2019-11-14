@@ -9,8 +9,8 @@ import {
   FormArray,
   FormControl,
 } from '@angular/forms';
-import { merge, Observable, Subscription } from 'rxjs';
-import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
+import { merge, Observable, Subscription, Subject, pipe, BehaviorSubject } from 'rxjs';
+import { delay, filter, map, startWith, withLatestFrom, shareReplay, tap, switchMap } from 'rxjs/operators';
 import {
   ControlMap,
   Controls,
@@ -29,6 +29,16 @@ type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof F
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements OnInit, ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
+  private ngOnInit$$: Subject<void> = new Subject();
+
+  // if we try to call setDisabledState before `ngOnInit`
+  // (and before the form is initialised, which might be the case for top RootForm*)
+  // it won't be taken into account, therefore we use a Subject to only apply that once
+  // the form is ready (after `ngOnInit`)
+  private disabledState$$: BehaviorSubject<boolean | null> = new BehaviorSubject(null) as BehaviorSubject<
+    boolean | null
+  >;
+
   public get formGroupControls(): ControlsType<FormInterface> {
     // @note form-group-undefined we need the return null here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
@@ -80,7 +90,29 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   protected emitNullOnDestroy = true;
   protected emitInitialValueOnInit = true;
 
-  private subscription: Subscription | undefined = undefined;
+  private readonly subscription: Subscription = new Subscription();
+
+  constructor() {
+    this.subscription.add(
+      this.ngOnInit$$
+        .pipe(
+          switchMap(() =>
+            this.disabledState$$.pipe(
+              filter(x => !isNullOrUndefined(x)),
+              delay(0),
+              tap(shouldDisable => {
+                if (shouldDisable) {
+                  this.formGroup.disable({ emitEvent: false });
+                } else {
+                  this.formGroup.enable({ emitEvent: false });
+                }
+              }),
+            ),
+          ),
+        )
+        .subscribe(),
+    );
+  }
 
   public ngOnInit(): void {
     this.formGroup = (new FormGroup(
@@ -104,6 +136,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         this.formGroup.updateValueAndValidity({ emitEvent: false });
       }
     }, 0);
+
+    this.ngOnInit$$.next();
   }
 
   // can't define them directly
@@ -333,45 +367,47 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     const lastKeyEmitted$: Observable<keyof FormInterface> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
 
-    this.subscription = this.formGroup.valueChanges
-      .pipe(
-        // hook to give access to the observable for sub-classes
-        // this allow sub-classes (for example) to debounce, throttle, etc
-        this.handleEmissionRate(),
-        startWith(this.formGroup.value),
-        // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
-        // this is due to the fact that parent component will define a given state for the form that might
-        // be changed once the children are being initialized
-        delay(0),
-        filter(() => !!this.formGroup),
-        // detect which stream emitted last
-        withLatestFrom(lastKeyEmitted$),
-        map(([_, keyLastEmit], index) => {
-          if (index > 0 && this.onTouched) {
-            this.onTouched();
-          }
-
-          if (index > 0 || (index === 0 && this.emitInitialValueOnInit)) {
-            if (this.onChange) {
-              this.onChange(
-                this.transformFromFormGroup(
-                  // do not use the changes passed by `this.formGroup.valueChanges` here
-                  // as we've got a delay(0) above, on the next tick the form data might
-                  // be outdated and might result into an inconsistent state where a form
-                  // state is valid (base on latest value) but the previous value
-                  // (the one passed by `this.formGroup.valueChanges` would be the previous one)
-                  this.formGroup.value,
-                ),
-              );
+    this.subscription.add(
+      this.formGroup.valueChanges
+        .pipe(
+          // hook to give access to the observable for sub-classes
+          // this allow sub-classes (for example) to debounce, throttle, etc
+          this.handleEmissionRate(),
+          startWith(this.formGroup.value),
+          // this is required otherwise an `ExpressionChangedAfterItHasBeenCheckedError` will happen
+          // this is due to the fact that parent component will define a given state for the form that might
+          // be changed once the children are being initialized
+          delay(0),
+          filter(() => !!this.formGroup),
+          // detect which stream emitted last
+          withLatestFrom(lastKeyEmitted$),
+          map(([_, keyLastEmit], index) => {
+            if (index > 0 && this.onTouched) {
+              this.onTouched();
             }
 
-            const formUpdate: FormUpdate<FormInterface> = {};
-            formUpdate[keyLastEmit] = true;
-            this.onFormUpdate(formUpdate);
-          }
-        }),
-      )
-      .subscribe();
+            if (index > 0 || (index === 0 && this.emitInitialValueOnInit)) {
+              if (this.onChange) {
+                this.onChange(
+                  this.transformFromFormGroup(
+                    // do not use the changes passed by `this.formGroup.valueChanges` here
+                    // as we've got a delay(0) above, on the next tick the form data might
+                    // be outdated and might result into an inconsistent state where a form
+                    // state is valid (base on latest value) but the previous value
+                    // (the one passed by `this.formGroup.valueChanges` would be the previous one)
+                    this.formGroup.value,
+                  ),
+                );
+              }
+
+              const formUpdate: FormUpdate<FormInterface> = {};
+              formUpdate[keyLastEmit] = true;
+              this.onFormUpdate(formUpdate);
+            }
+          }),
+        )
+        .subscribe(),
+    );
   }
 
   public registerOnTouched(fn: any): void {
@@ -379,15 +415,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public setDisabledState(shouldDisable: boolean | undefined): void {
-    if (!this.formGroup) {
-      return;
-    }
-
-    if (shouldDisable) {
-      this.formGroup.disable({ emitEvent: false });
-    } else {
-      this.formGroup.enable({ emitEvent: false });
-    }
+    this.disabledState$$.next(shouldDisable as boolean);
   }
 }
 

@@ -144,8 +144,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
             }
           }
 
-          controls[key] = values;
-        } else if (control && filterControl(control, key)) {
+          if (values.length > 0 && values.some(x => !isNullOrUndefined(x))) {
+            controls[key] = values;
+          }
           controls[key] = mapControl(control, key);
         }
       }

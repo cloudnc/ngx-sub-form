@@ -805,4 +805,25 @@ describe(`SubArrayComponent`, () => {
 
     expect(subArrayComponent.formGroupErrors).toEqual(null);
   });
+
+  it(`should return an error when a property in a FormArray has an error and have null for the other ones in the array`, () => {
+    subArrayComponent.registerOnChange(jasmine.createSpy());
+
+    const values: any[] = [
+      // nok
+      null,
+      // ok
+      { canFire: true, color: 'color-1', crewMemberCount: 1 },
+      // nok
+      null,
+      // nok
+      null,
+    ];
+
+    subArrayComponent.writeValue(values);
+
+    expect(subArrayComponent.formGroupErrors).toEqual({
+      vehicles: [{ required: true }, null, { required: true }, { required: true }],
+    });
+  });
 });

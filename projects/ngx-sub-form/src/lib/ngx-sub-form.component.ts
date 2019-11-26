@@ -25,7 +25,11 @@ import {
 import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
-type FilterControlFunction<FormInterface> = (ctrl: AbstractControl, key: keyof FormInterface) => boolean;
+type FilterControlFunction<FormInterface> = (
+  ctrl: AbstractControl,
+  key: keyof FormInterface,
+  isCtrlWithinFormArray: boolean,
+) => boolean;
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
@@ -48,7 +52,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   public get formGroupErrors(): FormErrors<FormInterface> {
     const errors: FormErrors<FormInterface> = this.mapControls<ValidationErrors | ValidationErrors[] | null>(
       ctrl => ctrl.errors,
-      ctrl => ctrl.invalid,
+      (ctrl, _, isCtrlWithinFormArray) => (isCtrlWithinFormArray ? true : ctrl.invalid),
       true,
     ) as FormErrors<FormInterface>;
 
@@ -139,7 +143,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
           const values: MapValue[] = [];
 
           for (let i = 0; i < control.length; i++) {
-            if (filterControl(control.at(i), key)) {
+            if (filterControl(control.at(i), key, true)) {
               values.push(mapControl(control.at(i), key));
             }
           }
@@ -147,6 +151,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
           if (values.length > 0 && values.some(x => !isNullOrUndefined(x))) {
             controls[key] = values;
           }
+        } else if (control && filterControl(control, key, false)) {
           controls[key] = mapControl(control, key);
         }
       }

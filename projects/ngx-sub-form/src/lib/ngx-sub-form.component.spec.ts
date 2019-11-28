@@ -786,4 +786,44 @@ describe(`SubArrayComponent`, () => {
     expect(subArrayComponent.formGroupControls.vehicles.at(0).disabled).toBe(true);
     expect(subArrayComponent.formGroupControls.vehicles.at(1).disabled).toBe(true);
   });
+
+  it(`should not return an error when a property is a FormArray without any value`, () => {
+    subArrayComponent.registerOnChange(jasmine.createSpy());
+
+    subArrayComponent.writeValue([]);
+
+    expect(subArrayComponent.formGroupErrors).toEqual(null);
+
+    subArrayComponent.writeValue([
+      // ok
+      { canFire: true, color: 'color-1', crewMemberCount: 1 },
+      // ok
+      { canFire: true, color: 'color-2', crewMemberCount: 10 },
+      // ok
+      { canFire: true, color: 'color-3', crewMemberCount: 112 },
+    ]);
+
+    expect(subArrayComponent.formGroupErrors).toEqual(null);
+  });
+
+  it(`should return an error when a property in a FormArray has an error and have null for the other ones in the array`, () => {
+    subArrayComponent.registerOnChange(jasmine.createSpy());
+
+    const values: any[] = [
+      // nok
+      null,
+      // ok
+      { canFire: true, color: 'color-1', crewMemberCount: 1 },
+      // nok
+      null,
+      // nok
+      null,
+    ];
+
+    subArrayComponent.writeValue(values);
+
+    expect(subArrayComponent.formGroupErrors).toEqual({
+      vehicles: [{ required: true }, null, { required: true }, { required: true }],
+    });
+  });
 });

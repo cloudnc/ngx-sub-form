@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
-    "lodash-es": "^4.17.0"
+    "fast-deep-equal": "^3.0.1"
   },
   "peerDependencies": {
     "@angular/common": "^8.0.0",

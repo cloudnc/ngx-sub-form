@@ -1,5 +1,5 @@
 import { EventEmitter, OnInit, Input } from '@angular/core';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'fast-deep-equal';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';

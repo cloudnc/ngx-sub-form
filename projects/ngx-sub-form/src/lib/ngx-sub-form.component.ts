@@ -235,9 +235,25 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
       this.handleFormArrayControls(transformedValue);
 
+      // The next few lines are weird but it's as workaround.
+      // There are some shady behavior with the disabled state
+      // of a form. Apparently, using `setValue` on a disabled
+      // form does re-enable it *sometimes*, not always.
+      // related issues:
+      // https://github.com/angular/angular/issues/31506
+      // https://github.com/angular/angular/issues/22556
+      // but if you display `this.formGroup.disabled`
+      // before and after the `setValue` is called, it's the same
+      // result which is even weirder
+      const fgDisabled: boolean = this.formGroup.disabled;
+
       this.formGroup.setValue(transformedValue, {
         emitEvent: false,
       });
+
+      if (fgDisabled) {
+        this.formGroup.disable();
+      }
     }
 
     this.formGroup.markAsPristine();

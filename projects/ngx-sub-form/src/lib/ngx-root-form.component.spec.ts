@@ -238,13 +238,26 @@ describe(`NgxRootFormComponent with an array`, () => {
     componentFixture = TestBed.createComponent(ArrayTestWrapperComponent);
     componentDebug = componentFixture.debugElement;
     component = componentFixture.componentInstance;
+  });
 
+  // https://github.com/cloudnc/ngx-sub-form/issues/84
+  it(`should disable the internal FormGroup when the disabled property is passed *initially*`, done => {
+    component.disabled = true;
     componentFixture.detectChanges();
 
     componentForm = componentDebug.query(By.directive(RootFormArrayComponent)).componentInstance;
+
+    setTimeout(() => {
+      expect(componentForm.formGroup.disabled).toBe(true);
+
+      done();
+    }, 0);
   });
 
   it(`should disable all the controls within an array when the disabled property is passed`, () => {
+    componentFixture.detectChanges();
+    componentForm = componentDebug.query(By.directive(RootFormArrayComponent)).componentInstance;
+
     expect(componentForm.formGroupControls.vehicles.disabled).toBe(false);
     expect(componentForm.formGroupControls.vehicles.at(0).disabled).toBe(false);
 

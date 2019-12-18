@@ -85,6 +85,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   private subscription: Subscription | undefined = undefined;
 
+  // a RootFormComponent with the disabled property set initially to `false`
+  // will call `setDisabledState` *before* the form is actually available
+  // and it wouldn't be disabled once available, therefore we use this flag
+  // to check when the FormGroup is created if we should disable it
+  private controlDisabled = false;
+
   constructor() {
     // if the form has default values, they should be applied straight away
     const defaultValues: Partial<FormInterface> | null = this.getDefaultValues();
@@ -100,6 +106,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     setTimeout(() => {
       if (this.formGroup) {
         this.formGroup.updateValueAndValidity({ emitEvent: false });
+
+        if (this.controlDisabled) {
+          this.formGroup.disable();
+        }
       }
     }, 0);
   }
@@ -395,6 +405,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   public setDisabledState(shouldDisable: boolean | undefined): void {
+    this.controlDisabled = !!shouldDisable;
+
     if (!this.formGroup) {
       return;
     }

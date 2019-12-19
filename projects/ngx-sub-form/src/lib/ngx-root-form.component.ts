@@ -81,7 +81,10 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
     super.writeValue(obj);
   }
 
-  protected transformToFormGroup(obj: ControlInterface | null): FormInterface | null {
+  protected transformToFormGroup(
+    obj: ControlInterface | null,
+    defaultValues: Partial<FormInterface> | null,
+  ): FormInterface | null {
     return (obj as unknown) as FormInterface;
   }
 

@@ -423,6 +423,9 @@ export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> 
   ControlInterface,
   FormInterface
 > {
-  protected abstract transformToFormGroup(obj: ControlInterface | null): FormInterface | null;
+  protected abstract transformToFormGroup(
+    obj: ControlInterface | null,
+    defaultValues: Partial<FormInterface> | null,
+  ): FormInterface | null;
   protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface | null;
 }

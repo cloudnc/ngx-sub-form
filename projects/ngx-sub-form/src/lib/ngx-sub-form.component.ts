@@ -22,7 +22,7 @@ import {
   ControlsType,
   ArrayPropertyKey,
 } from './ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import { FormGroupOptions, NgxFormWithArrayControls, TypedFormGroup } from './ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (
@@ -32,7 +32,7 @@ type FilterControlFunction<FormInterface> = (
 ) => boolean;
 
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
-  implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
+  implements ControlValueAccessor, Validator, OnDestroy {
   public get formGroupControls(): ControlsType<FormInterface> {
     // @note form-group-undefined we need the return null here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
@@ -169,8 +169,6 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
     return controls;
   }
-
-  public onFormUpdate(formUpdate: FormUpdate<FormInterface>): void {}
 
   /**
    * Extend this method to provide custom local FormGroup level validation
@@ -348,17 +346,6 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       value: unknown;
     }
 
-    const formControlNames: (keyof FormInterface)[] = Object.keys(this.formControlNames) as (keyof FormInterface)[];
-
-    const formValues: Observable<KeyValueForm>[] = formControlNames.map(key =>
-      this.formGroup.controls[key].valueChanges.pipe(
-        startWith(this.formGroup.controls[key].value),
-        map(value => ({ key, value })),
-      ),
-    );
-
-    const lastKeyEmitted$: Observable<keyof FormInterface> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
-
     this.subscription = this.formGroup.valueChanges
       .pipe(
         // hook to give access to the observable for sub-classes
@@ -370,9 +357,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         // be changed once the children are being initialized
         delay(0),
         filter(() => !!this.formGroup),
-        // detect which stream emitted last
-        withLatestFrom(lastKeyEmitted$),
-        map(([_, keyLastEmit], index) => {
+        map((_, index) => {
           if (index > 0 && this.onTouched) {
             this.onTouched();
           }
@@ -390,10 +375,6 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
                 ),
               );
             }
-
-            const formUpdate: FormUpdate<FormInterface> = {};
-            formUpdate[keyLastEmit] = true;
-            this.onFormUpdate(formUpdate);
           }
         }),
       )

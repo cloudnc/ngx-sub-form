@@ -42,8 +42,14 @@ If you want to see the demo in action, please visit [https://cloudnc.github.io/n
 
 `ngx-sub-form` provides
 
-- 2 classes for top level form components: `NgxRootFormComponent`, `NgxAutomaticRootFormComponent`
-- 2 classes for sub level form components: `NgxSubFormComponent`, `NgxSubFormRemapComponent`
+- 4 classes for top level form components:
+  - `NgxRootFormComponent`
+  - `NgxRootFormRemapComponent`
+  - `NgxAutomaticRootFormComponent`
+  - `NgxAutomaticRootFormRemapComponent`
+- 2 classes for sub level form components:
+  - `NgxSubFormComponent`
+  - `NgxSubFormRemapComponent`
 - 3 interfaces: `Controls<T>`, `ControlsNames<T>`, `FormGroupOptions<T>`
 - 1 function: `subformComponentProviders`
 
@@ -64,10 +70,12 @@ So there's actually nothing to setup (like a module), you can just use them dire
 
 ### Type safety you said?
 
-When extending one of the 4 core classes:
+When extending one of the 6 core classes:
 
 - `NgxRootFormComponent`
+- `NgxRootFormRemapComponent`
 - `NgxAutomaticRootFormComponent`
+- `NgxAutomaticRootFormRemapComponent`
 - `NgxSubFormComponent`
 - `NgxSubFormRemapComponent`
 
@@ -84,19 +92,19 @@ When refactoring your interfaces/classes, your form will error at build time if 
 
 ### Angular hooks
 
-ngx-sub-form uses `ngOnInit` and `ngOnDestroy` internally.  
+`ngx-sub-form` uses `ngOnInit` and `ngOnDestroy` internally.  
 If you need to use them too, do not forget to call `super.ngOnInit()` and `super.ngOnDestroy()` otherwise you might end with with the form not working correctly or a memory leak.  
 Unfortunately, there's currently no way of making sure that inheriting classes call these methods, so keep that in mind.
 
 ### First component level
 
-Within the component where the (top) form will be handled, you have to define the top level structure. You can do it manually as you'd usually do (by defining your own `FormGroup`), but it's better to extend from either `NgxRootFormComponent` or `NgxAutomaticRootFormComponent` as you'll get some type safety and other useful helpers. If dealing with polymorphic data, **each type must have it's own form control**:  
+Within the component where the (top) form will be handled, you have to define the top level structure. You can do it manually as you'd usually do (by defining your own `FormGroup`), but it's better to extend from either `NgxRootFormComponent` or `NgxAutomaticRootFormComponent` (or their `remap` versions) as you'll get some type safety and other useful helpers. If dealing with polymorphic data, **each type must have it's own form control**:  
 (_even if it doesn't match your model, we'll talk about that later_)
 
 Before explaining the difference between `NgxRootFormComponent` or `NgxAutomaticRootFormComponent`, let's look at an example with a polymorphic type:
 
 ```ts
-// src/readme/listing.component.ts#L8-L58
+// src/readme/listing.component.ts#L9-L104
 
 enum ListingType {
   VEHICLE = 'Vehicle',
@@ -120,9 +128,9 @@ export interface OneListingForm {
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss'],
 })
-export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm> {
+export class ListingComponent extends NgxAutomaticRootFormRemapComponent<OneListing, OneListingForm> {
   // as we're renaming the input, it'd be impossible for ngx-sub-form to guess
-  // the name of your input to then check within the `ngOnChanges` hook wheter
+  // the name of your input to then check within the `ngOnChanges` hook whether
   // it has been updated or not
   // another solution would be to ask you to use a setter and call a hook but
   // this is too verbose, that's why we created a decorator `@DataInput`
@@ -147,6 +155,51 @@ export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, 
       imageUrl: new FormControl(null, Validators.required),
       price: new FormControl(null, Validators.required),
     };
+  }
+
+  protected transformToFormGroup(
+    obj: VehicleListing | DroidListing | null,
+    defaultValues: Partial<OneListingForm> | null,
+  ): OneListingForm | null {
+    if (!obj) {
+      return null;
+    }
+
+    return {
+      id: obj.id,
+      title: obj.title,
+      price: obj.price,
+      imageUrl: obj.imageUrl,
+
+      listingType: obj.listingType,
+      vehicleProduct: obj.listingType === ListingType.VEHICLE ? obj.product : null,
+      droidProduct: obj.listingType === ListingType.DROID ? obj.product : null,
+    };
+  }
+
+  protected transformFromFormGroup(formValue: OneListingForm): VehicleListing | DroidListing | null {
+    const { id, title, price, imageUrl, listingType } = formValue;
+    const base = { id, title, price, imageUrl, listingType };
+
+    switch (formValue.listingType) {
+      case null: {
+        throw new Error(`listingType is set but the corresponding value is null`);
+      }
+      case ListingType.DROID: {
+        if (!formValue.droidProduct) {
+          throw new Error(`listingType is of type DROID but droidProduct is not defined`);
+        }
+        return { ...base, listingType: ListingType.DROID, product: formValue.droidProduct };
+      }
+      case ListingType.VEHICLE: {
+        if (!formValue.droidProduct) {
+          throw new Error(`listingType is of type VEHICLE but droidProduct is not defined`);
+        }
+        return { ...base, listingType: ListingType.DROID, product: formValue.droidProduct };
+      }
+      default:
+        throw new UnreachableCase(formValue.listingType);
+    }
   }
 }
 ```
@@ -267,7 +320,7 @@ which will require you to define two interfaces:
 Example, take a look at [`VehicleProductComponent`](https://github.com/cloudnc/ngx-sub-form/blob/master/src/app/main/listing/listing-form/vehicle-listing/vehicle-product.component.ts):
 
 ```ts
-// src/readme/vehicle-product.component.simplified.ts#L7-L74
+// src/readme/vehicle-product.component.simplified.ts#L7-L73
 
 // merged few files together to make it easier to follow
 export interface BaseVehicle {

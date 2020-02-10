@@ -5,7 +5,7 @@ import { filter, tap } from 'rxjs/operators';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
 
-export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
+export abstract class NgxRootFormRemapComponent<ControlInterface, FormInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
   implements OnInit {
   public abstract dataInput: Required<ControlInterface> | null | undefined;
@@ -81,20 +81,24 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
     super.writeValue(obj);
   }
 
-  protected transformToFormGroup(
-    obj: ControlInterface | null,
-    defaultValues: Partial<FormInterface> | null,
-  ): FormInterface | null {
-    return (obj as unknown) as FormInterface;
-  }
-
-  protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as unknown) as ControlInterface;
-  }
-
   public manualSave(): void {
     if (!isNullOrUndefined(this.dataValue) && this.formGroup.valid) {
       this._dataOutput$.next(this.dataValue);
     }
+  }
+}
+
+export abstract class NgxRootFormComponent<ControlInterface>
+  extends NgxRootFormRemapComponent<ControlInterface, ControlInterface>
+  implements OnInit {
+  protected transformToFormGroup(
+    obj: ControlInterface | null,
+    defaultValues: Partial<ControlInterface> | null,
+  ): ControlInterface | null {
+    return (obj as unknown) as ControlInterface;
+  }
+
+  protected transformFromFormGroup(formValue: ControlInterface): ControlInterface | null {
+    return (formValue as unknown) as ControlInterface;
   }
 }

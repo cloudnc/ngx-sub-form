@@ -2,11 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   Controls,
-  takeUntilDestroyed,
-  // NgxAutomaticRootFormComponent,
+  // NgxAutomaticRootFormRemapComponent,
   // NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
   DataInput,
-  NgxRootFormComponent,
+  NgxRootFormRemapComponent,
 } from 'ngx-sub-form';
 import { tap } from 'rxjs/operators';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
@@ -26,7 +25,7 @@ interface OneListingForm {
 }
 
 // if you wish to try the automatic root form component uncomment lines containing:
-// - `extends NgxAutomaticRootFormComponent`
+// - `extends NgxAutomaticRootFormRemapComponent`
 // - the `handleDataOutput` method
 // - the 3 related imports at the top
 
@@ -35,8 +34,8 @@ interface OneListingForm {
   templateUrl: './listing-form.component.html',
   styleUrls: ['./listing-form.component.scss'],
 })
-// export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
-export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm> {
+// export class ListingFormComponent extends NgxAutomaticRootFormRemapComponent<OneListing, OneListingForm>
+export class ListingFormComponent extends NgxRootFormRemapComponent<OneListing, OneListingForm> {
   @DataInput()
   // tslint:disable-next-line:no-input-rename
   @Input('listing')

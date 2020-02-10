@@ -1,9 +1,9 @@
-import { NgxRootFormComponent } from './ngx-root-form.component';
+import { NgxRootFormComponent, NgxRootFormRemapComponent } from './ngx-root-form.component';
 import { EventEmitter, Input, Component, Output, DebugElement } from '@angular/core';
 import { Controls, ArrayPropertyKey, ArrayPropertyValue } from './ngx-sub-form-utils';
 import { FormControl, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DataInput } from './ngx-sub-form.decorators';
 import { NgxFormWithArrayControls } from './ngx-sub-form.types';
@@ -186,7 +186,7 @@ interface VehiclesArrayForm {
   selector: `app-root-form`,
   template: ``,
 })
-class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArrayForm>
+class RootFormArrayComponent extends NgxRootFormRemapComponent<Vehicle[], VehiclesArrayForm>
   implements NgxFormWithArrayControls<VehiclesArrayForm> {
   @DataInput()
   // tslint:disable-next-line:no-input-rename

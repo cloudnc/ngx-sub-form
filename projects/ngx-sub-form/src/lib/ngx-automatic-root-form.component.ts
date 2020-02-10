@@ -1,8 +1,8 @@
 import { OnInit } from '@angular/core';
-import { NgxRootFormComponent } from './ngx-root-form.component';
+import { NgxRootFormRemapComponent } from './ngx-root-form.component';
 
-export abstract class NgxAutomaticRootFormComponent<ControlInterface, FormInterface = ControlInterface>
-  extends NgxRootFormComponent<ControlInterface, FormInterface>
+export abstract class NgxAutomaticRootFormRemapComponent<ControlInterface, FormInterface = ControlInterface>
+  extends NgxRootFormRemapComponent<ControlInterface, FormInterface>
   implements OnInit {
   /** @internal */
   protected onRegisterOnChangeHook(data: ControlInterface | null) {
@@ -19,5 +19,20 @@ export abstract class NgxAutomaticRootFormComponent<ControlInterface, FormInterf
     }
 
     return true;
+  }
+}
+
+export abstract class NgxAutomaticRootFormComponent<ControlInterface>
+  extends NgxAutomaticRootFormRemapComponent<ControlInterface>
+  implements OnInit {
+  protected transformToFormGroup(
+    obj: ControlInterface | null,
+    defaultValues: Partial<ControlInterface> | null,
+  ): ControlInterface | null {
+    return (obj as unknown) as ControlInterface;
+  }
+
+  protected transformFromFormGroup(formValue: ControlInterface): ControlInterface | null {
+    return (formValue as unknown) as ControlInterface;
   }
 }

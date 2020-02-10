@@ -1,4 +1,4 @@
-import { NgxRootFormComponent } from './ngx-root-form.component';
+import { NgxRootFormComponent, NgxRootFormRemapComponent } from './ngx-root-form.component';
 
 export class DataInputUsedOnWrongPropertyError extends Error {
   constructor(calledOnPropertyKey: string) {
@@ -8,9 +8,16 @@ export class DataInputUsedOnWrongPropertyError extends Error {
   }
 }
 
-export function DataInput() {
+export function DataInput(): <ControlInterface, FormInterface = ControlInterface>(
+  target: NgxRootFormRemapComponent<ControlInterface, FormInterface>,
+  propertyKey: string,
+) => void;
+export function DataInput(): <ControlInterface>(
+  target: NgxRootFormComponent<ControlInterface>,
+  propertyKey: string,
+) => void {
   return function<ControlInterface, FormInterface = ControlInterface>(
-    target: NgxRootFormComponent<ControlInterface, FormInterface>,
+    target: NgxRootFormComponent<ControlInterface> | NgxRootFormRemapComponent<ControlInterface, FormInterface>,
     propertyKey: string,
   ) {
     if (propertyKey !== 'dataInput') {
@@ -19,7 +26,9 @@ export function DataInput() {
 
     Object.defineProperty(target, propertyKey, {
       set: function(dataInputValue) {
-        (this as NgxRootFormComponent<ControlInterface, FormInterface>).dataInputUpdated(dataInputValue);
+        (this as
+          | NgxRootFormComponent<ControlInterface>
+          | NgxRootFormRemapComponent<ControlInterface, FormInterface>).dataInputUpdated(dataInputValue);
       },
     });
   };

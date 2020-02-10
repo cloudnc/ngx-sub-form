@@ -5,7 +5,7 @@
     <mat-select data-select-droid-type placeholder="Select droid type" [formControlName]="formControlNames.droidType">
       <mat-option
         data-select-droid-type-option
-        *ngFor="let droidType of (DroidType | keyvalue)"
+        *ngFor="let droidType of DroidType | keyvalue"
         [value]="droidType.value"
       >
         {{ droidType.value }}

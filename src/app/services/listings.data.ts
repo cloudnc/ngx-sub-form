@@ -13,7 +13,10 @@ export const hardCodedListings: OneListing[] = [
     product: {
       color: '#cec80d',
       canFire: true,
-      crewMembers: [{ firstName: 'Obi-Wan', lastName: 'Kenobi' }, { firstName: 'R2', lastName: 'D2' }],
+      crewMembers: [
+        { firstName: 'Obi-Wan', lastName: 'Kenobi' },
+        { firstName: 'R2', lastName: 'D2' },
+      ],
       wingCount: 0,
       vehicleType: VehicleType.SPACESHIP,
     },

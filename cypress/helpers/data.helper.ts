@@ -30,7 +30,8 @@ export type VehicleFormElement = {
         readonly crewMembers: CrewMember[];
         readonly maximumSpeed: number;
       };
-    });
+    }
+);
 
 export interface DroidFormElement {
   readonly droidType: string;
@@ -51,7 +52,7 @@ export interface FormElement {
     readonly imageUrl: string;
     readonly price: string;
     readonly listingType: string;
-  } & ({ readonly vehicleForm: VehicleFormElement });
+  } & { readonly vehicleForm: VehicleFormElement };
 }
 
 export const hardcodedElementToTestElement = (item: OneListing): ListElement => {

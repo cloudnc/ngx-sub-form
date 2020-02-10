@@ -162,7 +162,7 @@ Then, within the `.component.html` we:
 
 <form [formGroup]="formGroup">
   <select [formControlName]="formControlNames.listingType">
-    <option *ngFor="let listingType of (ListingType | keyvalue)" [value]="listingType.value">
+    <option *ngFor="let listingType of ListingType | keyvalue" [value]="listingType.value">
       {{ listingType.value }}
     </option>
   </select>

@@ -65,7 +65,11 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   public get formControlNames(): ControlsNames<FormInterface> {
     // see @note form-group-undefined for as syntax
-    return this.mapControls((_, key) => key, () => true, false) as ControlsNames<FormInterface>;
+    return this.mapControls(
+      (_, key) => key,
+      () => true,
+      false,
+    ) as ControlsNames<FormInterface>;
   }
 
   private controlKeys: (keyof FormInterface)[] = [];
@@ -300,16 +304,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   private getMissingKeys(transformedValue: FormInterface | null) {
     // `controlKeys` can be an empty array, empty forms are allowed
-    const missingKeys: (keyof FormInterface)[] = this.controlKeys.reduce(
-      (keys, key) => {
-        if (isNullOrUndefined(transformedValue) || transformedValue[key] === undefined) {
-          keys.push(key);
-        }
+    const missingKeys: (keyof FormInterface)[] = this.controlKeys.reduce((keys, key) => {
+      if (isNullOrUndefined(transformedValue) || transformedValue[key] === undefined) {
+        keys.push(key);
+      }
 
-        return keys;
-      },
-      [] as (keyof FormInterface)[],
-    );
+      return keys;
+    }, [] as (keyof FormInterface)[]);
 
     return missingKeys;
   }

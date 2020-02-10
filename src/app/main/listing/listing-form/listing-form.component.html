@@ -87,7 +87,7 @@
         >
           <mat-option
             data-select-listing-type-option
-            *ngFor="let listingType of (ListingType | keyvalue)"
+            *ngFor="let listingType of ListingType | keyvalue"
             [value]="listingType.value"
           >
             {{ listingType.value }}

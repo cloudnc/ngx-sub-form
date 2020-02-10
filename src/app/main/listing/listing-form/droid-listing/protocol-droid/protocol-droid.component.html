@@ -11,7 +11,7 @@
 
   <mat-form-field>
     <mat-select placeholder="Select spoken languages" multiple [formControlName]="formControlNames.spokenLanguages">
-      <mat-option *ngFor="let language of (Languages | keyvalue)" [value]="language.value">
+      <mat-option *ngFor="let language of Languages | keyvalue" [value]="language.value">
         {{ language.value }}
       </mat-option>
     </mat-select>

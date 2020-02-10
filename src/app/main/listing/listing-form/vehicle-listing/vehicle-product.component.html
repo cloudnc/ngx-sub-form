@@ -9,7 +9,7 @@
     >
       <mat-option
         data-select-vehicle-type-option
-        *ngFor="let vehicleType of (VehicleType | keyvalue)"
+        *ngFor="let vehicleType of VehicleType | keyvalue"
         [value]="vehicleType.value"
       >
         {{ vehicleType.value }}

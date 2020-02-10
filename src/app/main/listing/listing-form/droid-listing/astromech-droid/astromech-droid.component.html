@@ -21,7 +21,7 @@
 
   <mat-form-field>
     <mat-select placeholder="Select the droid shape" [formControlName]="formControlNames.shape">
-      <mat-option *ngFor="let shape of (AstromechDroidShape | keyvalue)" [value]="shape.value">
+      <mat-option *ngFor="let shape of AstromechDroidShape | keyvalue" [value]="shape.value">
         {{ shape.value }}
       </mat-option>
     </mat-select>

@@ -77,6 +77,18 @@ export class MissingFormControlsError<T extends string> extends Error {
   }
 }
 
+export class OneOfValidatorRequiresMoreThanOneFieldError extends Error {
+  constructor() {
+    super(`"oneOf" validator requires to have at least 2 keys`);
+  }
+}
+
+export class OneOfValidatorUnknownFieldError extends Error {
+  constructor(field: string) {
+    super(`"oneOf" validator requires to keys from the FormInterface and "${field}" is not`);
+  }
+}
+
 export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
   debounce: <T, U>(time: number): ReturnType<NgxSubFormComponent<T, U>['handleEmissionRate']> => obs =>
     obs.pipe(debounce(() => timer(time))),
@@ -87,6 +99,7 @@ export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
  * If the component already has a `ngOnDestroy` method defined, it will call this first.
  * Note that the component *must* implement OnDestroy for this to work (the typings will enforce this anyway)
  */
+/** @internal */
 export function takeUntilDestroyed<T>(component: OnDestroy): (source: Observable<T>) => Observable<T> {
   return (source: Observable<T>): Observable<T> => {
     const onDestroy = new Subject();

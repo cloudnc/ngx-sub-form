@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
+import { Controls, NgxSubFormRemapComponent, subformComponentProviders, FormGroupOptions } from 'ngx-sub-form';
 import {
   AssassinDroid,
   AstromechDroid,
@@ -67,5 +67,13 @@ export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, On
       default:
         throw new UnreachableCase(formValue.droidType);
     }
+  }
+
+  protected getFormGroupControlOptions(): FormGroupOptions<OneDroidForm> {
+    return {
+      validators: [
+        this.ngxSubFormValidators.oneOf([['assassinDroid', 'astromechDroid', 'protocolDroid', 'medicalDroid']]),
+      ],
+    };
   }
 }

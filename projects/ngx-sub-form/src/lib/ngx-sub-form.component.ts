@@ -21,8 +21,16 @@ import {
   isNullOrUndefined,
   ControlsType,
   ArrayPropertyKey,
+  OneOfValidatorRequiresMoreThanOneFieldError,
+  OneOfValidatorUnknownFieldError,
 } from './ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import {
+  FormGroupOptions,
+  NgxFormWithArrayControls,
+  OnFormUpdate,
+  TypedFormGroup,
+  TypedValidatorFn,
+} from './ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (
@@ -73,6 +81,63 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   private controlKeys: (keyof FormInterface)[] = [];
+
+  // instead of having the validators defined in the utils file
+  // we define them here to have access to the form types
+
+  // `ngxSubFormValidators` should be used at a group level validation
+  // with the `getFormGroupControlOptions` hook
+  protected ngxSubFormValidators = {
+    oneOf(keysArray: (keyof FormInterface)[][]): TypedValidatorFn<FormInterface> {
+      if (!keysArray || !keysArray.length || keysArray.some(keys => !keys || keys.length < 2)) {
+        throw new OneOfValidatorRequiresMoreThanOneFieldError();
+      }
+
+      return (formGroup: TypedFormGroup<FormInterface>) => {
+        const oneOfErrors: (keyof FormInterface)[][] = keysArray.reduce(
+          (acc, keys) => {
+            if (!keys.length) {
+              return acc;
+            }
+
+            let nbNotNull = 0;
+            let cpt = 0;
+
+            while (cpt < keys.length && nbNotNull < 2) {
+              const key: keyof FormInterface = keys[cpt];
+
+              const control: AbstractControl | null = formGroup.get(key as string);
+
+              if (!control) {
+                throw new OneOfValidatorUnknownFieldError(key as string);
+              }
+
+              if (!isNullOrUndefined(control.value)) {
+                nbNotNull++;
+              }
+
+              cpt++;
+            }
+
+            if (nbNotNull !== 1) {
+              acc.push(keys);
+            }
+
+            return acc;
+          },
+          [] as (keyof FormInterface)[][],
+        );
+
+        if (oneOfErrors.length === 0) {
+          return null;
+        }
+
+        return {
+          oneOf: oneOfErrors,
+        };
+      };
+    },
+  };
 
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues

@@ -7,6 +7,7 @@ import {
   // NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
   DataInput,
   NgxRootFormComponent,
+  FormGroupOptions,
 } from 'ngx-sub-form';
 import { tap } from 'rxjs/operators';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
@@ -91,6 +92,12 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
       droidProduct: obj.listingType === ListingType.DROID ? obj.product : null,
       listingType: obj.listingType,
       ...commonValues,
+    };
+  }
+
+  protected getFormGroupControlOptions(): FormGroupOptions<OneListingForm> {
+    return {
+      validators: [this.ngxSubFormValidators.oneOf([['vehicleProduct', 'droidProduct']])],
     };
   }
 }

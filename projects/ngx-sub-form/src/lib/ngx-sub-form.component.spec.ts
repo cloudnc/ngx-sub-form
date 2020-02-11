@@ -388,63 +388,6 @@ describe(`NgxSubFormComponent`, () => {
     });
   });
 
-  describe(`onFormUpdate`, () => {
-    it(`should not call onFormUpdate when patched by the parent (through "writeValue")`, (done: () => void) => {
-      const spyOnFormUpdate = jasmine.createSpy();
-      subComponent.onFormUpdate = spyOnFormUpdate;
-      subComponent.registerOnChange(() => {});
-
-      setTimeout(() => {
-        spyOnFormUpdate.calls.reset();
-
-        subComponent.writeValue({ ...subComponent.formGroupValues, color: 'red' });
-
-        setTimeout(() => {
-          expect(spyOnFormUpdate).not.toHaveBeenCalled();
-
-          done();
-        }, 0);
-      }, 0);
-    });
-
-    it(`should call onFormUpdate everytime the form changes (local changes)`, (done: () => void) => {
-      const spyOnFormUpdate = jasmine.createSpy();
-      subComponent.onFormUpdate = spyOnFormUpdate;
-      subComponent.registerOnChange(() => {});
-
-      subComponent.formGroupControls.color.setValue(`red`);
-
-      setTimeout(() => {
-        expect(spyOnFormUpdate).toHaveBeenCalledWith({
-          color: true,
-        });
-
-        done();
-      }, 0);
-    });
-
-    it(`should correctly emit the onChange value only once when form is patched locally`, (done: () => void) => {
-      const spyOnFormUpdate = jasmine.createSpy();
-      const spyOnChange = jasmine.createSpy();
-      subComponent.onFormUpdate = spyOnFormUpdate;
-      subComponent.registerOnChange(spyOnChange);
-      (subComponent as any).emitInitialValueOnInit = false;
-
-      subComponent.formGroup.patchValue({ color: 'red', canFire: false });
-
-      setTimeout(() => {
-        expect(spyOnFormUpdate).toHaveBeenCalledWith({
-          canFire: true,
-        });
-
-        expect(spyOnChange).toHaveBeenCalledTimes(1);
-        expect(spyOnChange).toHaveBeenCalledWith({ color: 'red', canFire: false, crewMemberCount: 10 });
-
-        done();
-      }, 0);
-    });
-  });
-
   describe('getFormGroupControlOptions', () => {
     interface Numbered {
       numberOne: number;

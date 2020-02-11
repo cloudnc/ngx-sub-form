@@ -2,10 +2,6 @@ import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ArrayPropertyKey, ArrayPropertyValue, Controls, FormUpdate } from './ngx-sub-form-utils';
 
-export interface OnFormUpdate<FormInterface> {
-  onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
-}
-
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Nullable<T> = T | null;
 

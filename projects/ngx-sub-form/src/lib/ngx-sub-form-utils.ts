@@ -19,7 +19,9 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
-export type ControlsType<T> = { [K in keyof T]-?: T[K] extends any[] ? FormArray : AbstractControl };
+export type ControlsType<T> = {
+  [K in keyof T]-?: T[K] extends any[] ? TypedFormArray<T[K]> : TypedAbstractControl<T[K]>;
+};
 export type FormErrorsType<T> = {
   [K in keyof T]-?: T[K] extends any[] ? (null | ValidationErrors)[] : ValidationErrors;
 };
@@ -31,6 +33,37 @@ export type FormErrors<FormInterface> = null | Partial<
     formGroup?: ValidationErrors;
   }
 >;
+
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>; // can be removed when upgrading ts version
+type UntypedControlBase<TControl extends AbstractControl | FormArray> = Omit<
+  TControl,
+  'value' | 'valueChanges' | 'setValue' | 'patchValue'
+>;
+
+export type TypedAbstractControl<TValue extends any> = {
+  value: TValue;
+  valueChanges: Observable<TValue>;
+  setValue(
+    value: TValue,
+    options?: {
+      onlySelf?: boolean;
+      emitEvent?: boolean;
+      emitModelToViewChange?: boolean;
+      emitViewToModelChange?: boolean;
+    },
+  ): void;
+  patchValue(
+    value: Partial<TValue>,
+    options?: {
+      onlySelf?: boolean;
+      emitEvent?: boolean;
+      emitModelToViewChange?: boolean;
+      emitViewToModelChange?: boolean;
+    },
+  ): void;
+} & UntypedControlBase<AbstractControl>;
+
+export type TypedFormArray<TValue extends any> = TypedAbstractControl<TValue> & UntypedControlBase<FormArray>;
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
 

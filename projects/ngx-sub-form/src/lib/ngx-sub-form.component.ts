@@ -40,7 +40,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return null as any;
     }
 
-    return this.formGroup.controls as ControlsType<FormInterface>;
+    return this.formGroup.controls as unknown as ControlsType<FormInterface>;
   }
 
   public get formGroupValues(): Required<FormInterface> {

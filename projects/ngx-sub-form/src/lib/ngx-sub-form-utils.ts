@@ -6,6 +6,7 @@ import {
   FormControl,
   FormArray,
   AbstractControl,
+  FormGroup,
 } from '@angular/forms';
 import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
@@ -40,7 +41,7 @@ type Omit<T, K> = Pick<T, Exclude<keyof T, K>>; // can be removed when upgrading
 type DefaultSetValueOptions = Parameters<FormControl['setValue']>[1];
 type DefaultPatchValueOptions = Parameters<FormControl['patchValue']>[1];
 
-type TypedControlBase<TValue, TControl extends FormArray | AbstractControl = AbstractControl> = {
+export type TypedControlBase<TValue, TControl extends FormArray | AbstractControl = AbstractControl> = {
   value: TValue;
   valueChanges: Observable<TValue>;
   setValue(
@@ -61,7 +62,15 @@ type UntypedControlBase<TControl extends FormArray | AbstractControl> = Omit<
 export type TypedAbstractControl<TValue> = TypedControlBase<TValue, AbstractControl> &
   UntypedControlBase<AbstractControl>;
 
-export type TypedFormArray<TValue> = TypedControlBase<TValue, FormArray> & UntypedControlBase<FormArray>;
+export type TypedFormArray<TValue extends any[]> = TypedControlBase<TValue, FormArray> &
+  Omit<UntypedControlBase<FormArray>, 'controls'> & {
+    controls: TypedAbstractControl<TValue[0]>[];
+  };
+
+export type TypedFormGroup<TValue> = TypedControlBase<TValue, FormArray> &
+  Omit<UntypedControlBase<FormGroup>, 'controls'> & {
+    controls: ControlsType<TValue>;
+  };
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
 

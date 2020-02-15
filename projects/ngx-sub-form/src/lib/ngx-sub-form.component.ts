@@ -21,12 +21,17 @@ import {
   isNullOrUndefined,
   ControlsType,
   ArrayPropertyKey,
+  TypedAbstractControl,
+  TypedFormGroup,
 } from './ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate } from './ngx-sub-form.types';
 
-type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
+type MapControlFunction<FormInterface, MapValue> = (
+  ctrl: TypedAbstractControl<any>,
+  key: keyof FormInterface,
+) => MapValue;
 type FilterControlFunction<FormInterface> = (
-  ctrl: AbstractControl,
+  ctrl: TypedAbstractControl<any>,
   key: keyof FormInterface,
   isCtrlWithinFormArray: boolean,
 ) => boolean;
@@ -145,7 +150,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return null;
     }
 
-    const formControls: Controls<FormInterface> = this.formGroup.controls;
+    const formControls: ControlsType<FormInterface> = this.formGroup.controls;
 
     const controls: Partial<ControlMap<FormInterface, MapValue | MapValue[]>> = {};
 
@@ -352,7 +357,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     const formControlNames: (keyof FormInterface)[] = Object.keys(this.formControlNames) as (keyof FormInterface)[];
 
     const formValues: Observable<KeyValueForm>[] = formControlNames.map(key =>
-      this.formGroup.controls[key].valueChanges.pipe(
+      (this.formGroup.controls[key] as unknown as AbstractControl).valueChanges.pipe(
         startWith(this.formGroup.controls[key].value),
         map(value => ({ key, value })),
       ),

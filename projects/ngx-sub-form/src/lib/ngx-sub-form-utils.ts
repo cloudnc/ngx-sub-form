@@ -35,35 +35,33 @@ export type FormErrors<FormInterface> = null | Partial<
 >;
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>; // can be removed when upgrading ts version
-type UntypedControlBase<TControl extends AbstractControl | FormArray> = Omit<
-  TControl,
-  'value' | 'valueChanges' | 'setValue' | 'patchValue'
->;
 
-export type TypedAbstractControl<TValue extends any> = {
+// defaulting to options in form control
+type DefaultSetValueOptions = Parameters<FormControl['setValue']>[1];
+type DefaultPatchValueOptions = Parameters<FormControl['patchValue']>[1];
+
+type TypedControlBase<TValue, TControl extends FormArray | AbstractControl = AbstractControl> = {
   value: TValue;
   valueChanges: Observable<TValue>;
   setValue(
     value: TValue,
-    options?: {
-      onlySelf?: boolean;
-      emitEvent?: boolean;
-      emitModelToViewChange?: boolean;
-      emitViewToModelChange?: boolean;
-    },
+    options?: TControl extends FormArray ? Parameters<FormArray['setValue']>[1] : DefaultSetValueOptions,
   ): void;
   patchValue(
     value: Partial<TValue>,
-    options?: {
-      onlySelf?: boolean;
-      emitEvent?: boolean;
-      emitModelToViewChange?: boolean;
-      emitViewToModelChange?: boolean;
-    },
+    options?: TControl extends FormArray ? Parameters<FormArray['setValue']>[1] : DefaultPatchValueOptions,
   ): void;
-} & UntypedControlBase<AbstractControl>;
+};
 
-export type TypedFormArray<TValue extends any> = TypedAbstractControl<TValue> & UntypedControlBase<FormArray>;
+type UntypedControlBase<TControl extends FormArray | AbstractControl> = Omit<
+  TControl,
+  keyof TypedControlBase<any, TControl>
+>;
+
+export type TypedAbstractControl<TValue> = TypedControlBase<TValue, AbstractControl> &
+  UntypedControlBase<AbstractControl>;
+
+export type TypedFormArray<TValue> = TypedControlBase<TValue, FormArray> & UntypedControlBase<FormArray>;
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
 

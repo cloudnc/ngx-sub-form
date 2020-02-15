@@ -41,6 +41,7 @@ type Omit<T, K> = Pick<T, Exclude<keyof T, K>>; // can be removed when upgrading
 type DefaultSetValueOptions = Parameters<FormControl['setValue']>[1];
 type DefaultPatchValueOptions = Parameters<FormControl['patchValue']>[1];
 
+// tslint:disable-next-line:interface-over-type-literal
 export type TypedControlBase<TValue, TControl extends FormArray | AbstractControl = AbstractControl> = {
   value: TValue;
   valueChanges: Observable<TValue>;

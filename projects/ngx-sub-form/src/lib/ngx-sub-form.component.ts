@@ -357,7 +357,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     const formControlNames: (keyof FormInterface)[] = Object.keys(this.formControlNames) as (keyof FormInterface)[];
 
     const formValues: Observable<KeyValueForm>[] = formControlNames.map(key =>
-      (this.formGroup.controls[key] as unknown as AbstractControl).valueChanges.pipe(
+      ((this.formGroup.controls[key] as unknown) as AbstractControl).valueChanges.pipe(
         startWith(this.formGroup.controls[key].value),
         map(value => ({ key, value })),
       ),

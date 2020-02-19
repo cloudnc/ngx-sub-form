@@ -23,7 +23,7 @@
     "lib:build:prod": "yarn run ng build --project ngx-sub-form",
     "lib:build:watch": "yarn run lib:build:prod --watch",
     "lib:test:watch": "yarn run ng test --project ngx-sub-form",
-    "lib:test:ci": "yarn run ng test --project ngx-sub-form --watch false",
+    "lib:test:ci": "yarn run ng test --project ngx-sub-form --watch false --browsers=ChromeHeadless",
     "------------------ Quick Commands ------------------": "",
     "lint:fix": "yarn demo:lint:fix && yarn prettier:write",
     "semantic-release": "semantic-release",
@@ -55,9 +55,9 @@
     "zone.js": "0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.900.2",
-    "@angular-devkit/build-ng-packagr": "0.900.2",
-    "@angular/cli": "9.0.2",
+    "@angular-devkit/build-angular": "0.900.1",
+    "@angular-devkit/build-ng-packagr": "0.900.1",
+    "@angular/cli": "9.0.1",
     "@angular/compiler-cli": "9.0.1",
     "@angular/language-service": "9.0.1",
     "@bahmutov/add-typescript-to-cypress": "2.1.2",

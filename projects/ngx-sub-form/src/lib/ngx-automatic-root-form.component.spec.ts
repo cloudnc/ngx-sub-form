@@ -112,7 +112,10 @@ describe(`NgxAutomaticRootFormComponent`, () => {
     componentFixture.detectChanges();
 
     setTimeout(() => {
-      expect(vehicleUpdatedSpy).toHaveBeenCalledWith(getNewCorrectValues());
+      // todo: after upgrading to ng 9 + all the deps the following
+      // is typed from chai instead of jasmine and it triggers errors
+      // it shouldn't block the new release though
+      (expect(vehicleUpdatedSpy) as any).toHaveBeenCalledWith(getNewCorrectValues());
       done();
     }, 0);
   });
@@ -125,13 +128,19 @@ describe(`NgxAutomaticRootFormComponent`, () => {
     componentFixture.detectChanges();
 
     setTimeout(() => {
-      expect(vehicleUpdatedSpy).not.toHaveBeenCalled();
+      // todo: after upgrading to ng 9 + all the deps the following
+      // is typed from chai instead of jasmine and it triggers errors
+      // it shouldn't block the new release though
+      (expect(vehicleUpdatedSpy) as any).not.toHaveBeenCalled();
 
       componentForm.formGroupControls.crewMemberCount.setValue(MAX_CREW_MEMBER_COUNT);
       // shouldn't require to call `componentForm.manualSave()`!
 
       setTimeout(() => {
-        expect(vehicleUpdatedSpy).toHaveBeenCalledWith({
+        // todo: after upgrading to ng 9 + all the deps the following
+        // is typed from chai instead of jasmine and it triggers errors
+        // it shouldn't block the new release though
+        (expect(vehicleUpdatedSpy) as any).toHaveBeenCalledWith({
           ...getNewIncorrectValues(),
           crewMemberCount: MAX_CREW_MEMBER_COUNT,
         });

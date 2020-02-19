@@ -4,7 +4,7 @@ dist: trusty
 
 language: node_js
 node_js:
-  - '10'
+  - '12'
 
 # https://github.com/cypress-io/cypress/issues/4069
 addons:

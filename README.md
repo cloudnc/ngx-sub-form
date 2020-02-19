@@ -29,7 +29,8 @@ Install the [npm package](https://www.npmjs.com/package/ngx-sub-form): `ngx-sub-
 _Note about the versions:_
 
 Angular <= 7: `2.7.1`  
-Angular >= 8: Latest
+Angular 8.x : `4.x`  
+Angular >= 9: Latest
 
 ## Demo
 

@@ -33,7 +33,7 @@ script:
   - yarn run readme:check
   - yarn run lib:test:ci
   # build
-  - yarn run lib:build:prod
+  - yarn run lib:build:prod:view-engine
   - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
   # e2e tests
   - sed -i 's/<base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/">/<base href="\/">/g' dist/ngx-sub-form-demo/index.html

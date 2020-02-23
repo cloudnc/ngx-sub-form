@@ -8,15 +8,14 @@ export interface OnFormUpdate<FormInterface> {
   onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
 }
 
-type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Nullable<T> = T | null;
 
 export type NullableObject<T> = { [P in keyof T]: Nullable<T[P]> };
 
-export type TypedFormGroup<FormInterface> = Omit<FormGroup, 'controls' | 'value'> & {
+export interface TypedFormGroup<FormInterface> extends FormGroup {
   controls: Controls<FormInterface>;
   value: FormInterface;
-};
+}
 
 export type TypedValidatorFn<T> = (formGroup: TypedFormGroup<T>) => ValidationErrors | null;
 

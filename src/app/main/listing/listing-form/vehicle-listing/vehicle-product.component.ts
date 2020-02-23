@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
+import { Controls, NgxSubFormComponent, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { UnreachableCase } from 'src/app/shared/utils';
 

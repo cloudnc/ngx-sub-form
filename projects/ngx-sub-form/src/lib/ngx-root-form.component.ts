@@ -1,14 +1,14 @@
-import { EventEmitter, OnInit, Input, Component, Directive } from '@angular/core';
+import { Directive, EventEmitter, Input, OnInit } from '@angular/core';
 import isEqual from 'fast-deep-equal';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
-import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
-import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
+import { isNullOrUndefined, takeUntilDestroyed } from './ngx-sub-form-utils';
+import { NgxSubFormComponent } from './ngx-sub-form.component';
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
-export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
-  extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
+export abstract class NgxRootFormComponent<ControlInterface extends object>
+  extends NgxSubFormComponent<ControlInterface>
   implements OnInit {
   public abstract dataInput: Required<ControlInterface> | null | undefined;
   // `Input` values are set while the `ngOnChanges` hook is ran
@@ -81,17 +81,6 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
   public writeValue(obj: Required<ControlInterface> | null): void {
     this.dataValue = obj;
     super.writeValue(obj);
-  }
-
-  protected transformToFormGroup(
-    obj: ControlInterface | null,
-    defaultValues: Partial<FormInterface> | null,
-  ): FormInterface | null {
-    return (obj as unknown) as FormInterface;
-  }
-
-  protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as unknown) as ControlInterface;
   }
 
   public manualSave(): void {

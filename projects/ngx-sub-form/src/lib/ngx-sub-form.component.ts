@@ -22,7 +22,7 @@ import {
   ControlsType,
   ArrayPropertyKey,
 } from './ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, TypedFormGroup } from './ngx-sub-form.types';
+import { FormGroupOptions, NgxFormWithArrayControls, TypedFormGroup } from './ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (ctrl: AbstractControl, key: keyof FormInterface) => MapValue;
 type FilterControlFunction<FormInterface> = (
@@ -31,32 +31,41 @@ type FilterControlFunction<FormInterface> = (
   isCtrlWithinFormArray: boolean,
 ) => boolean;
 
+export interface MapFormData<ControlInterface, FormInterface> {
+  transformToFormGroup(obj: ControlInterface | null, defaultValues: Partial<ControlInterface> | null): FormInterface | null
+  transformFromFormGroup(formValue: FormInterface): ControlInterface | null
+}
+
+type DeriveFormInterface<T, C> = T extends MapFormData<C, infer F> ? F : C;
+// type DeriveFormInterface<T> = T extends NgxSubFormComponent<infer C> ? T extends MapFormData<C, infer F> ? F : C : never;
+
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
-export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
-  implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
-  public get formGroupControls(): ControlsType<FormInterface> {
+export abstract class NgxSubFormComponent<ControlInterface>
+  implements ControlValueAccessor, Validator, OnDestroy {
+
+  public get formGroupControls(): ControlsType<DeriveFormInterface<this, ControlInterface>> {
     // @note form-group-undefined we need the return null here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
     if (!this.formGroup) {
       return null as any;
     }
 
-    return this.formGroup.controls as ControlsType<FormInterface>;
+    return this.formGroup.controls as ControlsType<DeriveFormInterface<this, ControlInterface>>;
   }
 
-  public get formGroupValues(): Required<FormInterface> {
+  public get formGroupValues(): Required<DeriveFormInterface<this, ControlInterface>> {
     // see @note form-group-undefined for non-null assertion reason
     // tslint:disable-next-line:no-non-null-assertion
     return this.mapControls(ctrl => ctrl.value)!;
   }
 
-  public get formGroupErrors(): FormErrors<FormInterface> {
-    const errors: FormErrors<FormInterface> = this.mapControls<ValidationErrors | ValidationErrors[] | null>(
+  public get formGroupErrors(): FormErrors<DeriveFormInterface<this, ControlInterface>> {
+    const errors: FormErrors<DeriveFormInterface<this, ControlInterface>> = this.mapControls<ValidationErrors | ValidationErrors[] | null>(
       ctrl => ctrl.errors,
       (ctrl, _, isCtrlWithinFormArray) => (isCtrlWithinFormArray ? true : ctrl.invalid),
       true,
-    ) as FormErrors<FormInterface>;
+    ) as FormErrors<DeriveFormInterface<this, ControlInterface>>;
 
     if (!this.formGroup.errors && (!errors || !Object.keys(errors).length)) {
       return null;
@@ -65,24 +74,24 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return Object.assign({}, this.formGroup.errors ? { formGroup: this.formGroup.errors } : {}, errors);
   }
 
-  public get formControlNames(): ControlsNames<FormInterface> {
+  public get formControlNames(): ControlsNames<DeriveFormInterface<this, ControlInterface>> {
     // see @note form-group-undefined for as syntax
     return this.mapControls(
       (_, key) => key,
       () => true,
       false,
-    ) as ControlsNames<FormInterface>;
+    ) as ControlsNames<DeriveFormInterface<this, ControlInterface>>;
   }
 
-  private controlKeys: (keyof FormInterface)[] = [];
+  private controlKeys: (keyof DeriveFormInterface<this, ControlInterface>)[] = [];
 
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
-  public formGroup: TypedFormGroup<FormInterface> = (new FormGroup(
+  public formGroup: TypedFormGroup<DeriveFormInterface<this, ControlInterface>> = (new FormGroup(
     this._getFormControls(),
     this.getFormGroupControlOptions() as AbstractControlOptions,
-  ) as unknown) as TypedFormGroup<FormInterface>;
+  ) as unknown) as TypedFormGroup<DeriveFormInterface<this, ControlInterface>>;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -99,7 +108,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   constructor() {
     // if the form has default values, they should be applied straight away
-    const defaultValues: Partial<FormInterface> | null = this.getDefaultValues();
+    const defaultValues: Partial<DeriveFormInterface<this, ControlInterface>> | null = this.getDefaultValues();
     if (!!defaultValues) {
       this.formGroup.reset(defaultValues, { emitEvent: false });
     }
@@ -121,35 +130,35 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   // can't define them directly
-  protected abstract getFormControls(): Controls<FormInterface>;
-  private _getFormControls(): Controls<FormInterface> {
-    const controls: Controls<FormInterface> = this.getFormControls();
+  protected abstract getFormControls(): Controls<DeriveFormInterface<this, ControlInterface>>;
+  private _getFormControls(): Controls<DeriveFormInterface<this, ControlInterface>> {
+    const controls: Controls<DeriveFormInterface<this, ControlInterface>> = this.getFormControls();
 
-    this.controlKeys = (Object.keys(controls) as unknown) as (keyof FormInterface)[];
+    this.controlKeys = (Object.keys(controls) as unknown) as (keyof DeriveFormInterface<this, ControlInterface>)[];
 
     return controls;
   }
 
   private mapControls<MapValue>(
-    mapControl: MapControlFunction<FormInterface, MapValue>,
-    filterControl: FilterControlFunction<FormInterface>,
+    mapControl: MapControlFunction<DeriveFormInterface<this, ControlInterface>, MapValue>,
+    filterControl: FilterControlFunction<DeriveFormInterface<this, ControlInterface>>,
     recursiveIfArray: boolean,
-  ): Partial<ControlMap<FormInterface, MapValue | MapValue[]>> | null;
+  ): Partial<ControlMap<DeriveFormInterface<this, ControlInterface>, MapValue | MapValue[]>> | null;
   private mapControls<MapValue>(
-    mapControl: MapControlFunction<FormInterface, MapValue>,
-  ): ControlMap<FormInterface, MapValue | MapValue[]> | null;
+    mapControl: MapControlFunction<DeriveFormInterface<this, ControlInterface>, MapValue>,
+  ): ControlMap<DeriveFormInterface<this, ControlInterface>, MapValue | MapValue[]> | null;
   private mapControls<MapValue>(
-    mapControl: MapControlFunction<FormInterface, MapValue>,
-    filterControl: FilterControlFunction<FormInterface> = () => true,
+    mapControl: MapControlFunction<DeriveFormInterface<this, ControlInterface>, MapValue>,
+    filterControl: FilterControlFunction<DeriveFormInterface<this, ControlInterface>> = () => true,
     recursiveIfArray: boolean = true,
-  ): Partial<ControlMap<FormInterface, MapValue | MapValue[]>> | null {
+  ): Partial<ControlMap<DeriveFormInterface<this, ControlInterface>, MapValue | MapValue[]>> | null {
     if (!this.formGroup) {
       return null;
     }
 
-    const formControls: Controls<FormInterface> = this.formGroup.controls;
+    const formControls: Controls<DeriveFormInterface<this, ControlInterface>> = this.formGroup.controls;
 
-    const controls: Partial<ControlMap<FormInterface, MapValue | MapValue[]>> = {};
+    const controls: Partial<ControlMap<DeriveFormInterface<this, ControlInterface>, MapValue | MapValue[]>> = {};
 
     for (const key in formControls) {
       if (this.formGroup.controls.hasOwnProperty(key)) {
@@ -176,12 +185,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     return controls;
   }
 
-  public onFormUpdate(formUpdate: FormUpdate<FormInterface>): void {}
-
   /**
    * Extend this method to provide custom local FormGroup level validation
    */
-  protected getFormGroupControlOptions(): FormGroupOptions<FormInterface> {
+  protected getFormGroupControlOptions(): FormGroupOptions<DeriveFormInterface<this, ControlInterface>> {
     return {};
   }
 
@@ -219,8 +226,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   // when getDefaultValues is defined, you do not need to specify the default values
   // in your form (the ones defined within the `getFormControls` method)
-  protected getDefaultValues(): Partial<FormInterface> | null {
+  protected getDefaultValues(): Partial<DeriveFormInterface<this, ControlInterface>> | null {
     return null;
+  }
+
+  protected isMapped(): this is MapFormData<ControlInterface, DeriveFormInterface<this, ControlInterface>> {
+    return 'transformToFormGroup' in this && 'transformFromFormGroup' in this;
   }
 
   public writeValue(obj: Required<ControlInterface> | null): void {
@@ -229,12 +240,12 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return;
     }
 
-    const defaultValues: Partial<FormInterface> | null = this.getDefaultValues();
+    const defaultValues: Partial<DeriveFormInterface<this, ControlInterface>> | null = this.getDefaultValues();
 
-    const transformedValue: FormInterface | null = this.transformToFormGroup(
+    const transformedValue: DeriveFormInterface<this, ControlInterface> | null = this.isMapped() ? this.transformToFormGroup(
       obj === undefined ? null : obj,
       defaultValues,
-    );
+    ) : obj as unknown as DeriveFormInterface<this, ControlInterface>;
 
     if (isNullOrUndefined(transformedValue)) {
       this.formGroup.reset(
@@ -244,7 +255,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         { emitEvent: false },
       );
     } else {
-      const missingKeys: (keyof FormInterface)[] = this.getMissingKeys(transformedValue);
+      const missingKeys: (keyof DeriveFormInterface<this, ControlInterface>)[] = this.getMissingKeys(transformedValue);
       if (missingKeys.length > 0) {
         throw new MissingFormControlsError(missingKeys as string[]);
       }
@@ -291,7 +302,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
         for (let i = formArray.length; i < value.length; i++) {
           if (this.formIsFormWithArrayControls()) {
-            formArray.insert(i, this.createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]));
+            formArray.insert(i, this.createFormArrayControl(key as ArrayPropertyKey<DeriveFormInterface<this, ControlInterface>>, value[i]));
           } else {
             formArray.insert(i, new FormControl(value[i]));
           }
@@ -300,19 +311,19 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     });
   }
 
-  private formIsFormWithArrayControls(): this is NgxFormWithArrayControls<FormInterface> {
-    return typeof ((this as unknown) as NgxFormWithArrayControls<FormInterface>).createFormArrayControl === 'function';
+  private formIsFormWithArrayControls(): this is NgxFormWithArrayControls<DeriveFormInterface<this, ControlInterface>> {
+    return typeof ((this as unknown) as NgxFormWithArrayControls<DeriveFormInterface<this, ControlInterface>>).createFormArrayControl === 'function';
   }
 
-  private getMissingKeys(transformedValue: FormInterface | null) {
+  private getMissingKeys(transformedValue: DeriveFormInterface<this, ControlInterface> | null) {
     // `controlKeys` can be an empty array, empty forms are allowed
-    const missingKeys: (keyof FormInterface)[] = this.controlKeys.reduce((keys, key) => {
+    const missingKeys: (keyof DeriveFormInterface<this, ControlInterface>)[] = this.controlKeys.reduce((keys, key) => {
       if (isNullOrUndefined(transformedValue) || transformedValue[key] === undefined) {
         keys.push(key);
       }
 
       return keys;
-    }, [] as (keyof FormInterface)[]);
+    }, [] as (keyof DeriveFormInterface<this, ControlInterface>)[]);
 
     return missingKeys;
   }
@@ -320,23 +331,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // when customizing the emission rate of your sub form component, remember not to **mutate** the stream
   // it is safe to throttle, debounce, delay, etc but using skip, first, last or mutating data inside
   // the stream will cause issues!
-  protected handleEmissionRate(): (obs$: Observable<FormInterface>) => Observable<FormInterface> {
+  protected handleEmissionRate(): (obs$: Observable<DeriveFormInterface<this, ControlInterface>>) => Observable<DeriveFormInterface<this, ControlInterface>> {
     return obs$ => obs$;
-  }
-
-  // that method can be overridden if the
-  // shape of the form needs to be modified
-  protected transformToFormGroup(
-    obj: ControlInterface | null,
-    defaultValues: Partial<FormInterface> | null,
-  ): FormInterface | null {
-    return (obj as any) as FormInterface;
-  }
-
-  // that method can be overridden if the
-  // shape of the form needs to be modified
-  protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as any) as ControlInterface;
   }
 
   public registerOnChange(fn: (_: any) => void): void {
@@ -347,11 +343,11 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     this.onChange = fn;
 
     interface KeyValueForm {
-      key: keyof FormInterface;
+      key: keyof DeriveFormInterface<this, ControlInterface>;
       value: unknown;
     }
 
-    const formControlNames: (keyof FormInterface)[] = Object.keys(this.formControlNames) as (keyof FormInterface)[];
+    const formControlNames: (keyof DeriveFormInterface<this, ControlInterface>)[] = Object.keys(this.formControlNames) as (keyof DeriveFormInterface<this, ControlInterface>)[];
 
     const formValues: Observable<KeyValueForm>[] = formControlNames.map(key =>
       this.formGroup.controls[key].valueChanges.pipe(
@@ -360,7 +356,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       ),
     );
 
-    const lastKeyEmitted$: Observable<keyof FormInterface> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
+
+    const lastKeyEmitted$: Observable<KeyValueForm['key']> = merge(...formValues.map(obs => obs.pipe(map(x => x.key))));
 
     this.subscription = this.formGroup.valueChanges
       .pipe(
@@ -383,6 +380,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
           if (index > 0 || (index === 0 && this.emitInitialValueOnInit)) {
             if (this.onChange) {
               this.onChange(
+                this.isMapped() ?
                 this.transformFromFormGroup(
                   // do not use the changes passed by `this.formGroup.valueChanges` here
                   // as we've got a delay(0) above, on the next tick the form data might
@@ -390,13 +388,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
                   // state is valid (base on latest value) but the previous value
                   // (the one passed by `this.formGroup.valueChanges` would be the previous one)
                   this.formGroup.value,
-                ),
+                ) : this.formGroup.value,
               );
             }
-
-            const formUpdate: FormUpdate<FormInterface> = {};
-            formUpdate[keyLastEmit] = true;
-            this.onFormUpdate(formUpdate);
           }
         }),
       )
@@ -420,17 +414,4 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       this.formGroup.enable({ emitEvent: false });
     }
   }
-}
-
-@Directive()
-// tslint:disable-next-line: directive-class-suffix
-export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> extends NgxSubFormComponent<
-  ControlInterface,
-  FormInterface
-> {
-  protected abstract transformToFormGroup(
-    obj: ControlInterface | null,
-    defaultValues: Partial<FormInterface> | null,
-  ): FormInterface | null;
-  protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface | null;
 }

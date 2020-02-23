@@ -9,8 +9,8 @@ export class DataInputUsedOnWrongPropertyError extends Error {
 }
 
 export function DataInput() {
-  return function<ControlInterface, FormInterface = ControlInterface>(
-    target: NgxRootFormComponent<ControlInterface, FormInterface>,
+  return function<ControlInterface extends object>(
+    target: NgxRootFormComponent<ControlInterface>,
     propertyKey: string,
   ) {
     if (propertyKey !== 'dataInput') {
@@ -19,7 +19,7 @@ export function DataInput() {
 
     Object.defineProperty(target, propertyKey, {
       set: function(dataInputValue) {
-        (this as NgxRootFormComponent<ControlInterface, FormInterface>).dataInputUpdated(dataInputValue);
+        (this as NgxRootFormComponent<ControlInterface>).dataInputUpdated(dataInputValue);
       },
     });
   };

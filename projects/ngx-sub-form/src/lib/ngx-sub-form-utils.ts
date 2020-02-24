@@ -39,8 +39,14 @@ export type FormErrors<FormInterface> = null | Partial<
 export interface TypedAbstractControl<TValue> extends AbstractControl {
   value: TValue;
   valueChanges: Observable<TValue>;
-  setValue(value: TValue, options?: Parameters<AbstractControl['setValue']>[1]): void;
-  patchValue(value: Partial<TValue>, options?: Parameters<AbstractControl['patchValue']>[1]): void;
+  setValue(
+    value: TValue,
+    options?: Parameters<FormControl['setValue']>[1] | Parameters<FormGroup['setValue']>[1],
+  ): void;
+  patchValue(
+    value: Partial<TValue>,
+    options?: Parameters<FormControl['patchValue']>[1] | Parameters<FormGroup['patchValue']>[1],
+  ): void;
 }
 
 export interface TypedFormGroup<TValue> extends FormGroup {

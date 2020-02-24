@@ -39,42 +39,24 @@ export type FormErrors<FormInterface> = null | Partial<
 export interface TypedAbstractControl<TValue> extends AbstractControl {
   value: TValue;
   valueChanges: Observable<TValue>;
-  setValue(
-    value: TValue,
-    options?: Parameters<FormControl['setValue']>[1],
-  ): void;
-  patchValue(
-    value: Partial<TValue>,
-    options?: Parameters<FormControl['patchValue']>[1],
-  ): void;
+  setValue(value: TValue, options?: Parameters<FormControl['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<FormControl['patchValue']>[1]): void;
 }
 
 export interface TypedFormGroup<TValue> extends FormGroup {
   value: TValue;
   valueChanges: Observable<TValue>;
   controls: ControlsType<TValue>;
-  setValue(
-    value: TValue,
-    options?: Parameters<FormGroup['setValue']>[1],
-  ): void;
-  patchValue(
-    value: Partial<TValue>,
-    options?: Parameters<FormGroup['patchValue']>[1],
-  ): void;
+  setValue(value: TValue, options?: Parameters<FormGroup['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<FormGroup['patchValue']>[1]): void;
 }
 
 export interface TypedFormArray<TValue> extends FormArray {
   value: TValue;
   valueChanges: Observable<TValue>;
   controls: TypedAbstractControl<TValue>[];
-  setValue(
-    value: TValue[],
-    options?: Parameters<FormArray['setValue']>[1],
-  ): void;
-  patchValue(
-    value: Partial<TValue[]>,
-    options?: Parameters<FormArray['patchValue']>[1],
-  ): void;
+  setValue(value: TValue[], options?: Parameters<FormArray['setValue']>[1]): void;
+  patchValue(value: Partial<TValue[]>, options?: Parameters<FormArray['patchValue']>[1]): void;
 }
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];

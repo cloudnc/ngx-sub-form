@@ -52,12 +52,12 @@ export interface TypedFormGroup<TValue> extends FormGroup {
   patchValue(value: Partial<TValue>, options?: Parameters<FormGroup['patchValue']>[1]): void;
 }
 
-export interface TypedFormArray<TValue> extends FormArray {
+export interface TypedFormArray<TValue extends any[]> extends FormArray {
   value: TValue;
   valueChanges: Observable<TValue>;
   controls: TypedAbstractControl<TValue>[];
-  setValue(value: TValue[], options?: Parameters<FormArray['setValue']>[1]): void;
-  patchValue(value: Partial<TValue[]>, options?: Parameters<FormArray['patchValue']>[1]): void;
+  setValue(value: TValue, options?: Parameters<FormArray['setValue']>[1]): void;
+  patchValue(value: TValue, options?: Parameters<FormArray['patchValue']>[1]): void;
 }
 
 export interface TypedFormControl<TValue> extends FormGroup {

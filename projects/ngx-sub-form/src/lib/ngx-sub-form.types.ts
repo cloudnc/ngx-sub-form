@@ -1,12 +1,6 @@
 import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
-import {
-  ArrayPropertyKey,
-  ArrayPropertyValue,
-  Controls,
-  FormUpdate,
-  TypedFormGroup,
-} from './ngx-sub-form-utils';
+import { ArrayPropertyKey, ArrayPropertyValue, Controls, FormUpdate, TypedFormGroup } from './ngx-sub-form-utils';
 
 // @deprecated
 export interface OnFormUpdate<FormInterface> {

@@ -45,7 +45,7 @@ If you want to see the demo in action, please visit [https://cloudnc.github.io/n
 
 - 2 classes for top level form components: `NgxRootFormComponent`, `NgxAutomaticRootFormComponent`
 - 2 classes for sub level form components: `NgxSubFormComponent`, `NgxSubFormRemapComponent`
-- 5 interfaces: `Controls<T>`, `ControlsNames<T>`, `FormGroupOptions<T>`, `TypedAbstractControl<T>`, `TypedFormArray<T>`
+- 7 interfaces: `Controls<T>`, `ControlsNames<T>`, `FormGroupOptions<T>`, `TypedFormGroup<T>`, `TypedFormArray<T>`, `TypedFormControl<T>`, `TypedAbstractControl<T>`
 - 1 function: `subformComponentProviders`
 
 So there's actually nothing to setup (like a module), you can just use them directly.

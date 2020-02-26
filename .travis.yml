@@ -1,21 +1,26 @@
 sudo: false
 
-dist: trusty
+dist: bionic
 
 language: node_js
 node_js:
-  - '10'
+  - '12'
 
 # https://github.com/cypress-io/cypress/issues/4069
 addons:
   apt:
     packages:
       - libgconf-2-4
+  chrome: stable
 
 cache:
   directories:
     - ~/.cache
     - node_modules
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
 
 install:
   - yarn --frozen-lockfile --non-interactive --no-progress
@@ -28,7 +33,7 @@ script:
   - yarn run readme:check
   - yarn run lib:test:ci
   # build
-  - yarn run lib:build:prod
+  - yarn run lib:build:prod:view-engine
   - yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
   # e2e tests
   - sed -i 's/<base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/">/<base href="\/">/g' dist/ngx-sub-form-demo/index.html

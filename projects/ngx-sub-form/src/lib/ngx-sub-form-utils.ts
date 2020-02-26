@@ -6,6 +6,7 @@ import {
   FormControl,
   FormArray,
   AbstractControl,
+  FormGroup,
 } from '@angular/forms';
 import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
@@ -19,7 +20,10 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
-export type ControlsType<T> = { [K in keyof T]-?: T[K] extends any[] ? FormArray : AbstractControl };
+export type ControlsType<T> = {
+  [K in keyof T]-?: T[K] extends any[] ? TypedFormArray<T[K]> : TypedFormControl<T[K]> | TypedFormGroup<T[K]>;
+};
+
 export type FormErrorsType<T> = {
   [K in keyof T]-?: T[K] extends any[] ? (null | ValidationErrors)[] : ValidationErrors;
 };
@@ -31,6 +35,37 @@ export type FormErrors<FormInterface> = null | Partial<
     formGroup?: ValidationErrors;
   }
 >;
+
+// using set/patch value options signature from form controls to allow typing without additional casting
+export interface TypedAbstractControl<TValue> extends AbstractControl {
+  value: TValue;
+  valueChanges: Observable<TValue>;
+  setValue(value: TValue, options?: Parameters<AbstractControl['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<AbstractControl['patchValue']>[1]): void;
+}
+
+export interface TypedFormGroup<TValue> extends FormGroup {
+  value: TValue;
+  valueChanges: Observable<TValue>;
+  controls: ControlsType<TValue>;
+  setValue(value: TValue, options?: Parameters<FormGroup['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<FormGroup['patchValue']>[1]): void;
+}
+
+export interface TypedFormArray<TValue extends any[]> extends FormArray {
+  value: TValue;
+  valueChanges: Observable<TValue>;
+  controls: TypedAbstractControl<TValue>[];
+  setValue(value: TValue, options?: Parameters<FormArray['setValue']>[1]): void;
+  patchValue(value: TValue, options?: Parameters<FormArray['patchValue']>[1]): void;
+}
+
+export interface TypedFormControl<TValue> extends FormGroup {
+  value: TValue;
+  valueChanges: Observable<TValue>;
+  setValue(value: TValue, options?: Parameters<FormControl['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<FormControl['patchValue']>[1]): void;
+}
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
 

@@ -1,6 +1,6 @@
 import { FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { ArrayPropertyKey, ArrayPropertyValue, Controls, FormUpdate } from './ngx-sub-form-utils';
+import { ArrayPropertyKey, ArrayPropertyValue, Controls, FormUpdate, TypedFormGroup } from './ngx-sub-form-utils';
 
 // @deprecated
 export interface OnFormUpdate<FormInterface> {
@@ -11,11 +11,6 @@ export interface OnFormUpdate<FormInterface> {
 type Nullable<T> = T | null;
 
 export type NullableObject<T> = { [P in keyof T]: Nullable<T[P]> };
-
-export interface TypedFormGroup<FormInterface> extends FormGroup {
-  controls: Controls<FormInterface>;
-  value: FormInterface;
-}
 
 export type TypedValidatorFn<T> = (formGroup: TypedFormGroup<T>) => ValidationErrors | null;
 

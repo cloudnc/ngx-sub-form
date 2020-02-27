@@ -29,7 +29,7 @@ export interface OneListingForm {
 })
 export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm> {
   // as we're renaming the input, it'd be impossible for ngx-sub-form to guess
-  // the name of your input to then check within the `ngOnChanges` hook wheter
+  // the name of your input to then check within the `ngOnChanges` hook whether
   // it has been updated or not
   // another solution would be to ask you to use a setter and call a hook but
   // this is too verbose, that's why we created a decorator `@DataInput`

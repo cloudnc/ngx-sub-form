@@ -246,7 +246,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         // calling `reset` on a form with `null` throws an error but if nothing is passed
         // (undefined) it will reset all the form values to null (as expected)
         defaultValues === null ? undefined : defaultValues,
-        { emitEvent: false },
+        // emit to keep internal and external information about data in of control in sync, when
+        // null/undefined was passed into writeValue
+        // while internally being replaced with defaultValues
+        { emitEvent: isNullOrUndefined(obj) && !isNullOrUndefined(defaultValues) },
       );
     } else {
       const missingKeys: (keyof FormInterface)[] = this.getMissingKeys(transformedValue);
@@ -269,7 +272,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       const fgDisabled: boolean = this.formGroup.disabled;
 
       this.formGroup.setValue(transformedValue, {
-        emitEvent: false,
+        // emit to keep internal and external information about data in of control in sync, when
+        // null/undefined was passed into writeValue
+        // while internally being replaced with transformedValue
+        emitEvent: isNullOrUndefined(obj),
       });
 
       if (fgDisabled) {

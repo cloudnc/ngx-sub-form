@@ -24,7 +24,7 @@ import {
   TypedAbstractControl,
   TypedFormGroup,
 } from './ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate } from './ngx-sub-form.types';
+import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate, NoExtraProperties } from './ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (
   ctrl: TypedAbstractControl<any>,
@@ -340,8 +340,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   // that method can be overridden if the
   // shape of the form needs to be modified
-  protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as any) as ControlInterface;
+  protected transformFromFormGroup(formValue: FormInterface): NoExtraProperties<ControlInterface, FormInterface> | null {
+    return (formValue as any) as NoExtraProperties<ControlInterface, FormInterface>;
   }
 
   public registerOnChange(fn: (_: any) => void): void {
@@ -437,5 +437,5 @@ export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> 
     obj: ControlInterface | null,
     defaultValues: Partial<FormInterface> | null,
   ): FormInterface | null;
-  protected abstract transformFromFormGroup(formValue: FormInterface): ControlInterface | null;
+  protected abstract transformFromFormGroup(formValue: FormInterface): NoExtraProperties<ControlInterface, FormInterface> | null;
 }

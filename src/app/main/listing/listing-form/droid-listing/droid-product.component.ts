@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
+import { Controls, NgxSubFormRemapComponent, subformComponentProviders, NoExtraProperties } from 'ngx-sub-form';
 import {
   AssassinDroid,
   AstromechDroid,
@@ -52,7 +52,7 @@ export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, On
     };
   }
 
-  protected transformFromFormGroup(formValue: OneDroidForm): OneDroid | null {
+  protected transformFromFormGroup(formValue: OneDroidForm): NoExtraProperties<OneDroid, OneDroidForm> | null {
     switch (formValue.droidType) {
       case DroidType.PROTOCOL:
         return formValue.protocolDroid;

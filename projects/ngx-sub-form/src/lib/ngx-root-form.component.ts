@@ -4,6 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
+import { NoExtraProperties } from './ngx-sub-form.types';
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix
@@ -90,8 +91,8 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
     return (obj as unknown) as FormInterface;
   }
 
-  protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as unknown) as ControlInterface;
+  protected transformFromFormGroup(formValue: FormInterface): NoExtraProperties<ControlInterface, FormInterface> | null {
+    return (formValue as unknown) as NoExtraProperties<ControlInterface, FormInterface>;
   }
 
   public manualSave(): void {

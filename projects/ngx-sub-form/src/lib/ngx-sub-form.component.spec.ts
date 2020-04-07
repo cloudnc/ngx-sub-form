@@ -11,6 +11,7 @@ import {
   ArrayPropertyKey,
   ArrayPropertyValue,
   NgxFormWithArrayControls,
+  NoExtraProperties,
 } from '../public_api';
 import { Observable } from 'rxjs';
 
@@ -566,7 +567,7 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
     };
   }
 
-  protected transformFromFormGroup(formValue: VehicleForm): Vehicle | null {
+  protected transformFromFormGroup(formValue: VehicleForm): NoExtraProperties<Vehicle, VehicleForm> | null {
     return {
       color: formValue.vehicleColor,
       canFire: formValue.vehicleCanFire,
@@ -668,7 +669,7 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
     };
   }
 
-  protected transformFromFormGroup(formValue: VehiclesArrayForm): Vehicle[] | null {
+  protected transformFromFormGroup(formValue: VehiclesArrayForm): NoExtraProperties<Vehicle[], VehiclesArrayForm> | null {
     return formValue.vehicles;
   }
 

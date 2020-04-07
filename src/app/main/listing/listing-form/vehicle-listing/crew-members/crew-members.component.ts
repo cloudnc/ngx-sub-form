@@ -7,6 +7,7 @@ import {
   ArrayPropertyKey,
   ArrayPropertyValue,
   NgxFormWithArrayControls,
+  NoExtraProperties,
 } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
@@ -40,7 +41,7 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     };
   }
 
-  protected transformFromFormGroup(formValue: CrewMembersForm): CrewMember[] | null {
+  protected transformFromFormGroup(formValue: CrewMembersForm): NoExtraProperties<CrewMember[], CrewMembersForm> | null {
     return formValue.crewMembers;
   }
 

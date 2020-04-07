@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
+import { Controls, NgxSubFormRemapComponent, subformComponentProviders, NoExtraProperties } from 'ngx-sub-form';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { UnreachableCase } from 'src/app/shared/utils';
 
@@ -39,7 +39,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle | null {
+  protected transformFromFormGroup(formValue: OneVehicleForm): NoExtraProperties<OneVehicle, OneVehicleForm> | null {
     switch (formValue.vehicleType) {
       case VehicleType.SPEEDER:
         return formValue.speeder;

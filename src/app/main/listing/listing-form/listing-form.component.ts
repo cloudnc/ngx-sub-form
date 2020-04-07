@@ -7,6 +7,7 @@ import {
   // NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
   DataInput,
   NgxRootFormComponent,
+  NoExtraProperties,
 } from 'ngx-sub-form';
 import { tap } from 'rxjs/operators';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
@@ -64,7 +65,7 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
     };
   }
 
-  protected transformFromFormGroup(formValue: OneListingForm): OneListing | null {
+  protected transformFromFormGroup(formValue: OneListingForm): NoExtraProperties<OneListing, OneListingForm> | null {
     const { vehicleProduct, droidProduct, listingType, ...commonValues } = formValue;
 
     switch (listingType) {

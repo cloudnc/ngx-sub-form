@@ -324,7 +324,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle | null {
+  protected transformFromFormGroup(formValue: OneVehicleForm): NoExtraProperties<OneVehicle, OneVehicleForm> | null {
     switch (formValue.vehicleType) {
       case VehicleType.SPEEDER:
         return formValue.speeder;
@@ -381,7 +381,7 @@ export class VehicleProductComponent extends NgxSubFormRemapComponent<OneVehicle
     };
   }
 
-  protected transformFromFormGroup(formValue: OneVehicleForm): OneVehicle | null {
+  protected transformFromFormGroup(formValue: OneVehicleForm): NoExtraProperties<OneVehicle, OneVehicleForm> | null {
     switch (formValue.vehicleType) {
       case VehicleType.SPEEDER:
         return formValue.speeder;
@@ -441,7 +441,7 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
     };
   }
 
-  protected transformFromFormGroup(formValue: CrewMembersForm): CrewMember[] | null {
+  protected transformFromFormGroup(formValue: CrewMembersForm): NoExtraProperties<CrewMember[], CrewMembersForm> | null {
     return formValue.crewMembers;
   }
 

@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DataInput } from './ngx-sub-form.decorators';
-import { NgxFormWithArrayControls } from './ngx-sub-form.types';
+import { NgxFormWithArrayControls, NoExtraProperties } from './ngx-sub-form.types';
 
 interface Vehicle {
   color?: string | null;
@@ -209,7 +209,7 @@ class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArr
     };
   }
 
-  protected transformFromFormGroup(formValue: VehiclesArrayForm): Vehicle[] | null {
+  protected transformFromFormGroup(formValue: VehiclesArrayForm): NoExtraProperties<Vehicle[], VehiclesArrayForm> | null {
     return formValue.vehicles;
   }
 

@@ -41,3 +41,12 @@ export interface FormGroupOptions<T> {
 export interface NgxFormWithArrayControls<T> {
   createFormArrayControl(key: ArrayPropertyKey<T>, value: ArrayPropertyValue<T>): FormControl;
 }
+
+type Impossible<K extends keyof any> = {
+  [P in K]?: undefined | never;
+};
+
+export type NoExtraProperties<T, U> = U extends Array<infer V>
+  ? NoExtraProperties<V, V>[]
+  : Omit<U, keyof Impossible<Exclude<keyof U, keyof T>>>
+  // & Impossible<Exclude<keyof U, keyof T>>;

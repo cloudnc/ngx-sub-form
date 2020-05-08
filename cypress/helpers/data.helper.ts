@@ -1,8 +1,8 @@
-import { OneListing, ListingType } from '../../src/app/interfaces/listing.interface';
-import { UnreachableCase } from '../../src/app/shared/utils';
-import { DroidType } from '../../src/app/interfaces/droid.interface';
-import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
 import { CrewMember } from '../../src/app/interfaces/crew-member.interface';
+import { DroidType } from '../../src/app/interfaces/droid.interface';
+import { ListingType, OneListing } from '../../src/app/interfaces/listing.interface';
+import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { UnreachableCase } from '../../src/app/shared/utils';
 
 export interface ListElement {
   readonly title: string;
@@ -140,4 +140,6 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
 export const hardcodedElementsToTestList = (items: OneListing[]): ListElement[] =>
   items.map(item => hardcodedElementToTestElement(item));
 
-export const extractErrors = (errors: JQuery<HTMLElement>) => cy.wrap(JSON.parse(errors.text().trim()));
+export const extractErrors = (errors: JQuery<HTMLElement>) => {
+  return JSON.parse(errors.text().trim());
+};

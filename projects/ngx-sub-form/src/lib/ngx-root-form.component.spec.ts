@@ -1,10 +1,10 @@
-import { NgxRootFormComponent } from './ngx-root-form.component';
-import { EventEmitter, Input, Component, Output, DebugElement } from '@angular/core';
-import { Controls, ArrayPropertyKey, ArrayPropertyValue } from './ngx-sub-form-utils';
-import { FormControl, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { BehaviorSubject } from 'rxjs';
+import { NgxRootFormComponent } from './ngx-root-form.component';
+import { ArrayPropertyKey, ArrayPropertyValue, Controls } from './ngx-sub-form-utils';
 import { DataInput } from './ngx-sub-form.decorators';
 import { NgxFormWithArrayControls } from './ngx-sub-form.types';
 

@@ -1,16 +1,16 @@
+import { forwardRef, InjectionToken, Type } from '@angular/core';
 import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  NG_VALIDATORS,
-  ValidationErrors,
-  FormControl,
-  FormArray,
   AbstractControl,
+  ControlValueAccessor,
+  FormArray,
+  FormControl,
   FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
 } from '@angular/forms';
-import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
-import { takeUntil, debounce } from 'rxjs/operators';
+import { debounce, takeUntil } from 'rxjs/operators';
 import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
 import { NgxSubFormComponent } from './ngx-sub-form.component';
 
@@ -24,14 +24,30 @@ export type ControlsType<T> = {
   [K in keyof T]-?: T[K] extends any[] ? TypedFormArray<T[K]> : TypedFormControl<T[K]> | TypedFormGroup<T[K]>;
 };
 
+export type OneOfControlsTypes<T = any> = ControlsType<T>[keyof ControlsType<T>];
+
+// @deprecated
 export type FormErrorsType<T> = {
   [K in keyof T]-?: T[K] extends any[] ? (null | ValidationErrors)[] : ValidationErrors;
 };
 
 export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
 
+// @deprecated
 export type FormErrors<FormInterface> = null | Partial<
   FormErrorsType<FormInterface> & {
+    formGroup?: ValidationErrors;
+  }
+>;
+
+// @todo rename to `FormErrorsType` once the deprecated one is removed
+export type NewFormErrorsType<T> = {
+  [K in keyof T]-?: T[K] extends any[] ? Record<number, ValidationErrors> : ValidationErrors;
+};
+
+// @todo rename to `FormErrors` once the deprecated one is removed
+export type NewFormErrors<FormInterface> = null | Partial<
+  NewFormErrorsType<FormInterface> & {
     formGroup?: ValidationErrors;
   }
 >;
@@ -123,8 +139,13 @@ export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
  * Easily unsubscribe from an observable stream by appending `takeUntilDestroyed(this)` to the observable pipe.
  * If the component already has a `ngOnDestroy` method defined, it will call this first.
  * Note that the component *must* implement OnDestroy for this to work (the typings will enforce this anyway)
+ * ---------------
+ * following doesn't work anymore with ng9
+ * https://github.com/angular/angular/issues/36776
+ * there's also a PR that'd fix this here:
+ * https://github.com/angular/angular/pull/35464
  */
-export function takeUntilDestroyed<T>(component: OnDestroy): (source: Observable<T>) => Observable<T> {
+export function takeUntilDestroyed<T>(component: any): (source: Observable<T>) => Observable<T> {
   return (source: Observable<T>): Observable<T> => {
     const onDestroy = new Subject();
     const previousOnDestroy = component.ngOnDestroy;

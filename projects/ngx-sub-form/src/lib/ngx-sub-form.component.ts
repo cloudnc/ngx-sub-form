@@ -1,26 +1,26 @@
-import { OnDestroy, Directive, Component } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 import {
   AbstractControl,
   AbstractControlOptions,
   ControlValueAccessor,
+  FormArray,
+  FormControl,
   FormGroup,
   ValidationErrors,
   Validator,
-  FormArray,
-  FormControl,
 } from '@angular/forms';
 import { merge, Observable, Subscription } from 'rxjs';
 import { delay, filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import {
+  ArrayPropertyKey,
   ControlMap,
   Controls,
   ControlsNames,
-  FormUpdate,
-  MissingFormControlsError,
-  FormErrors,
-  isNullOrUndefined,
   ControlsType,
-  ArrayPropertyKey,
+  FormErrors,
+  FormUpdate,
+  isNullOrUndefined,
+  MissingFormControlsError,
   TypedAbstractControl,
   TypedFormGroup,
 } from './ngx-sub-form-utils';

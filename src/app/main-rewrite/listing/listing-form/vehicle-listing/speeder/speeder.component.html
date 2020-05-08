@@ -1,0 +1,29 @@
+<fieldset [formGroup]="form.formGroup" class="container">
+  <legend>Speeder form</legend>
+
+  <mat-form-field>
+    <input
+      matInput
+      data-input-color
+      type="color"
+      placeholder="Color"
+      [formControlName]="form.formControlNames.color"
+      autocomplete="off"
+    />
+  </mat-form-field>
+
+  <mat-slide-toggle data-input-can-fire [formControlName]="form.formControlNames.canFire">Can fire</mat-slide-toggle>
+
+  <app-crew-members [formControlName]="form.formControlNames.crewMembers"></app-crew-members>
+
+  <mat-form-field>
+    <input
+      matInput
+      data-input-maximum-speed
+      type="number"
+      placeholder="Maximum speed"
+      [formControlName]="form.formControlNames.maximumSpeed"
+      autocomplete="off"
+    />
+  </mat-form-field>
+</fieldset>

@@ -1,0 +1,48 @@
+<mat-nav-list>
+  <a data-list-item mat-list-item *ngFor="let listing of listings" [routerLink]="['listings', listing.id]">
+    <h4 mat-line>
+      <span data-title>{{ listing.title }}</span>
+      (
+      <span data-type>{{ listing.listingType }}</span>
+      ) £
+      <span data-price>{{ listing.price | number }}</span>
+    </h4>
+    <p mat-line [ngSwitch]="listing.listingType">
+      <span *ngSwitchCase="ListingType.DROID">
+        <span data-sub-type [style.background-color]="listing.product.color">{{ listing.product.droidType }}</span>
+        -
+
+        <span data-details [ngSwitch]="listing.product.droidType">
+          <span *ngSwitchCase="DroidType.ASSASSIN">Weapons: {{ listing.product.weapons.join(', ') }}</span>
+
+          <span *ngSwitchCase="DroidType.ASTROMECH">Number of tools: {{ listing.product.toolCount }}</span>
+
+          <span *ngSwitchCase="DroidType.MEDICAL">
+            {{ listing.product.canHealHumans ? 'Can' : "Can't" }} heal humans,
+            {{ listing.product.canFixRobots ? 'can' : "can't" }} fix robots
+          </span>
+
+          <span *ngSwitchCase="DroidType.PROTOCOL">
+            Spoken languages: {{ listing.product.spokenLanguages.join(', ') }}
+          </span>
+        </span>
+      </span>
+
+      <span *ngSwitchCase="ListingType.VEHICLE">
+        <span data-sub-type [style.background-color]="listing.product.color">{{ listing.product.vehicleType }}</span>
+        -
+
+        <span data-details [ngSwitch]="listing.product.vehicleType">
+          Crew members: {{ listing.product.crewMembers | displayCrewMembers }},
+          {{ listing.product.canFire ? 'can' : "can't" }} fire,
+
+          <span *ngSwitchCase="VehicleType.SPEEDER">maximum speed: {{ listing.product.maximumSpeed }}kph</span>
+
+          <span *ngSwitchCase="VehicleType.SPACESHIP">number of wings: {{ listing.product.wingCount }}</span>
+        </span>
+      </span>
+    </p>
+  </a>
+</mat-nav-list>
+
+<a mat-raised-button data-create-new [routerLink]="['listings', 'new']" color="primary">Create new</a>

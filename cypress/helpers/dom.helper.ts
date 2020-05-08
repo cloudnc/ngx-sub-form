@@ -3,7 +3,6 @@
 import { DroidType } from '../../src/app/interfaces/droid.interface';
 import { ListingType } from '../../src/app/interfaces/listing.interface';
 import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
-import { extractErrors, FormElement, ListElement } from './data.helper';
 
 const getTextFromTag = (element: HTMLElement, tag: string): string =>
   Cypress.$(element)
@@ -36,13 +35,6 @@ const getCrewMembers = (element: HTMLElement): { firstName: string; lastName: st
     }))
     .get();
 
-export const expectAll = (selector: string, cb: (el: Cypress.Chainable) => void) =>
-  cy.get(selector).then($elements => {
-    $elements.each((_, $element) => {
-      cb(cy.wrap($element));
-    });
-  });
-
 export const DOM = {
   get createNewButton() {
     return cy.get('*[data-create-new]');
@@ -61,19 +53,6 @@ export const DOM = {
           },
         };
       },
-      get objList(): Cypress.Chainable<ListElement[]> {
-        return DOM.list.elements.cy.then($elements => {
-          return $elements
-            .map((_, element) => ({
-              title: getTextFromTag(element, 'title'),
-              type: getTextFromTag(element, 'type'),
-              price: getTextFromTag(element, 'price'),
-              subType: getTextFromTag(element, 'sub-type'),
-              details: getTextFromTag(element, 'details'),
-            }))
-            .get();
-        });
-      },
     };
   },
   get readonlyToggle() {
@@ -85,58 +64,10 @@ export const DOM = {
         return cy.get('app-listing');
       },
       get errors() {
-        return {
-          get cy() {
-            return cy.get(`*[data-errors]`);
-          },
-          get obj() {
-            return DOM.form.errors.cy.then(extractErrors);
-          },
-        };
+        return cy.get(`*[data-errors]`);
       },
       get noErrors() {
         return cy.get(`*[data-no-error]`);
-      },
-      getObj(type: VehicleType): Cypress.Chainable<FormElement> {
-        const getVehicleObj = (element: HTMLElement, vehicleType: VehicleType) =>
-          ({
-            Spaceship: {
-              spaceshipForm: {
-                color: getTextFromInput(element, 'input-color'),
-                canFire: getToggleValue(element, 'input-can-fire'),
-                crewMembers: getCrewMembers(element),
-                wingCount: +getTextFromInput(element, 'input-number-of-wings'),
-              },
-            },
-            Speeder: {
-              speederForm: {
-                color: getTextFromInput(element, 'input-color'),
-                canFire: getToggleValue(element, 'input-can-fire'),
-                crewMembers: getCrewMembers(element),
-                maximumSpeed: +getTextFromInput(element, 'input-maximum-speed'),
-              },
-            },
-          }[vehicleType]);
-
-        return DOM.form.cy.then($element => {
-          return $element
-            .map((_, element) => ({
-              title: getTextFromTag(element, 'title'),
-              price: getTextFromTag(element, 'price'),
-              inputs: {
-                id: getTextFromInput(element, 'input-id'),
-                title: getTextFromInput(element, 'input-title'),
-                imageUrl: getTextFromInput(element, 'input-image-url'),
-                price: getTextFromInput(element, 'input-price'),
-                listingType: getSelectedOptionFromSelect(element, 'select-listing-type'),
-                vehicleForm: {
-                  vehicleType: getSelectedOptionFromSelect(element, 'select-vehicle-type'),
-                  ...getVehicleObj(element, type),
-                },
-              },
-            }))
-            .get()[0];
-        });
       },
       get elements() {
         return {
@@ -194,4 +125,55 @@ export const DOM = {
       },
     };
   },
+};
+
+const getVehicleObj = (element: HTMLElement, vehicleType: VehicleType) =>
+  ({
+    Spaceship: {
+      spaceshipForm: {
+        color: getTextFromInput(element, 'input-color'),
+        canFire: getToggleValue(element, 'input-can-fire'),
+        crewMembers: getCrewMembers(element),
+        wingCount: +getTextFromInput(element, 'input-number-of-wings'),
+      },
+    },
+    Speeder: {
+      speederForm: {
+        color: getTextFromInput(element, 'input-color'),
+        canFire: getToggleValue(element, 'input-can-fire'),
+        crewMembers: getCrewMembers(element),
+        maximumSpeed: +getTextFromInput(element, 'input-maximum-speed'),
+      },
+    },
+  }[vehicleType]);
+
+export const getFormValue = (form: JQuery<HTMLElement>, type: VehicleType) =>
+  form
+    .map((_, element) => ({
+      title: getTextFromTag(element, 'title'),
+      price: getTextFromTag(element, 'price'),
+      inputs: {
+        id: getTextFromInput(element, 'input-id'),
+        title: getTextFromInput(element, 'input-title'),
+        imageUrl: getTextFromInput(element, 'input-image-url'),
+        price: getTextFromInput(element, 'input-price'),
+        listingType: getSelectedOptionFromSelect(element, 'select-listing-type'),
+        vehicleForm: {
+          vehicleType: getSelectedOptionFromSelect(element, 'select-vehicle-type'),
+          ...getVehicleObj(element, type),
+        },
+      },
+    }))
+    .get()[0];
+
+export const getFormList = ($elements: JQuery<HTMLElement>) => {
+  return $elements
+    .map((_, element) => ({
+      title: getTextFromTag(element, 'title'),
+      type: getTextFromTag(element, 'type'),
+      price: getTextFromTag(element, 'price'),
+      subType: getTextFromTag(element, 'sub-type'),
+      details: getTextFromTag(element, 'details'),
+    }))
+    .get();
 };

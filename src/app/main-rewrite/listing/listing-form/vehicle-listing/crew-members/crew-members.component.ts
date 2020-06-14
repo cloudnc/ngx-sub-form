@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { FormArray, FormControl, Validators } from '@angular/forms';
-import { getObservableLifecycle, ObservableLifecycle } from 'ngx-observable-lifecycle';
 import { ArrayPropertyKey, ArrayPropertyValue, subformComponentProviders } from 'ngx-sub-form';
-import { createForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
+import { createForm, NgxSubForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
 import { FormType } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
@@ -10,12 +9,12 @@ interface CrewMembersForm {
   crewMembers: CrewMember[];
 }
 
-@ObservableLifecycle()
+@NgxSubForm()
 @Component({
   selector: 'app-crew-members',
   templateUrl: './crew-members.component.html',
   styleUrls: ['./crew-members.component.scss'],
-  providers: subformComponentProviders(CrewMembersComponent),
+  providers: subformComponentProviders(forwardRef(() => CrewMembersComponent)),
 })
 export class CrewMembersComponent {
   public form = createForm<CrewMember[], CrewMembersForm>(this, {
@@ -41,9 +40,6 @@ export class CrewMembersComponent {
         default:
           return new FormControl(value);
       }
-    },
-    componentHooks: {
-      onDestroy: getObservableLifecycle(this).onDestroy,
     },
   });
 

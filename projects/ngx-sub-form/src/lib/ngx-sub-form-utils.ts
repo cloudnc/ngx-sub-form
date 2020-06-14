@@ -103,17 +103,17 @@ export function subformComponentProviders(
   return [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => component),
+      useExisting: component,
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => component),
+      useExisting: component,
       multi: true,
     },
     {
       provide: SUB_FORM_COMPONENT_TOKEN,
-      useExisting: forwardRef(() => component),
+      useExisting: component,
     },
   ];
 }

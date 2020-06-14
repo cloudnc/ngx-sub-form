@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { getObservableLifecycle, ObservableLifecycle } from 'ngx-observable-lifecycle';
 import { subformComponentProviders } from 'ngx-sub-form';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { UnreachableCase } from 'src/app/shared/utils';
-import { createForm } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
+import { createForm, NgxSubForm } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
 import { FormType } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 
 export interface OneVehicleForm {
@@ -13,12 +12,12 @@ export interface OneVehicleForm {
   vehicleType: VehicleType | null;
 }
 
-@ObservableLifecycle()
+@NgxSubForm()
 @Component({
   selector: 'app-vehicle-product',
   templateUrl: './vehicle-product.component.html',
   styleUrls: ['./vehicle-product.component.scss'],
-  providers: subformComponentProviders(VehicleProductComponent),
+  providers: subformComponentProviders(forwardRef(() => VehicleProductComponent)),
 })
 export class VehicleProductComponent {
   public VehicleType = VehicleType;
@@ -48,9 +47,6 @@ export class VehicleProductComponent {
         default:
           throw new UnreachableCase(formValue.vehicleType);
       }
-    },
-    componentHooks: {
-      onDestroy: getObservableLifecycle(this).onDestroy,
     },
   });
 }

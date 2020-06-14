@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { getObservableLifecycle, ObservableLifecycle } from 'ngx-observable-lifecycle';
 import { subformComponentProviders } from 'ngx-sub-form';
 import {
   AssassinDroid,
@@ -10,7 +9,7 @@ import {
   OneDroid,
   ProtocolDroid,
 } from 'src/app/interfaces/droid.interface';
-import { createForm } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
+import { createForm, NgxSubForm } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
 import { FormType } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 import { UnreachableCase } from '../../../../shared/utils';
 
@@ -22,12 +21,12 @@ interface OneDroidForm {
   droidType: DroidType | null;
 }
 
-@ObservableLifecycle()
+@NgxSubForm()
 @Component({
   selector: 'app-droid-product',
   templateUrl: './droid-product.component.html',
   styleUrls: ['./droid-product.component.scss'],
-  providers: subformComponentProviders(DroidProductComponent),
+  providers: subformComponentProviders(forwardRef(() => DroidProductComponent)),
 })
 export class DroidProductComponent {
   public DroidType = DroidType;
@@ -65,9 +64,6 @@ export class DroidProductComponent {
         default:
           throw new UnreachableCase(formValue.droidType);
       }
-    },
-    componentHooks: {
-      onDestroy: getObservableLifecycle(this).onDestroy,
     },
   });
 }

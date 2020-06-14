@@ -1,9 +1,8 @@
 import { Component, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { getObservableLifecycle, ObservableLifecycle } from 'ngx-observable-lifecycle';
 import { Subject } from 'rxjs';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
-import { createForm } from '../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
+import { createForm, NgxSubForm } from '../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
 import { FormType } from '../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 import { OneDroid } from '../../../interfaces/droid.interface';
 import { OneVehicle } from '../../../interfaces/vehicle.interface';
@@ -19,7 +18,7 @@ interface OneListingForm {
   price: number;
 }
 
-@ObservableLifecycle()
+@NgxSubForm()
 @Component({
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',
@@ -77,9 +76,6 @@ export class ListingFormComponent {
         default:
           throw new UnreachableCase(listingType);
       }
-    },
-    componentHooks: {
-      onDestroy: getObservableLifecycle(this).onDestroy,
     },
   });
 }

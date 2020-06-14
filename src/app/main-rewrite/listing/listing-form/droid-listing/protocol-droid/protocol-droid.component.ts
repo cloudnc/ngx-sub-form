@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { getObservableLifecycle, ObservableLifecycle } from 'ngx-observable-lifecycle';
+import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { subformComponentProviders } from 'ngx-sub-form';
-import { createForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
+import { createForm, NgxSubForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
 import { FormType } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/droid.interface';
 
-@ObservableLifecycle()
+@NgxSubForm()
 @Component({
   selector: 'app-protocol-droid',
   templateUrl: './protocol-droid.component.html',
   styleUrls: ['./protocol-droid.component.scss'],
-  providers: subformComponentProviders(ProtocolDroidComponent),
+  providers: subformComponentProviders(forwardRef(() => ProtocolDroidComponent)),
 })
 export class ProtocolDroidComponent {
   public Languages = Languages;

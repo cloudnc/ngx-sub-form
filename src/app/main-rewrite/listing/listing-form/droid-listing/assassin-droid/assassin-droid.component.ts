@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { getObservableLifecycle, ObservableLifecycle } from 'ngx-observable-lifecycle';
 import { subformComponentProviders } from 'ngx-sub-form';
 import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
-import { createForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
+import { createForm, NgxSubForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
 import { FormType } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 
 export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } = {
@@ -13,12 +12,12 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   [AssassinDroidWeapon.AXE]: 'Axe',
 };
 
-@ObservableLifecycle()
+@NgxSubForm()
 @Component({
   selector: 'app-assassin-droid',
   templateUrl: './assassin-droid.component.html',
   styleUrls: ['./assassin-droid.component.scss'],
-  providers: subformComponentProviders(AssassinDroidComponent),
+  providers: subformComponentProviders(forwardRef(() => AssassinDroidComponent)),
 })
 export class AssassinDroidComponent {
   public AssassinDroidWeapon = AssassinDroidWeapon;
@@ -32,9 +31,6 @@ export class AssassinDroidComponent {
       name: new FormControl(null, { validators: [Validators.required] }),
       droidType: new FormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
       weapons: new FormControl([], { validators: [Validators.required] }),
-    },
-    componentHooks: {
-      onDestroy: getObservableLifecycle(this).onDestroy,
     },
   });
 }

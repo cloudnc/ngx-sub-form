@@ -1,5 +1,6 @@
-import { ɵmarkDirty as markDirty } from '@angular/core';
+import { ɵivyEnabled, ɵmarkDirty as markDirty } from '@angular/core';
 import isEqual from 'fast-deep-equal';
+import { decorateObservableLifecycle, getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { EMPTY, forkJoin, Observable, of } from 'rxjs';
 import { delay, filter, map, mapTo, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { isNullOrUndefined } from '../ngx-sub-form-utils';
@@ -11,6 +12,7 @@ import {
   patchClassInstance,
 } from './helpers';
 import {
+  ComponentHooks,
   ControlValueAccessorComponentInstance,
   FormBindings,
   FormType,
@@ -62,7 +64,11 @@ export function createForm<ControlInterface, FormInterface>(
 
   let isRemoved = false;
 
-  options.componentHooks.onDestroy.pipe(take(1)).subscribe(() => {
+  const lifecyleHooks: ComponentHooks = options.componentHooks ?? {
+    onDestroy: getObservableLifecycle(componentInstance).onDestroy,
+  };
+
+  lifecyleHooks.onDestroy.pipe(take(1)).subscribe(() => {
     isRemoved = true;
   });
 
@@ -157,7 +163,7 @@ export function createForm<ControlInterface, FormInterface>(
   const emitNullOnDestroy$: Observable<null> =
     // emit null when destroyed by default
     isNullOrUndefined(options.emitNullOnDestroy) || options.emitNullOnDestroy
-      ? options.componentHooks.onDestroy.pipe(mapTo(null))
+      ? lifecyleHooks.onDestroy.pipe(mapTo(null))
       : EMPTY;
 
   const sideEffects = {
@@ -189,7 +195,7 @@ export function createForm<ControlInterface, FormInterface>(
   };
 
   forkJoin(sideEffects)
-    .pipe(takeUntil(options.componentHooks.onDestroy))
+    .pipe(takeUntil(lifecyleHooks.onDestroy))
     .subscribe();
 
   // following cannot be part of `forkJoin(sideEffects)`
@@ -199,7 +205,7 @@ export function createForm<ControlInterface, FormInterface>(
   registerOnChange$
     .pipe(
       switchMap(onChange => emitNullOnDestroy$.pipe(tap(value => onChange(value)))),
-      takeUntil(options.componentHooks.onDestroy.pipe(delay(0))),
+      takeUntil(lifecyleHooks.onDestroy.pipe(delay(0))),
     )
     .subscribe();
 
@@ -211,5 +217,16 @@ export function createForm<ControlInterface, FormInterface>(
     },
     // todo
     createFormArrayControl: (options as any).createFormArrayControl,
+  };
+}
+
+export function NgxSubForm(): ClassDecorator {
+  return function(target) {
+    decorateObservableLifecycle(target, {
+      hooks: {
+        onDestroy: true,
+      },
+      incompatibleComponentError: new Error(`You must use @NgxSubForm with a directive or component.`),
+    });
   };
 }

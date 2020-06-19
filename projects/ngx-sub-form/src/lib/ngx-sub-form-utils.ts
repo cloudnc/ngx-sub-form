@@ -56,7 +56,7 @@ export interface TypedFormGroup<TValue> extends FormGroup {
 export interface TypedFormArray<TValue extends any[]> extends FormArray {
   value: TValue;
   valueChanges: Observable<TValue>;
-  controls: TypedAbstractControl<TValue>[];
+  controls: TypedAbstractControl<TValue[0]>[];
   setValue(value: TValue, options?: Parameters<FormArray['setValue']>[1]): void;
   patchValue(value: TValue, options?: Parameters<FormArray['patchValue']>[1]): void;
   getRawValue(): TValue;

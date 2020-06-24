@@ -257,6 +257,16 @@ context(`EJawa demo`, () => {
     DOM.form.noErrors.should('exist');
   });
 
+  it(`should be pristine and untouched on init when form is valid`, () => {
+    DOM.list.elements.cy.eq(0).click();
+
+    DOM.form.status.obj.should('eql', {
+      dirty: false,
+      pristine: true,
+      touched: false,
+    });
+  });
+
   it(`should recursively disable the form when disabling the top formGroup`, () => {
     DOM.list.elements.cy.eq(0).click();
 

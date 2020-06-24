@@ -140,4 +140,4 @@ export const hardcodedElementToTestElement = (item: OneListing): ListElement => 
 export const hardcodedElementsToTestList = (items: OneListing[]): ListElement[] =>
   items.map(item => hardcodedElementToTestElement(item));
 
-export const extractErrors = (errors: JQuery<HTMLElement>) => cy.wrap(JSON.parse(errors.text().trim()));
+export const extractPre = (preTag: JQuery<HTMLElement>) => cy.wrap(JSON.parse(preTag.text().trim()));

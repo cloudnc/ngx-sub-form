@@ -166,3 +166,13 @@
     <pre>{{ formGroupValues | json }}</pre>
   </mat-card-content>
 </mat-card>
+
+<mat-card class="status">
+  <mat-card-title>Form status</mat-card-title>
+
+  <mat-card-content>
+    <pre data-status>{{
+      { dirty: formGroup.dirty, pristine: formGroup.pristine, touched: formGroup.touched } | json
+    }}</pre>
+  </mat-card-content>
+</mat-card>

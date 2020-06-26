@@ -11,8 +11,10 @@ import {
 import { InjectionToken, Type, forwardRef, OnDestroy } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
 import { takeUntil, debounce } from 'rxjs/operators';
-import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
+import { SUB_FORM_COMPONENT_TOKEN, SUB_FORM_ERRORS_TOKEN } from './ngx-sub-form-tokens';
 import { NgxSubFormComponent } from './ngx-sub-form.component';
+import { errorDefaultMessages } from './ngx-error-default-messages';
+import { IFormatters } from './ngx-error.pipe';
 
 export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
@@ -98,8 +100,16 @@ export function subformComponentProviders(
     {
       provide: SUB_FORM_COMPONENT_TOKEN,
       useExisting: forwardRef(() => component),
-    },
+    }
   ];
+}
+
+export function subFormErrorProvider(errorFormatters?: IFormatters) {
+  const formatters = errorFormatters || errorDefaultMessages
+  return {
+      provide: SUB_FORM_ERRORS_TOKEN,
+      useValue: formatters
+    };
 }
 
 const wrapAsQuote = (str: string): string => `"${str}"`;

@@ -31,6 +31,8 @@ import { MainComponent } from './main/main.component';
 import { CrewMemberComponent } from './main/listing/listing-form/vehicle-listing/crew-members/crew-member/crew-member.component';
 import { DisplayCrewMembersPipe } from './main/listings/display-crew-members.pipe';
 import { CrewMembersComponent } from './main/listing/listing-form/vehicle-listing/crew-members/crew-members.component';
+import { FormatErrorPipe } from 'projects/ngx-sub-form/src/lib/ngx-error.pipe';
+import { subFormErrorProvider } from 'ngx-sub-form';
 
 const MATERIAL_MODULES = [
   LayoutModule,
@@ -64,6 +66,7 @@ const MATERIAL_MODULES = [
     CrewMembersComponent,
     CrewMemberComponent,
     DisplayCrewMembersPipe,
+    FormatErrorPipe
   ],
   exports: [DroidProductComponent],
   imports: [
@@ -83,7 +86,7 @@ const MATERIAL_MODULES = [
       { path: '**', pathMatch: 'full', redirectTo: '/' },
     ]),
   ],
-  providers: [],
+  providers: [subFormErrorProvider()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

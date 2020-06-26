@@ -33,7 +33,7 @@ interface OneListingForm {
 @Component({
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',
-  styleUrls: ['./listing-form.component.scss'],
+  styleUrls: ['./listing-form.component.scss']
 })
 // export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
 export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm> {
@@ -59,8 +59,8 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
       listingType: new FormControl(null, Validators.required),
       id: new FormControl(null, Validators.required),
       title: new FormControl(null, Validators.required),
-      imageUrl: new FormControl(null, Validators.required),
-      price: new FormControl(null, Validators.required),
+      imageUrl: new FormControl(null, {validators: [Validators.required, Validators.minLength(4), Validators.maxLength(8)]}),
+      price: new FormControl(null, {validators: [Validators.required, Validators.min(0), Validators.max(5)]}),
     };
   }
 

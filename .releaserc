@@ -1,3 +1,11 @@
 {
-  "pkgRoot": "dist/ngx-sub-form"
+  "pkgRoot": "dist/ngx-sub-form",
+  "branches": [
+    "master",
+    {
+      "name": "feat/rewrite",
+      "channel": "beta-rewrite",
+      "prerelease": true
+    }
+  ]
 }

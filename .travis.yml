@@ -49,7 +49,7 @@ deploy:
     skip_cleanup: true
     script: yarn semantic-release
     on:
-      branch: master
+      all_branches: true
   - provider: pages
     skip_cleanup: true
     github_token: $GH_TOKEN

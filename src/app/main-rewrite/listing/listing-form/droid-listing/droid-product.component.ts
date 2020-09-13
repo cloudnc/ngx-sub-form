@@ -1,6 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, NgxSubForm } from 'ngx-sub-form/new';
 import {
   AssassinDroid,
   AstromechDroid,
@@ -9,8 +10,6 @@ import {
   OneDroid,
   ProtocolDroid,
 } from 'src/app/interfaces/droid.interface';
-import { createForm, NgxSubForm } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
-import { FormType } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 import { UnreachableCase } from '../../../../shared/utils';
 
 interface OneDroidForm {

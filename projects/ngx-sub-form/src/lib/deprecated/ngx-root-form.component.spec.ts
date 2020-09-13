@@ -4,9 +4,9 @@ import { FormArray, FormControl, ReactiveFormsModule, Validators } from '@angula
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { ArrayPropertyKey, ArrayPropertyValue, Controls } from '../shared/ngx-sub-form-utils';
+import { NgxFormWithArrayControls } from '../shared/ngx-sub-form.types';
 import { NgxRootFormComponent } from './ngx-root-form.component';
 import { DataInput } from './ngx-sub-form.decorators';
-import { NgxFormWithArrayControls } from './ngx-sub-form.types';
 
 interface Vehicle {
   color?: string | null;

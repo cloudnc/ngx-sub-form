@@ -1,18 +1,16 @@
 /// <reference types="jasmine" />
 
-import { FormControl, Validators, FormArray } from '@angular/forms';
+import { FormArray, FormControl, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 import {
-  FormGroupOptions,
-  NgxSubFormComponent,
-  NgxSubFormRemapComponent,
-  MissingFormControlsError,
-  NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
-  Controls,
   ArrayPropertyKey,
   ArrayPropertyValue,
-  NgxFormWithArrayControls,
-} from '../public_api';
-import { Observable } from 'rxjs';
+  Controls,
+  MissingFormControlsError,
+  NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
+} from '../shared/ngx-sub-form-utils';
+import { FormGroupOptions, NgxFormWithArrayControls } from '../shared/ngx-sub-form.types';
+import { NgxSubFormComponent, NgxSubFormRemapComponent } from './ngx-sub-form.component';
 
 interface Vehicle {
   color?: string | null;

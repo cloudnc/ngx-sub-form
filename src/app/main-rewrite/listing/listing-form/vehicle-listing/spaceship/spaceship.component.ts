@@ -1,9 +1,8 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, NgxSubForm } from 'ngx-sub-form/new';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
-import { createForm, NgxSubForm } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
-import { FormType } from '../../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 
 @NgxSubForm()
 @Component({

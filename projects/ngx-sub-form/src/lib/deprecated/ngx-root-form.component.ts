@@ -1,9 +1,9 @@
-import { EventEmitter, OnInit, Input, Component, Directive } from '@angular/core';
+import { Directive, EventEmitter, Input, OnInit } from '@angular/core';
 import isEqual from 'fast-deep-equal';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
+import { isNullOrUndefined, takeUntilDestroyed } from '../shared/ngx-sub-form-utils';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
-import { takeUntilDestroyed, isNullOrUndefined } from './ngx-sub-form-utils';
 
 @Directive()
 // tslint:disable-next-line: directive-class-suffix

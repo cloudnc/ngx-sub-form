@@ -1,4 +1,4 @@
-import { forwardRef, InjectionToken, Type } from '@angular/core';
+import { InjectionToken, Type } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -11,8 +11,7 @@ import {
 } from '@angular/forms';
 import { Observable, Subject, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
-import { SUB_FORM_COMPONENT_TOKEN } from './ngx-sub-form-tokens';
-import { NgxSubFormComponent } from './ngx-sub-form.component';
+import { NgxSubFormComponent } from '../deprecated/ngx-sub-form.component';
 
 export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
@@ -110,10 +109,6 @@ export function subformComponentProviders(
       provide: NG_VALIDATORS,
       useExisting: component,
       multi: true,
-    },
-    {
-      provide: SUB_FORM_COMPONENT_TOKEN,
-      useExisting: component,
     },
   ];
 }

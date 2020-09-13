@@ -23,8 +23,8 @@ import {
   MissingFormControlsError,
   TypedAbstractControl,
   TypedFormGroup,
-} from './ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate } from './ngx-sub-form.types';
+} from '../shared/ngx-sub-form-utils';
+import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate } from '../shared/ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (
   ctrl: TypedAbstractControl<any>,

@@ -8,8 +8,8 @@ import {
   ControlsNames,
   NewFormErrors,
   TypedFormGroup,
-} from '../ngx-sub-form-utils';
-import { FormGroupOptions } from '../ngx-sub-form.types';
+} from '../../src/lib/shared/ngx-sub-form-utils';
+import { FormGroupOptions } from '../../src/lib/shared/ngx-sub-form.types';
 import { AreTypesSimilar } from './helpers.types';
 
 export interface ComponentHooks {

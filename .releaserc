@@ -3,8 +3,8 @@
   "branches": [
     "master",
     {
-      "name": "feat/rewrite",
-      "channel": "beta-rewrite",
+      "name": "feat-rewrite",
+      "channel": "feat-rewrite",
       "prerelease": true
     }
   ]

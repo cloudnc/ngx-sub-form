@@ -1,10 +1,9 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, NgxSubForm } from 'ngx-sub-form/new';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { UnreachableCase } from 'src/app/shared/utils';
-import { createForm, NgxSubForm } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form';
-import { FormType } from '../../../../../../projects/ngx-sub-form/src/lib/new/ngx-sub-form.types';
 
 export interface OneVehicleForm {
   speeder: Speeder | null;

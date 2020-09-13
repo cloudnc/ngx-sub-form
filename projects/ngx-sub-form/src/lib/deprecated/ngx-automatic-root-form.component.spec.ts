@@ -1,11 +1,11 @@
-import { EventEmitter, Input, Component, Output, DebugElement } from '@angular/core';
-import { Controls } from './ngx-sub-form-utils';
-import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { DataInput } from './ngx-sub-form.decorators';
+import { BehaviorSubject } from 'rxjs';
+import { Controls } from '../shared/ngx-sub-form-utils';
 import { NgxAutomaticRootFormComponent } from './ngx-automatic-root-form.component';
+import { DataInput } from './ngx-sub-form.decorators';
 
 interface Vehicle {
   color?: string | null;

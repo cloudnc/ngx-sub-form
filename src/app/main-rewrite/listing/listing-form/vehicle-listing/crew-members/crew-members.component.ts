@@ -1,7 +1,13 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormArray, FormControl, Validators } from '@angular/forms';
-import { ArrayPropertyKey, ArrayPropertyValue, subformComponentProviders } from 'ngx-sub-form';
-import { createForm, FormType, NgxSubForm } from 'ngx-sub-form/new';
+import {
+  ArrayPropertyKey,
+  ArrayPropertyValue,
+  createForm,
+  FormType,
+  NgxSubForm,
+  subformComponentProviders,
+} from 'ngx-sub-form/new';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
 interface CrewMembersForm {

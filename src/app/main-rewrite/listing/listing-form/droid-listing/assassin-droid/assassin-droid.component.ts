@@ -1,7 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { subformComponentProviders } from 'ngx-sub-form';
-import { createForm, FormType, NgxSubForm } from 'ngx-sub-form/new';
+import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
 import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
 
 export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } = {

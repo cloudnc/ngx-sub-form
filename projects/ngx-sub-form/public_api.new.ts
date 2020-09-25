@@ -14,3 +14,5 @@ export * from './new/src/helpers';
 export * from './new/src/helpers.types';
 export * from './new/src/ngx-sub-form';
 export { FormType } from './new/src/ngx-sub-form.types';
+export * from './src/lib/shared/ngx-sub-form-utils';
+export * from './src/lib/shared/ngx-sub-form.types';

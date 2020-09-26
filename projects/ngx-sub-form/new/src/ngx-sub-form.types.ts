@@ -53,8 +53,11 @@ export interface NgxSubFormRemapOptions<ControlInterface, FormInterface> {
   fromFormGroup: (formValue: FormInterface) => ControlInterface;
 }
 
-type NgxSubFormRemap<ControlInterface, FormInterface> = AreTypesSimilar<ControlInterface, FormInterface> extends true
-  ? {}
+// if the 2 types are the same, instead of hiding the remap options
+// we expose them as optional so that it's possible for example to
+// override some defaults
+type NgxSubFormRemap<ControlInterface, FormInterface> = AreTypesSimilar<ControlInterface, FormInterface> extends true // we expose them
+  ? Partial<NgxSubFormRemapOptions<ControlInterface, FormInterface>>
   : NgxSubFormRemapOptions<ControlInterface, FormInterface>;
 
 type NgxSubFormArray<FormInterface> = ArrayPropertyKey<FormInterface> extends never

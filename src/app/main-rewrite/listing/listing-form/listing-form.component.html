@@ -128,7 +128,7 @@
       <button
         mat-raised-button
         color="primary"
-        (click)="manualSave()"
+        (click)="manualSave$$.next()"
         [disabled]="form.formGroup.invalid || form.formGroup.disabled"
       >
         Upsert

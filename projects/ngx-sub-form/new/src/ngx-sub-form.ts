@@ -112,7 +112,12 @@ export function createForm<ControlInterface, FormInterface>(
   const componentHooks = getControlValueAccessorBindings<ControlInterface>(componentInstance);
 
   const writeValue$: FormBindings<ControlInterface>['writeValue$'] = isRoot<ControlInterface, FormInterface>(options)
-    ? options.input$
+    ? options.input$.pipe(
+        // we need to start with a value here otherwise if a root form does not bind
+        // its input (and only uses an output, for example a filter) then
+        // `broadcastValueToParent$` would never start and we would never get updates
+        startWith(null),
+      )
     : componentHooks.writeValue$;
 
   const registerOnChange$: FormBindings<ControlInterface>['registerOnChange$'] = isRoot<

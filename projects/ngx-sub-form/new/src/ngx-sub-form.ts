@@ -2,7 +2,19 @@ import { ɵmarkDirty as markDirty } from '@angular/core';
 import isEqual from 'fast-deep-equal';
 import { decorateObservableLifecycle, getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { EMPTY, forkJoin, Observable, of } from 'rxjs';
-import { delay, filter, map, mapTo, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import {
+  delay,
+  filter,
+  map,
+  mapTo,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { isNullOrUndefined } from '../../src/lib/shared/ngx-sub-form-utils';
 import {
   createFormDataFromOptions,
@@ -139,19 +151,25 @@ export function createForm<ControlInterface, FormInterface>(
   );
 
   const broadcastValueToParent$: Observable<ControlInterface> = transformedValue$.pipe(
-    switchMap(transformedValue =>
-      formGroup.valueChanges.pipe(
+    switchMap(transformedValue => {
+      if (!isRoot<ControlInterface, FormInterface>(options)) {
+        return formGroup.valueChanges.pipe(delay(0));
+      } else {
+        if (options.manualSave$) {
+          return options.manualSave$.pipe(
+            withLatestFrom(formGroup.valueChanges),
+            map(([_, formValue]) => formValue),
+            delay(0),
+            filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
+          );
+        } else {
+          return formGroup.valueChanges.pipe(
         delay(0),
-        filter(formValue => {
-          if (!isRoot<ControlInterface, FormInterface>(options)) {
-            return true;
+            filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
+          );
+        }
           }
-
-          return !isEqual(transformedValue, formValue);
         }),
-      ),
-    ),
-    filter(() => !isRoot<ControlInterface, FormInterface>(options) || formGroup.valid),
     map(value =>
       isRemap<ControlInterface, FormInterface>(options)
         ? options.fromFormGroup(value)

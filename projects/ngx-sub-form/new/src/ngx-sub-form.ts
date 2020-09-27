@@ -1,4 +1,4 @@
-import { ɵmarkDirty as markDirty } from '@angular/core';
+// import { ɵmarkDirty as markDirty } from '@angular/core';
 import isEqual from 'fast-deep-equal';
 import { decorateObservableLifecycle, getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { EMPTY, forkJoin, Observable, of } from 'rxjs';
@@ -169,12 +169,12 @@ export function createForm<ControlInterface, FormInterface>(
           );
         } else {
           return formGroup.valueChanges.pipe(
-        delay(0),
+            delay(0),
             filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
           );
         }
-          }
-        }),
+      }
+    }),
     map(value =>
       isRemap<ControlInterface, FormInterface>(options)
         ? options.fromFormGroup(value)
@@ -205,9 +205,15 @@ export function createForm<ControlInterface, FormInterface>(
 
         formGroup.reset(value);
 
+        // commenting out the following for now as it seems that calling
+        // `markDirty` on a component when an input hasn't been set
+        // (in this case on a root form) then it throws an error
+        // Cannot read property 'nodeIndex' of null
+        // so we'll see later on if this is really needed or if it can
+        // be removed
         // support `changeDetection: ChangeDetectionStrategy.OnPush`
         // on the component hosting a form
-        markDirty(componentInstance);
+        // markDirty(componentInstance);
       }),
     ),
     setDisabledState$: setDisabledState$.pipe(

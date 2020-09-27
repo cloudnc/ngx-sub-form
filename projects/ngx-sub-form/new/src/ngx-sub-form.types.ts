@@ -80,11 +80,15 @@ export type NgxRootFormOptions<ControlInterface, FormInterface = ControlInterfac
   disabled$: Observable<boolean>;
   input$: Observable<ControlInterface | undefined>;
   output$: Subject<ControlInterface>;
+  // by default, a root form is considered as an automatic root form
+  // if you want to transform it into a manual root form, provide the
+  // following observable which trigger a save every time a value is emitted
+  manualSave$?: Observable<void>;
 };
 
 export enum FormType {
-  SUB,
-  ROOT,
+  SUB = 'Sub',
+  ROOT = 'Root',
 }
 
 export type NgxFormOptions<ControlInterface, FormInterface> =

@@ -38,11 +38,14 @@ export class ListingFormComponent {
 
   @Output() listingUpdated: Subject<OneListing> = new Subject();
 
+  public manualSave$$: Subject<void> = new Subject();
+
   public form = createForm<OneListing, OneListingForm>(this, {
     formType: FormType.ROOT,
     disabled$: this.disabled$,
     input$: this.input$,
     output$: this.listingUpdated,
+    manualSave$: this.manualSave$$,
     formControls: {
       vehicleProduct: new FormControl(null),
       droidProduct: new FormControl(null),

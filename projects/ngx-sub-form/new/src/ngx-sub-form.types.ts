@@ -84,6 +84,9 @@ export type NgxRootFormOptions<ControlInterface, FormInterface = ControlInterfac
   // if you want to transform it into a manual root form, provide the
   // following observable which trigger a save every time a value is emitted
   manualSave$?: Observable<void>;
+  // @todo it should either be `manualSave$` OR `handleEmissionRate` OR none of them
+  // if you're creating an automatic root form, you can customise the emission rate
+  handleEmissionRate?: (obs$: Observable<FormInterface>) => Observable<FormInterface>;
 };
 
 export enum FormType {

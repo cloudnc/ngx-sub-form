@@ -34,20 +34,11 @@ import {
   NgxSubForm,
   NgxSubFormArrayOptions,
   NgxSubFormOptions,
-  NgxSubFormRemapOptions,
 } from './ngx-sub-form.types';
 
 const optionsHaveInstructionsToCreateArrays = <ControlInterface, FormInterface>(
   options: NgxSubFormOptions<ControlInterface, FormInterface>,
 ): options is NgxSubFormOptions<ControlInterface, FormInterface> & NgxSubFormArrayOptions<FormInterface> => true;
-
-// @todo find a better name
-const isRemap = <ControlInterface, FormInterface>(
-  options: any,
-): options is NgxSubFormRemapOptions<ControlInterface, FormInterface> => {
-  const opt = options as NgxSubFormRemapOptions<ControlInterface, FormInterface>;
-  return !!opt.fromFormGroup && !!opt.toFormGroup;
-};
 
 // @todo find a better name
 const isRoot = <ControlInterface, FormInterface>(
@@ -145,7 +136,7 @@ export function createForm<ControlInterface, FormInterface>(
         return defaultValues;
       }
 
-      if (isRemap<ControlInterface, FormInterface>(options)) {
+      if (options.toFormGroup) {
         return options.toFormGroup(value);
       }
 
@@ -185,7 +176,7 @@ export function createForm<ControlInterface, FormInterface>(
       }
     }),
     map(value =>
-      isRemap<ControlInterface, FormInterface>(options)
+      options.fromFormGroup
         ? options.fromFormGroup(value)
         : // if it's not a remap component, the ControlInterface === the FormInterface
           ((value as any) as ControlInterface),

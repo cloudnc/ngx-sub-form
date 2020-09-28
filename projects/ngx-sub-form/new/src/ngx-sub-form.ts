@@ -160,6 +160,7 @@ export function createForm<ControlInterface, FormInterface>(
       if (!isRoot<ControlInterface, FormInterface>(options)) {
         return formGroup.valueChanges.pipe(delay(0));
       } else {
+        // @todo following could probably be refactored a bit to avoid code duplication
         if (options.manualSave$) {
           return options.manualSave$.pipe(
             withLatestFrom(formGroup.valueChanges),
@@ -168,10 +169,18 @@ export function createForm<ControlInterface, FormInterface>(
             filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
           );
         } else {
-          return formGroup.valueChanges.pipe(
-            delay(0),
-            filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
-          );
+          if (options.handleEmissionRate) {
+            return formGroup.valueChanges.pipe(
+              options.handleEmissionRate,
+              delay(0),
+              filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
+            );
+          } else {
+            return formGroup.valueChanges.pipe(
+              delay(0),
+              filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
+            );
+          }
         }
       }
     }),

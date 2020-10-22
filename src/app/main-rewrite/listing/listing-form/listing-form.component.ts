@@ -17,7 +17,6 @@ interface OneListingForm {
   price: number;
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',

@@ -19,7 +19,6 @@ interface OneDroidForm {
   droidType: DroidType | null;
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-droid-product',
   templateUrl: './droid-product.component.html',

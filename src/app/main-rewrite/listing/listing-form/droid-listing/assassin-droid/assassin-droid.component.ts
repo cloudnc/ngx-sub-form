@@ -10,7 +10,6 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   [AssassinDroidWeapon.AXE]: 'Axe',
 };
 
-@NgxSubForm()
 @Component({
   selector: 'app-assassin-droid',
   templateUrl: './assassin-droid.component.html',

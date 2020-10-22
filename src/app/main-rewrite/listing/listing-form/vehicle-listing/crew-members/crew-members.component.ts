@@ -14,7 +14,6 @@ interface CrewMembersForm {
   crewMembers: CrewMember[];
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-crew-members',
   templateUrl: './crew-members.component.html',

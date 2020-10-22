@@ -4,7 +4,6 @@ import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
 import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/droid.interface';
 
-@NgxSubForm()
 @Component({
   selector: 'app-protocol-droid',
   templateUrl: './protocol-droid.component.html',

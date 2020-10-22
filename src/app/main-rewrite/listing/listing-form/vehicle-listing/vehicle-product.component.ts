@@ -10,7 +10,6 @@ export interface OneVehicleForm {
   vehicleType: VehicleType | null;
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-vehicle-product',
   templateUrl: './vehicle-product.component.html',

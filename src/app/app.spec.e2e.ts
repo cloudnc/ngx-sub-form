@@ -90,6 +90,40 @@ context(`EJawa demo`, () => {
         });
       });
 
+      it(`should be able to go from a spaceship to a speeder AND back and restore the original value`, () => {
+        DOM.list.elements.cy.eq(0).click();
+        DOM.list.elements.cy.eq(1).click();
+        DOM.list.elements.cy.eq(0).click();
+
+        const x = hardCodedListings[0] as VehicleListing;
+        const s = x.product as Spaceship;
+
+        const expectedObj: FormElement = {
+          title: x.title,
+          price: '£' + x.price.toLocaleString(),
+          inputs: {
+            id: x.id,
+            title: x.title,
+            imageUrl: x.imageUrl,
+            price: x.price + '',
+            listingType: x.listingType,
+            vehicleForm: {
+              vehicleType: x.product.vehicleType,
+              spaceshipForm: {
+                color: s.color,
+                canFire: s.canFire,
+                crewMembers: s.crewMembers,
+                wingCount: s.wingCount,
+              },
+            },
+          },
+        };
+
+        DOM.form.cy.should($el => {
+          expect(getFormValue($el, VehicleType.SPACESHIP)).to.eql(expectedObj);
+        });
+      });
+
       it(`should display the (nested) errors from the form`, () => {
         DOM.createNewButton.click();
 

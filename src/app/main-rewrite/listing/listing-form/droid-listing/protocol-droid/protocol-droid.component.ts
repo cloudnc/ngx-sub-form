@@ -1,7 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form/new';
 import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/droid.interface';
 
 @Component({
@@ -22,7 +22,7 @@ export class ProtocolDroidComponent {
       spokenLanguages: new FormControl(null, { validators: [Validators.required] }),
     },
     componentHooks: {
-      onDestroy: getObservableLifecycle(this).onDestroy,
+      onDestroy: getObservableLifecycle(this).ngOnDestroy,
     },
   });
 }

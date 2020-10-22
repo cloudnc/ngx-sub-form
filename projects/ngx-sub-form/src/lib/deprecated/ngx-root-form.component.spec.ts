@@ -1,5 +1,5 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
@@ -85,12 +85,14 @@ describe(`NgxRootFormComponent`, () => {
   let component: TestWrapperComponent;
   let componentForm: RootFormComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [TestWrapperComponent, RootFormComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [TestWrapperComponent, RootFormComponent],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     componentFixture = TestBed.createComponent(TestWrapperComponent);
@@ -227,12 +229,14 @@ describe(`NgxRootFormComponent with an array`, () => {
   let component: ArrayTestWrapperComponent;
   let componentForm: RootFormArrayComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [ArrayTestWrapperComponent, RootFormArrayComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [ArrayTestWrapperComponent, RootFormArrayComponent],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     componentFixture = TestBed.createComponent(ArrayTestWrapperComponent);

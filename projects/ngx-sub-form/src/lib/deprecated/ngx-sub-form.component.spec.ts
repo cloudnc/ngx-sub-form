@@ -11,6 +11,7 @@ import {
 } from '../shared/ngx-sub-form-utils';
 import { FormGroupOptions, NgxFormWithArrayControls } from '../shared/ngx-sub-form.types';
 import { NgxSubFormComponent, NgxSubFormRemapComponent } from './ngx-sub-form.component';
+import { Directive } from "@angular/core";
 
 interface Vehicle {
   color?: string | null;
@@ -33,6 +34,7 @@ const getDefaultValues = (): Required<Vehicle> => ({
   crewMemberCount: 10,
 });
 
+@Directive()
 class SubComponent extends NgxSubFormComponent<Vehicle> {
   protected getFormControls() {
     // even though optional, if we comment out color there should be a TS error
@@ -49,12 +51,14 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
 
 const DEBOUNCE_TIMING = 500;
 
+@Directive()
 class DebouncedSubComponent extends SubComponent {
   protected handleEmissionRate(): (obs$: Observable<Vehicle>) => Observable<Vehicle> {
     return NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES.debounce(DEBOUNCE_TIMING);
   }
 }
 
+@Directive()
 class SubComponentWithDefaultValues extends NgxSubFormComponent<Vehicle> {
   protected getFormControls() {
     return {
@@ -449,7 +453,8 @@ describe(`NgxSubFormComponent`, () => {
       numberTwo: number;
     }
 
-    class ValidatedSubComponent extends NgxSubFormComponent<Numbered> {
+    @Directive()
+class ValidatedSubComponent extends NgxSubFormComponent<Numbered> {
       protected getFormControls() {
         return {
           numberOne: new FormControl(null, Validators.required),
@@ -481,7 +486,8 @@ describe(`NgxSubFormComponent`, () => {
       passwordRepeat: string;
     }
 
-    class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
+    @Directive()
+class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
       protected getFormControls() {
         return {
           password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
@@ -546,6 +552,7 @@ interface VehicleForm {
   vehiclecrewMemberCount: Vehicle['crewMemberCount'] | null;
 }
 
+@Directive()
 class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
   getFormControls() {
     // even though optional, if we comment out vehicleColor there should be a TS error
@@ -652,6 +659,7 @@ interface VehiclesArrayForm {
   vehicles: Vehicle[];
 }
 
+@Directive()
 class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm>
   implements NgxFormWithArrayControls<VehiclesArrayForm> {
   protected getFormControls(): Controls<VehiclesArrayForm> {

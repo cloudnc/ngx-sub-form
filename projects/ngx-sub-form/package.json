@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
-    "fast-deep-equal": "^3.0.1"
+    "fast-deep-equal": "^3.0.1",
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "@angular/common": "^9.0.0",

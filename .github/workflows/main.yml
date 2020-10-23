@@ -34,8 +34,10 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: yarn demo:start --port 4765
           browser: chrome
+          start: yarn demo:start --port 4765
+          wait-on: http-get://localhost:4765/
+          wait-on-timeout: 180
       - name: Copy built README into dist
         run: rm dist/ngx-observable-lifecycle/README.md && cp README.md dist/ngx-observable-lifecycle
       - name: Copy LICENSE into dist

@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../interfaces/droid.interface';
@@ -7,7 +7,7 @@ import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../i
   selector: 'app-astromech-droid',
   templateUrl: './astromech-droid.component.html',
   styleUrls: ['./astromech-droid.component.scss'],
-  providers: subformComponentProviders(forwardRef(() => AstromechDroidComponent)),
+  providers: subformComponentProviders(AstromechDroidComponent),
 })
 export class AstromechDroidComponent {
   public AstromechDroidShape = AstromechDroidShape;

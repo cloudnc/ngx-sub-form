@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
@@ -14,7 +14,7 @@ export interface OneVehicleForm {
   selector: 'app-vehicle-product',
   templateUrl: './vehicle-product.component.html',
   styleUrls: ['./vehicle-product.component.scss'],
-  providers: subformComponentProviders(forwardRef(() => VehicleProductComponent)),
+  providers: subformComponentProviders(VehicleProductComponent),
 })
 export class VehicleProductComponent {
   public VehicleType = VehicleType;

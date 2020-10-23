@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
@@ -7,7 +7,7 @@ import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
   selector: 'app-crew-member',
   templateUrl: './crew-member.component.html',
   styleUrls: ['./crew-member.component.scss'],
-  providers: subformComponentProviders(forwardRef(() => CrewMemberComponent)),
+  providers: subformComponentProviders(CrewMemberComponent),
 })
 export class CrewMemberComponent {
   public form = createForm<CrewMember>(this, {

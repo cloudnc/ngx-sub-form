@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import {
@@ -23,7 +23,7 @@ interface OneDroidForm {
   selector: 'app-droid-product',
   templateUrl: './droid-product.component.html',
   styleUrls: ['./droid-product.component.scss'],
-  providers: subformComponentProviders(forwardRef(() => DroidProductComponent)),
+  providers: subformComponentProviders(DroidProductComponent),
 })
 export class DroidProductComponent {
   public DroidType = DroidType;

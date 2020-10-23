@@ -1,6 +1,6 @@
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { EMPTY, forkJoin, Observable, of } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of, timer } from 'rxjs';
 import {
   delay,
   filter,
@@ -74,21 +74,10 @@ export function createForm<ControlInterface, FormInterface>(
     isRemoved = true;
   });
 
-  let first = true;
-
   // define the `validate` method to improve errors
   // and support nested errors
   patchClassInstance(componentInstance, {
     validate: () => {
-      if (first) {
-        first = false;
-        setTimeout(() => {
-          formGroup.updateValueAndValidity({ emitEvent: false });
-        }, 0);
-
-        return null;
-      }
-
       if (isRemoved) return null;
 
       if (formGroup.valid) {
@@ -98,6 +87,10 @@ export function createForm<ControlInterface, FormInterface>(
       return getFormGroupErrors<ControlInterface, FormInterface>(formGroup);
     },
   });
+
+  // in order to ensure the form has the correct state (and validation errors) we update the value and validity
+  // immediately after the first tick
+  const updateValueAndValidity$ = timer(0);
 
   const componentHooks = getControlValueAccessorBindings<ControlInterface>(componentInstance);
 
@@ -218,6 +211,11 @@ export function createForm<ControlInterface, FormInterface>(
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
         shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });
+      }),
+    ),
+    updateValue$: updateValueAndValidity$.pipe(
+      tap(() => {
+        formGroup.updateValueAndValidity({ emitEvent: false });
       }),
     ),
   };

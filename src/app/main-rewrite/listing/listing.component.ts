@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NullableObject } from 'ngx-sub-form/new';
+import { NullableObject } from 'ngx-sub-form';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { OneListing } from 'src/app/interfaces/listing.interface';

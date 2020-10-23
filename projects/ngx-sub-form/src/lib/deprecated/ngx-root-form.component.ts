@@ -5,8 +5,11 @@ import { filter, tap } from 'rxjs/operators';
 import { isNullOrUndefined, takeUntilDestroyed } from '../shared/ngx-sub-form-utils';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 
+// tslint:disable:directive-class-suffix
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+/**
+ * @deprecated
+ */
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
   implements OnInit {

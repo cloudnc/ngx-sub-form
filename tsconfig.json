@@ -20,8 +20,7 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
     "paths": {
-      "ngx-sub-form": ["projects/ngx-sub-form/src/public_api"],
-      "ngx-sub-form/new": ["projects/ngx-sub-form/public_api.new"]
+      "ngx-sub-form": ["projects/ngx-sub-form/src/public_api"]
     }
   }
 }

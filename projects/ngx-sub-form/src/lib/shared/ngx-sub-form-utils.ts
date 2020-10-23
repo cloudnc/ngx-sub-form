@@ -9,6 +9,7 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors,
 } from '@angular/forms';
+import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { Observable, Subject, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
 import { NgxSubFormComponent } from '../deprecated/ngx-sub-form.component';
@@ -25,14 +26,21 @@ export type ControlsType<T> = {
 
 export type OneOfControlsTypes<T = any> = ControlsType<T>[keyof ControlsType<T>];
 
-// @deprecated
+/**
+ * @deprecated
+ */
 export type FormErrorsType<T> = {
   [K in keyof T]-?: T[K] extends any[] ? (null | ValidationErrors)[] : ValidationErrors;
 };
 
+/**
+ * @deprecated
+ */
 export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
 
-// @deprecated
+/**
+ * @deprecated
+ */
 export type FormErrors<FormInterface> = null | Partial<
   FormErrorsType<FormInterface> & {
     formGroup?: ValidationErrors;
@@ -133,29 +141,10 @@ export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
 /**
  * Easily unsubscribe from an observable stream by appending `takeUntilDestroyed(this)` to the observable pipe.
  * If the component already has a `ngOnDestroy` method defined, it will call this first.
- * Note that the component *must* implement OnDestroy for this to work (the typings will enforce this anyway)
- * ---------------
- * following doesn't work anymore with ng9
- * https://github.com/angular/angular/issues/36776
- * there's also a PR that'd fix this here:
- * https://github.com/angular/angular/pull/35464
  */
 export function takeUntilDestroyed<T>(component: any): (source: Observable<T>) => Observable<T> {
-  return (source: Observable<T>): Observable<T> => {
-    const onDestroy = new Subject();
-    const previousOnDestroy = component.ngOnDestroy;
-
-    component.ngOnDestroy = () => {
-      if (previousOnDestroy) {
-        previousOnDestroy.apply(component);
-      }
-
-      onDestroy.next();
-      onDestroy.complete();
-    };
-
-    return source.pipe(takeUntil(onDestroy));
-  };
+  const { ngOnDestroy } = getObservableLifecycle(component);
+  return (source: Observable<T>): Observable<T> => source.pipe(takeUntil(ngOnDestroy));
 }
 
 /** @internal */

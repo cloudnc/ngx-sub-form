@@ -83,7 +83,7 @@ export function createForm<ControlInterface, FormInterface>(
       if (first) {
         first = false;
         setTimeout(() => {
-          formGroup.updateValueAndValidity();
+          formGroup.updateValueAndValidity({ emitEvent: false });
         }, 0);
 
         return null;
@@ -202,7 +202,7 @@ export function createForm<ControlInterface, FormInterface>(
             : null,
         );
 
-        formGroup.reset(value);
+        formGroup.reset(value, { emitEvent: false });
 
         // commenting out the following for now as it seems that calling
         // `markDirty` on a component when an input hasn't been set
@@ -217,7 +217,7 @@ export function createForm<ControlInterface, FormInterface>(
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
-        shouldDisable ? formGroup.disable() : formGroup.enable();
+        shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });
       }),
     ),
   };

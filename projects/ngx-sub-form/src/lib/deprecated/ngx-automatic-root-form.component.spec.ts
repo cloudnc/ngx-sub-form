@@ -1,5 +1,5 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
@@ -87,12 +87,14 @@ describe(`NgxAutomaticRootFormComponent`, () => {
   let component: TestWrapperComponent;
   let componentForm: AutomaticRootFormComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [TestWrapperComponent, AutomaticRootFormComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [TestWrapperComponent, AutomaticRootFormComponent],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     componentFixture = TestBed.createComponent(TestWrapperComponent);

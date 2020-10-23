@@ -1,9 +1,8 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form/new';
 import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
 
-@NgxSubForm()
 @Component({
   selector: 'app-crew-member',
   templateUrl: './crew-member.component.html',

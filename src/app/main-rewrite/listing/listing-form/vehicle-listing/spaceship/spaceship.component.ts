@@ -1,9 +1,8 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form/new';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
 
-@NgxSubForm()
 @Component({
   selector: 'app-spaceship',
   templateUrl: './spaceship.component.html',

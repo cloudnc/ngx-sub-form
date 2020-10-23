@@ -1,6 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form/new';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { UnreachableCase } from 'src/app/shared/utils';
 
@@ -10,7 +10,6 @@ export interface OneVehicleForm {
   vehicleType: VehicleType | null;
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-vehicle-product',
   templateUrl: './vehicle-product.component.html',

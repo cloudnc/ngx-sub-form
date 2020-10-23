@@ -1,6 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { createForm, FormType, NgxSubForm, subformComponentProviders } from 'ngx-sub-form/new';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form/new';
 import {
   AssassinDroid,
   AstromechDroid,
@@ -19,7 +19,6 @@ interface OneDroidForm {
   droidType: DroidType | null;
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-droid-product',
   templateUrl: './droid-product.component.html',

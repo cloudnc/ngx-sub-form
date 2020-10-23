@@ -1,6 +1,5 @@
-// import { ɵmarkDirty as markDirty } from '@angular/core';
 import isEqual from 'fast-deep-equal';
-import { decorateObservableLifecycle, getObservableLifecycle } from 'ngx-observable-lifecycle';
+import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { EMPTY, forkJoin, Observable, of } from 'rxjs';
 import {
   delay,
@@ -68,7 +67,7 @@ export function createForm<ControlInterface, FormInterface>(
   let isRemoved = false;
 
   const lifecyleHooks: ComponentHooks = options.componentHooks ?? {
-    onDestroy: getObservableLifecycle(componentInstance).onDestroy,
+    onDestroy: getObservableLifecycle(componentInstance).ngOnDestroy,
   };
 
   lifecyleHooks.onDestroy.pipe(take(1)).subscribe(() => {
@@ -246,16 +245,5 @@ export function createForm<ControlInterface, FormInterface>(
     },
     // todo
     createFormArrayControl: (options as any).createFormArrayControl,
-  };
-}
-
-export function NgxSubForm(): ClassDecorator {
-  return function(target) {
-    decorateObservableLifecycle(target, {
-      hooks: {
-        onDestroy: true,
-      },
-      incompatibleComponentError: new Error(`You must use @NgxSubForm with a directive or component.`),
-    });
   };
 }

@@ -5,7 +5,6 @@ import {
   ArrayPropertyValue,
   createForm,
   FormType,
-  NgxSubForm,
   subformComponentProviders,
 } from 'ngx-sub-form/new';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
@@ -14,7 +13,6 @@ interface CrewMembersForm {
   crewMembers: CrewMember[];
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-crew-members',
   templateUrl: './crew-members.component.html',

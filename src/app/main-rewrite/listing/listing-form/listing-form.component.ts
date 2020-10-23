@@ -1,6 +1,6 @@
 import { Component, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { createForm, FormType, NgxSubForm } from 'ngx-sub-form/new';
+import { createForm, FormType } from 'ngx-sub-form/new';
 import { Subject } from 'rxjs';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
 import { OneDroid } from '../../../interfaces/droid.interface';
@@ -17,7 +17,6 @@ interface OneListingForm {
   price: number;
 }
 
-@NgxSubForm()
 @Component({
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',

@@ -4,5 +4,5 @@
   "lib": {
     "entryFile": "../public_api.new.ts"
   },
-  "whitelistedNonPeerDependencies": ["fast-deep-equal"]
+  "whitelistedNonPeerDependencies": []
 }

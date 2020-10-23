@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
@@ -7,7 +7,7 @@ import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
   selector: 'app-medical-droid',
   templateUrl: './medical-droid.component.html',
   styleUrls: ['./medical-droid.component.scss'],
-  providers: subformComponentProviders(forwardRef(() => MedicalDroidComponent)),
+  providers: subformComponentProviders(MedicalDroidComponent),
 })
 export class MedicalDroidComponent {
   public form = createForm<MedicalDroid>(this, {

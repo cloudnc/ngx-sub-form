@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
@@ -7,7 +7,7 @@ import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
   selector: 'app-spaceship',
   templateUrl: './spaceship.component.html',
   styleUrls: ['./spaceship.component.scss'],
-  providers: subformComponentProviders(forwardRef(() => SpaceshipComponent)),
+  providers: subformComponentProviders(SpaceshipComponent),
 })
 export class SpaceshipComponent {
   public form = createForm<Spaceship>(this, {

@@ -2,9 +2,13 @@ import { FormControl, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ArrayPropertyKey, ArrayPropertyValue, FormUpdate, TypedFormGroup } from './ngx-sub-form-utils';
 
-// @deprecated
+/**
+ * @deprecated
+ */
 export interface OnFormUpdate<FormInterface> {
-  // @deprecated
+  /**
+   * @deprecated
+   */
   onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
 }
 
@@ -20,18 +24,15 @@ export type TypedAsyncValidatorFn<T> = (
 
 export interface FormGroupOptions<T> {
   /**
-   * @description
-   * The list of validators applied to a control.
+   * @description The list of validators applied to a control.
    */
   validators?: TypedValidatorFn<T> | TypedValidatorFn<T>[] | null;
   /**
-   * @description
-   * The list of async validators applied to control.
+   * @description The list of async validators applied to control.
    */
   asyncValidators?: TypedAsyncValidatorFn<T> | TypedAsyncValidatorFn<T>[] | null;
   /**
-   * @description
-   * The event name for control to update upon.
+   * @description The event name for control to update upon.
    */
   updateOn?: 'change' | 'blur' | 'submit';
 }

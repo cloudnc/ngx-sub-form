@@ -14,7 +14,7 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
-import { isNullOrUndefined } from '../../src/lib/shared/ngx-sub-form-utils';
+import { isNullOrUndefined } from './shared/ngx-sub-form-utils';
 import {
   createFormDataFromOptions,
   getControlValueAccessorBindings,

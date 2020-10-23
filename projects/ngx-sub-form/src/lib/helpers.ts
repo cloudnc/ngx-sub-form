@@ -14,7 +14,7 @@ import {
   NewFormErrors,
   OneOfControlsTypes,
   TypedFormGroup,
-} from '../../src/lib/shared/ngx-sub-form-utils';
+} from './shared/ngx-sub-form-utils';
 import {
   ControlValueAccessorComponentInstance,
   FormBindings,

@@ -1,7 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form/new';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/droid.interface';
 
 @Component({

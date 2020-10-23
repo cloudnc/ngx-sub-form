@@ -36,8 +36,11 @@ type FilterControlFunction<FormInterface> = (
   isCtrlWithinFormArray: boolean,
 ) => boolean;
 
+// tslint:disable:directive-class-suffix
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+/**
+ * @deprecated
+ */
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
   implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
   public get formGroupControls(): ControlsType<FormInterface> {
@@ -428,7 +431,9 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 }
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+/**
+ * @deprecated
+ */
 export abstract class NgxSubFormRemapComponent<ControlInterface, FormInterface> extends NgxSubFormComponent<
   ControlInterface,
   FormInterface

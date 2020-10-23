@@ -1,5 +1,8 @@
 import { NgxRootFormComponent } from './ngx-root-form.component';
 
+/**
+ * @deprecated
+ */
 export class DataInputUsedOnWrongPropertyError extends Error {
   constructor(calledOnPropertyKey: string) {
     super(
@@ -8,6 +11,9 @@ export class DataInputUsedOnWrongPropertyError extends Error {
   }
 }
 
+/**
+ * @deprecated
+ */
 export function DataInput() {
   return function<ControlInterface, FormInterface = ControlInterface>(
     target: NgxRootFormComponent<ControlInterface, FormInterface>,

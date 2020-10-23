@@ -1,8 +1,11 @@
 import { OnInit, Directive } from '@angular/core';
 import { NgxRootFormComponent } from './ngx-root-form.component';
 
+// tslint:disable:directive-class-suffix
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+/**
+ * @deprecated
+ */
 export abstract class NgxAutomaticRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxRootFormComponent<ControlInterface, FormInterface>
   implements OnInit {

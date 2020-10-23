@@ -8,9 +8,8 @@ import {
   ControlsNames,
   NewFormErrors,
   TypedFormGroup,
-} from '../../src/lib/shared/ngx-sub-form-utils';
-import { FormGroupOptions } from '../../src/lib/shared/ngx-sub-form.types';
-import { AreTypesSimilar } from './helpers.types';
+} from './shared/ngx-sub-form-utils';
+import { FormGroupOptions } from './shared/ngx-sub-form.types';
 
 export interface ComponentHooks {
   onDestroy: Observable<void>;
@@ -52,6 +51,8 @@ export interface NgxSubFormRemapOptions<ControlInterface, FormInterface> {
   toFormGroup: (obj: ControlInterface) => FormInterface;
   fromFormGroup: (formValue: FormInterface) => ControlInterface;
 }
+
+export type AreTypesSimilar<T, U> = T extends U ? (U extends T ? true : false) : false;
 
 // if the 2 types are the same, instead of hiding the remap options
 // we expose them as optional so that it's possible for example to

@@ -453,7 +453,7 @@ describe(`NgxSubFormComponent`, () => {
       numberTwo: number;
     }
 
-    @Directive()
+    @Component({ template: '' })
     class ValidatedSubComponent extends NgxSubFormComponent<Numbered> {
       protected getFormControls() {
         return {
@@ -486,7 +486,7 @@ describe(`NgxSubFormComponent`, () => {
       passwordRepeat: string;
     }
 
-    @Directive()
+    @Component({ template: '' })
     class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
       protected getFormControls() {
         return {

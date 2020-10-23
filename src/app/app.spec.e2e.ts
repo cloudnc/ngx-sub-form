@@ -61,25 +61,25 @@ context(`EJawa demo`, () => {
         DOM.list.elements.cy.eq(0).click();
         DOM.list.elements.cy.eq(1).click();
 
-        const x = hardCodedListings[1] as VehicleListing;
-        const v = x.product as Speeder;
+        const vehicle = hardCodedListings[1] as VehicleListing;
+        const speeder = vehicle.product as Speeder;
 
         const expectedObj: FormElement = {
-          title: x.title,
-          price: '£' + x.price.toLocaleString(),
+          title: vehicle.title,
+          price: '£' + vehicle.price.toLocaleString(),
           inputs: {
-            id: x.id,
-            title: x.title,
-            imageUrl: x.imageUrl,
-            price: x.price + '',
-            listingType: x.listingType,
+            id: vehicle.id,
+            title: vehicle.title,
+            imageUrl: vehicle.imageUrl,
+            price: vehicle.price + '',
+            listingType: vehicle.listingType,
             vehicleForm: {
-              vehicleType: x.product.vehicleType,
+              vehicleType: vehicle.product.vehicleType,
               speederForm: {
-                color: v.color,
-                canFire: v.canFire,
-                crewMembers: v.crewMembers,
-                maximumSpeed: v.maximumSpeed,
+                color: speeder.color,
+                canFire: speeder.canFire,
+                crewMembers: speeder.crewMembers,
+                maximumSpeed: speeder.maximumSpeed,
               },
             },
           },
@@ -95,25 +95,25 @@ context(`EJawa demo`, () => {
         DOM.list.elements.cy.eq(1).click();
         DOM.list.elements.cy.eq(0).click();
 
-        const x = hardCodedListings[0] as VehicleListing;
-        const s = x.product as Spaceship;
+        const vehicle = hardCodedListings[0] as VehicleListing;
+        const spaceship = vehicle.product as Spaceship;
 
         const expectedObj: FormElement = {
-          title: x.title,
-          price: '£' + x.price.toLocaleString(),
+          title: vehicle.title,
+          price: '£' + vehicle.price.toLocaleString(),
           inputs: {
-            id: x.id,
-            title: x.title,
-            imageUrl: x.imageUrl,
-            price: x.price + '',
-            listingType: x.listingType,
+            id: vehicle.id,
+            title: vehicle.title,
+            imageUrl: vehicle.imageUrl,
+            price: vehicle.price + '',
+            listingType: vehicle.listingType,
             vehicleForm: {
-              vehicleType: x.product.vehicleType,
+              vehicleType: vehicle.product.vehicleType,
               spaceshipForm: {
-                color: s.color,
-                canFire: s.canFire,
-                crewMembers: s.crewMembers,
-                wingCount: s.wingCount,
+                color: spaceship.color,
+                canFire: spaceship.canFire,
+                crewMembers: spaceship.crewMembers,
+                wingCount: spaceship.wingCount,
               },
             },
           },

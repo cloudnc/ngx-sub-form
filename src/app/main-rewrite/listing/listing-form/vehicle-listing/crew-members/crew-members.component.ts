@@ -27,10 +27,7 @@ export class CrewMembersComponent {
     fromFormGroup: (formValue: CrewMembersForm): CrewMember[] => {
       return formValue.crewMembers;
     },
-    createFormArrayControl: (
-      key: ArrayPropertyKey<CrewMembersForm> | undefined,
-      value: ArrayPropertyValue<CrewMembersForm>,
-    ) => {
+    createFormArrayControl: (key, value) => {
       switch (key) {
         case 'crewMembers':
           return new FormControl(value, [Validators.required]);

@@ -155,7 +155,7 @@ export function createFormDataFromOptions<ControlInterface, FormInterface>(
 export const handleFArray = <FormInterface>(
   formArrayWrappers: FormArrayWrapper<FormInterface>[],
   obj: FormInterface,
-  createFormArrayControl: NgxSubFormArrayOptions<FormInterface>['createFormArrayControl'] | null,
+  createFormArrayControl: Required<NgxSubFormArrayOptions<FormInterface>>['createFormArrayControl'],
 ) => {
   if (!formArrayWrappers.length) {
     return;
@@ -177,11 +177,7 @@ export const handleFArray = <FormInterface>(
     }
 
     for (let i = control.length; i < value.length; i++) {
-      if (createFormArrayControl) {
-        control.insert(i, createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]));
-      } else {
-        control.insert(i, new FormControl(value[i]));
-      }
+      control.insert(i, createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]));
     }
   });
 };

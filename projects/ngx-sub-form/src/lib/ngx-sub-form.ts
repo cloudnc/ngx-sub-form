@@ -1,3 +1,4 @@
+import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { EMPTY, forkJoin, Observable, of, timer } from 'rxjs';
@@ -14,7 +15,13 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
-import { isNullOrUndefined } from './shared/ngx-sub-form-utils';
+import {
+  ArrayPropertyValue,
+  isNullOrUndefined,
+  OneOfControlsTypes,
+  TypedAbstractControl,
+  TypedFormControl,
+} from './shared/ngx-sub-form-utils';
 import {
   createFormDataFromOptions,
   getControlValueAccessorBindings,
@@ -25,6 +32,7 @@ import {
 import {
   ComponentHooks,
   ControlValueAccessorComponentInstance,
+  CreateFormArrayControlMethod,
   FormBindings,
   FormType,
   NgxFormOptions,
@@ -36,8 +44,9 @@ import {
 } from './ngx-sub-form.types';
 
 const optionsHaveInstructionsToCreateArrays = <ControlInterface, FormInterface>(
-  options: NgxSubFormOptions<ControlInterface, FormInterface>,
-): options is NgxSubFormOptions<ControlInterface, FormInterface> & NgxSubFormArrayOptions<FormInterface> => true;
+  options: NgxFormOptions<ControlInterface, FormInterface> & Partial<NgxSubFormArrayOptions<FormInterface>>,
+): options is NgxSubFormOptions<ControlInterface, FormInterface> & NgxSubFormArrayOptions<FormInterface> =>
+  !!options.createFormArrayControl;
 
 // @todo find a better name
 const isRoot = <ControlInterface, FormInterface>(
@@ -181,19 +190,18 @@ export function createForm<ControlInterface, FormInterface>(
       ? lifecyleHooks.onDestroy.pipe(mapTo(null))
       : EMPTY;
 
+  const createFormArrayControl: Required<NgxSubFormArrayOptions<FormInterface>>['createFormArrayControl'] =
+    optionsHaveInstructionsToCreateArrays<ControlInterface, FormInterface>(options) && options.createFormArrayControl
+      ? options.createFormArrayControl
+      : (key, initialValue) => new FormControl(initialValue);
+
   const sideEffects = {
     broadcastValueToParent$: registerOnChange$.pipe(
       switchMap(onChange => broadcastValueToParent$.pipe(tap(value => onChange(value)))),
     ),
     applyUpstreamUpdateOnLocalForm$: transformedValue$.pipe(
       tap(value => {
-        handleFormArrays<FormInterface>(
-          formArrays,
-          value,
-          optionsHaveInstructionsToCreateArrays<ControlInterface, FormInterface>(options)
-            ? options.createFormArrayControl
-            : null,
-        );
+        handleFormArrays<FormInterface>(formArrays, value, createFormArrayControl);
 
         formGroup.reset(value, { emitEvent: false });
 
@@ -241,7 +249,6 @@ export function createForm<ControlInterface, FormInterface>(
     get formGroupErrors() {
       return getFormGroupErrors<ControlInterface, FormInterface>(formGroup);
     },
-    // todo
-    createFormArrayControl: (options as any).createFormArrayControl,
+    createFormArrayControl,
   };
 }

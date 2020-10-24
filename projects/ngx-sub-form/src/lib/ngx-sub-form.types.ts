@@ -7,6 +7,7 @@ import {
   Controls,
   ControlsNames,
   NewFormErrors,
+  OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
 import { FormGroupOptions } from './shared/ngx-sub-form.types';
@@ -33,18 +34,20 @@ export interface NgxSubForm<FormInterface> {
   readonly formGroup: TypedFormGroup<FormInterface>;
   readonly formControlNames: ControlsNames<FormInterface>;
   readonly formGroupErrors: NewFormErrors<FormInterface>;
-  readonly createFormArrayControl: any;
+  readonly createFormArrayControl: CreateFormArrayControlMethod<FormInterface>;
 }
+
+export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayPropertyKey<FormInterface>>(
+  key: K,
+  initialValue: ArrayPropertyValue<FormInterface, K>,
+) => FormControl;
 
 export interface NgxRootForm<ControlInterface> extends NgxSubForm<ControlInterface> {
   // @todo: anything else needed here?
 }
 
 export interface NgxSubFormArrayOptions<FormInterface> {
-  createFormArrayControl?: (
-    key: ArrayPropertyKey<FormInterface>,
-    value: ArrayPropertyValue<FormInterface>,
-  ) => FormControl;
+  createFormArrayControl?: CreateFormArrayControlMethod<FormInterface>;
 }
 
 export interface NgxSubFormRemapOptions<ControlInterface, FormInterface> {

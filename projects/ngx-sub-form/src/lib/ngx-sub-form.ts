@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { EMPTY, forkJoin, Observable, of, timer } from 'rxjs';
+import { EMPTY, forkJoin, merge, Observable, of, timer } from 'rxjs';
 import {
   delay,
   filter,
@@ -59,15 +59,15 @@ const isRoot = <ControlInterface, FormInterface>(
 export function createForm<ControlInterface, FormInterface = ControlInterface>(
   componentInstance: ControlValueAccessorComponentInstance,
   options: NgxRootFormOptions<ControlInterface, FormInterface>,
-): NgxRootForm<FormInterface>;
+): NgxRootForm<ControlInterface, FormInterface>;
 export function createForm<ControlInterface, FormInterface = ControlInterface>(
   componentInstance: ControlValueAccessorComponentInstance,
   options: NgxSubFormOptions<ControlInterface, FormInterface>,
-): NgxSubForm<FormInterface>;
+): NgxSubForm<ControlInterface, FormInterface>;
 export function createForm<ControlInterface, FormInterface>(
   componentInstance: ControlValueAccessorComponentInstance,
   options: NgxFormOptions<ControlInterface, FormInterface>,
-): NgxSubForm<FormInterface> {
+): NgxSubForm<ControlInterface, FormInterface> {
   const { formGroup, defaultValues, formControlNames, formArrays } = createFormDataFromOptions<
     ControlInterface,
     FormInterface
@@ -184,6 +184,14 @@ export function createForm<ControlInterface, FormInterface>(
     ),
   );
 
+  // components often need to know what the current value of the FormControl that it is representing is, usually for
+  // display purposes in the template. This value is the composition of the value written from the parent, and the
+  // transformed current value that was most recently written to the parent
+  const controlValue$: NgxSubForm<ControlInterface, FormInterface>['controlValue$'] = merge(
+    writeValue$,
+    broadcastValueToParent$,
+  ).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
   const emitNullOnDestroy$: Observable<null> =
     // emit null when destroyed by default
     isNullOrUndefined(options.emitNullOnDestroy) || options.emitNullOnDestroy
@@ -250,5 +258,6 @@ export function createForm<ControlInterface, FormInterface>(
       return getFormGroupErrors<ControlInterface, FormInterface>(formGroup);
     },
     createFormArrayControl,
+    controlValue$,
   };
 }

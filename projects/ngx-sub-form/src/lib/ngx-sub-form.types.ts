@@ -30,11 +30,12 @@ export type ControlValueAccessorComponentInstance = Object &
   // and this should *never* be overridden by the component
   Partial<Record<keyof ControlValueAccessor, never> & Record<keyof Validator, never>>;
 
-export interface NgxSubForm<FormInterface> {
+export interface NgxSubForm<ControlInterface, FormInterface> {
   readonly formGroup: TypedFormGroup<FormInterface>;
   readonly formControlNames: ControlsNames<FormInterface>;
   readonly formGroupErrors: NewFormErrors<FormInterface>;
   readonly createFormArrayControl: CreateFormArrayControlMethod<FormInterface>;
+  readonly controlValue$: Observable<Nilable<ControlInterface>>;
 }
 
 export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayPropertyKey<FormInterface>>(
@@ -42,7 +43,7 @@ export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayProper
   initialValue: ArrayPropertyValue<FormInterface, K>,
 ) => FormControl;
 
-export interface NgxRootForm<ControlInterface> extends NgxSubForm<ControlInterface> {
+export interface NgxRootForm<ControlInterface, FormInterface> extends NgxSubForm<ControlInterface, FormInterface> {
   // @todo: anything else needed here?
 }
 

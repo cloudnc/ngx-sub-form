@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType } from 'ngx-sub-form';
 import { Subject } from 'rxjs';
@@ -21,6 +21,7 @@ interface OneListingForm {
   selector: 'app-listing-form',
   templateUrl: './listing-form.component.html',
   styleUrls: ['./listing-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListingFormComponent {
   public ListingType: typeof ListingType = ListingType;

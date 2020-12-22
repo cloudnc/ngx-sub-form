@@ -1,3 +1,4 @@
+import { ɵmarkDirty as markDirty } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
@@ -16,13 +17,6 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {
-  ArrayPropertyValue,
-  isNullOrUndefined,
-  OneOfControlsTypes,
-  TypedAbstractControl,
-  TypedFormControl,
-} from './shared/ngx-sub-form-utils';
-import {
   createFormDataFromOptions,
   getControlValueAccessorBindings,
   getFormGroupErrors,
@@ -32,7 +26,6 @@ import {
 import {
   ComponentHooks,
   ControlValueAccessorComponentInstance,
-  CreateFormArrayControlMethod,
   FormBindings,
   FormType,
   NgxFormOptions,
@@ -42,6 +35,7 @@ import {
   NgxSubFormArrayOptions,
   NgxSubFormOptions,
 } from './ngx-sub-form.types';
+import { isNullOrUndefined } from './shared/ngx-sub-form-utils';
 
 const optionsHaveInstructionsToCreateArrays = <ControlInterface, FormInterface>(
   options: NgxFormOptions<ControlInterface, FormInterface> & Partial<NgxSubFormArrayOptions<FormInterface>>,
@@ -212,17 +206,16 @@ export function createForm<ControlInterface, FormInterface>(
         handleFormArrays<FormInterface>(formArrays, value, createFormArrayControl);
 
         formGroup.reset(value, { emitEvent: false });
-
-        // commenting out the following for now as it seems that calling
-        // `markDirty` on a component when an input hasn't been set
-        // (in this case on a root form) then it throws an error
-        // Cannot read property 'nodeIndex' of null
-        // so we'll see later on if this is really needed or if it can
-        // be removed
+      }),
+    ),
+    supportChangeDetectionStrategyOnPush: controlValue$.pipe(
+      delay(0),
+      tap(() =>
         // support `changeDetection: ChangeDetectionStrategy.OnPush`
         // on the component hosting a form
-        // markDirty(componentInstance);
-      }),
+        // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
+        markDirty(componentInstance),
+      ),
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {

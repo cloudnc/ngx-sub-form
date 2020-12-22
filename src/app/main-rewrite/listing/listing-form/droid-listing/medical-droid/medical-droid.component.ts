@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
@@ -8,6 +8,7 @@ import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
   templateUrl: './medical-droid.component.html',
   styleUrls: ['./medical-droid.component.scss'],
   providers: subformComponentProviders(MedicalDroidComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MedicalDroidComponent {
   public form = createForm<MedicalDroid>(this, {

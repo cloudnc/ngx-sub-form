@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormArray, FormControl, Validators } from '@angular/forms';
-import { ArrayPropertyKey, ArrayPropertyValue, createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
 interface CrewMembersForm {
@@ -12,6 +12,7 @@ interface CrewMembersForm {
   templateUrl: './crew-members.component.html',
   styleUrls: ['./crew-members.component.scss'],
   providers: subformComponentProviders(CrewMembersComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CrewMembersComponent {
   public form = createForm<CrewMember[], CrewMembersForm>(this, {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
@@ -9,6 +9,7 @@ import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/d
   templateUrl: './protocol-droid.component.html',
   styleUrls: ['./protocol-droid.component.scss'],
   providers: subformComponentProviders(ProtocolDroidComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProtocolDroidComponent {
   public Languages = Languages;

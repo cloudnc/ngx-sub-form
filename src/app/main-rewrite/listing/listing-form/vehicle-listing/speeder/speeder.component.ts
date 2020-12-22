@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
@@ -8,6 +8,7 @@ import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
   templateUrl: './speeder.component.html',
   styleUrls: ['./speeder.component.scss'],
   providers: subformComponentProviders(SpeederComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SpeederComponent {
   public form = createForm<Speeder>(this, {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
@@ -8,6 +8,7 @@ import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
   templateUrl: './crew-member.component.html',
   styleUrls: ['./crew-member.component.scss'],
   providers: subformComponentProviders(CrewMemberComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CrewMemberComponent {
   public form = createForm<CrewMember>(this, {

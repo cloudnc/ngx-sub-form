@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
@@ -8,6 +8,7 @@ import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
   templateUrl: './spaceship.component.html',
   styleUrls: ['./spaceship.component.scss'],
   providers: subformComponentProviders(SpaceshipComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SpaceshipComponent {
   public form = createForm<Spaceship>(this, {

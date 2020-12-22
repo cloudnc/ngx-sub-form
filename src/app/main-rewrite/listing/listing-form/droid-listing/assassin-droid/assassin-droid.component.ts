@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
@@ -15,6 +15,7 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   templateUrl: './assassin-droid.component.html',
   styleUrls: ['./assassin-droid.component.scss'],
   providers: subformComponentProviders(AssassinDroidComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssassinDroidComponent {
   public AssassinDroidWeapon = AssassinDroidWeapon;

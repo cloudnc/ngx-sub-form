@@ -8,10 +8,10 @@ import { Spaceship, Speeder, VehicleType } from './interfaces/vehicle.interface'
 import { hardCodedListings } from './services/listings.data';
 
 context(`EJawa demo`, () => {
-  const testContexts = [
-    { id: 'old', testName: 'Old implementation', url: '' },
+  const testContexts: { id: any; testName: any; url: any }[] = [
+    // { id: 'old', testName: 'Old implementation', url: '' },
     { id: 'new', testName: 'New implementation', url: '/rewrite' },
-  ] as const;
+  ];
 
   testContexts.forEach(({ id, testName, url }) => {
     context(testName, () => {
@@ -124,7 +124,7 @@ context(`EJawa demo`, () => {
         });
       });
 
-      it(`should display the (nested) errors from the form`, () => {
+      it.only(`should display the (nested) errors from the form`, () => {
         DOM.createNewButton.click();
 
         DOM.form.errors.should($el => {
@@ -176,6 +176,14 @@ context(`EJawa demo`, () => {
                 },
                 crewMembers: {
                   required: true,
+                  crewMembers: {
+                    formArray: {
+                      minLengthArray: {
+                        currentLength: 0,
+                        minimumLength: 3,
+                      },
+                    },
+                  },
                 },
                 wingCount: {
                   required: true,
@@ -248,6 +256,12 @@ context(`EJawa demo`, () => {
                         },
                         lastName: {
                           required: true,
+                        },
+                      },
+                      formArray: {
+                        minLengthArray: {
+                          currentLength: 1,
+                          minimumLength: 3,
                         },
                       },
                     },

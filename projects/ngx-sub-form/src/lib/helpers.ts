@@ -1,26 +1,20 @@
-import {
-  AbstractControlOptions,
-  ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-} from '@angular/forms';
+import { AbstractControlOptions, ControlValueAccessor, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { Nilable } from 'tsdef';
-import {
-  ArrayPropertyKey,
-  ControlsNames,
-  NewFormErrors,
-  OneOfControlsTypes,
-  TypedFormGroup,
-} from './shared/ngx-sub-form-utils';
 import {
   ControlValueAccessorComponentInstance,
   FormBindings,
   NgxSubFormArrayOptions,
   NgxSubFormOptions,
 } from './ngx-sub-form.types';
+import {
+  AAAAAA,
+  ArrayPropertyKey,
+  ControlsNames,
+  NewFormErrors,
+  OneOfControlsTypes,
+  TypedFormGroup,
+} from './shared/ngx-sub-form-utils';
 
 export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
@@ -88,7 +82,7 @@ export const getFormGroupErrors = <ControlInterface, FormInterface>(
       // with the index and the error
       // this way, we avoid holding a lot of potential `null`
       // values in the array for the valid form controls
-      const errorsInArray: Record<number, ValidationErrors> = {};
+      const errorsInArray: AAAAAA = {};
 
       for (let i = 0; i < control.length; i++) {
         const controlErrors = control.at(i).errors;
@@ -97,8 +91,18 @@ export const getFormGroupErrors = <ControlInterface, FormInterface>(
         }
       }
 
+      // following fixes
+      // https://github.com/cloudnc/ngx-sub-form/issues/161
+      // if we've got a form array we can't only take into account
+      // the errors in the form array coming from its items
+      // we also need to take into account the errors attached to
+      // the form array itself if it has any validator
+      if (control.errors) {
+        errorsInArray['formArray'] = control.errors;
+      }
+
       if (Object.values(errorsInArray).length > 0) {
-        const accHoldingArrays = acc as Record<keyof ControlInterface, Record<number, ValidationErrors>>;
+        const accHoldingArrays = acc as Record<keyof ControlInterface, AAAAAA>;
         accHoldingArrays[key as keyof ControlInterface] = errorsInArray;
       }
     } else if (control.errors) {

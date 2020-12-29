@@ -10,7 +10,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { Observable, Subject, timer } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
 import { NgxSubFormComponent } from '../deprecated/ngx-sub-form.component';
 
@@ -47,9 +47,11 @@ export type FormErrors<FormInterface> = null | Partial<
   }
 >;
 
+export type AAAAAA = { [key in number | 'formArray']?: ValidationErrors };
+
 // @todo rename to `FormErrorsType` once the deprecated one is removed
 export type NewFormErrorsType<T> = {
-  [K in keyof T]-?: T[K] extends any[] ? Record<number, ValidationErrors> : ValidationErrors;
+  [K in keyof T]-?: T[K] extends any[] ? AAAAAA : ValidationErrors;
 };
 
 // @todo rename to `FormErrors` once the deprecated one is removed

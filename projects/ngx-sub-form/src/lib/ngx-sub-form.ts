@@ -5,6 +5,7 @@ import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { EMPTY, forkJoin, merge, Observable, of, timer } from 'rxjs';
 import {
   delay,
+  exhaustMap,
   filter,
   map,
   mapTo,
@@ -71,6 +72,7 @@ export function createForm<ControlInterface, FormInterface>(
 
   const lifecyleHooks: ComponentHooks = options.componentHooks ?? {
     onDestroy: getObservableLifecycle(componentInstance).ngOnDestroy,
+    afterViewInit: getObservableLifecycle(componentInstance).ngAfterViewInit,
   };
 
   lifecyleHooks.onDestroy.pipe(take(1)).subscribe(() => {
@@ -208,15 +210,24 @@ export function createForm<ControlInterface, FormInterface>(
         formGroup.reset(value, { emitEvent: false });
       }),
     ),
-    supportChangeDetectionStrategyOnPush: controlValue$.pipe(
-      delay(0),
-      tap(() =>
-        // support `changeDetection: ChangeDetectionStrategy.OnPush`
-        // on the component hosting a form
-        // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
-        markDirty(componentInstance),
+    supportChangeDetectionStrategyOnPush:
+      // we need to wait first for the view to have been initialised
+      // otherwise calling `markDirty` previous to that throws an error
+      // `Cannot read property 'nodeIndex' of null`
+      // and the `delay(0)` doesn't give us that guarantee on its own
+      lifecyleHooks.afterViewInit.pipe(
+        exhaustMap(() =>
+          controlValue$.pipe(
+            delay(0),
+            tap(() =>
+              // support `changeDetection: ChangeDetectionStrategy.OnPush`
+              // on the component hosting a form
+              // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
+              markDirty(componentInstance),
+            ),
+          ),
+        ),
       ),
-    ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
         shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });

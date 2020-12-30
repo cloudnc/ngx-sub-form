@@ -7,13 +7,13 @@ import {
   Controls,
   ControlsNames,
   NewFormErrors,
-  OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
 import { FormGroupOptions } from './shared/ngx-sub-form.types';
 
 export interface ComponentHooks {
   onDestroy: Observable<void>;
+  afterViewInit: Observable<void>;
 }
 
 export interface FormBindings<ControlInterface> {

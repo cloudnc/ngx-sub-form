@@ -8761,10 +8761,10 @@ ng-packagr@^10.1.0:
     stylus "^0.54.7"
     terser "^5.0.0"
 
-ngx-observable-lifecycle@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-observable-lifecycle/-/ngx-observable-lifecycle-2.0.1.tgz#7cea97d3dbffe3971467901b44a45b890d5435a0"
-  integrity sha512-UFnyTj2t4Nk135gqgP2ifCruoMFg1yuxSAFFb1bLHWEhvMdZSvjlABuZZY6l0WTv2iocAGhe7AAtzjPFpCE7wQ==
+ngx-observable-lifecycle@2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/ngx-observable-lifecycle/-/ngx-observable-lifecycle-2.1.4.tgz#a3772dda428d53b37db7901c5bf101c2b17d656b"
+  integrity sha512-scj0GNiI2THtifquzrCxOsqIm6dwMQ2+J78v1YPQyXGwGpNm2LHHRIOsT54PPJK8HL90GlIXBj5XQpWuVjuRsg==
   dependencies:
     tslib "^2.0.0"
 

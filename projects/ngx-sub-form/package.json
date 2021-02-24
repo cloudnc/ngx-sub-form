@@ -9,7 +9,7 @@
     "fast-deep-equal": "^3.0.1",
     "@angular/common": "^10.0.0",
     "@angular/core": "^10.0.0",
-    "ngx-observable-lifecycle": "^2.0.1"
+    "ngx-observable-lifecycle": "^2.1.4"
   },
   "keywords": [
     "Angular",

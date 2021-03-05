@@ -79,5 +79,8 @@ export class ListingFormComponent {
           throw new UnreachableCase(listingType);
       }
     },
+    emitNullOnDestroy,
+    formGroupOptions,
+    handleEmissionRate,
   });
 }

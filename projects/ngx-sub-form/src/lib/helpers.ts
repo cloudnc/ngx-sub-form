@@ -1,13 +1,12 @@
-import {
-  AbstractControlOptions,
-  ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-} from '@angular/forms';
+import { AbstractControlOptions, ControlValueAccessor, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { Nilable } from 'tsdef';
+import {
+  ControlValueAccessorComponentInstance,
+  FormBindings,
+  NgxSubFormArrayOptions,
+  NgxSubFormOptions,
+} from './ngx-sub-form.types';
 import {
   ArrayPropertyKey,
   ControlsNames,
@@ -15,12 +14,6 @@ import {
   OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-import {
-  ControlValueAccessorComponentInstance,
-  FormBindings,
-  NgxSubFormArrayOptions,
-  NgxSubFormOptions,
-} from './ngx-sub-form.types';
 
 export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
@@ -140,7 +133,7 @@ export function createFormDataFromOptions<ControlInterface, FormInterface>(
   return { formGroup, defaultValues, formControlNames, formArrays };
 }
 
-export const handleFArray = <FormInterface>(
+export const handleFormArrays = <FormInterface>(
   formArrayWrappers: FormArrayWrapper<FormInterface>[],
   obj: FormInterface,
   createFormArrayControl: Required<NgxSubFormArrayOptions<FormInterface>>['createFormArrayControl'],

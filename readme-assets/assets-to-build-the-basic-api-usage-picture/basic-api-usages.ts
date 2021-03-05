@@ -21,15 +21,21 @@ export class PersonContainer {
   }
 }
 
+// note on this one, remove the `prettier-ignore` comment once
+// the code is on carbon.now.sh, this is just to keep a good
+// ratio for the image in the readme
 @Component({
   selector: 'person-form',
+  // prettier-ignore
   template: `
     <form [formGroup]="form.formGroup">
       <input type="text" [formControlName]="form.formControlNames.firstName" />
       <input type="text" [formControlName]="form.formControlNames.lastName" />
-      <address-control [formControlName]="form.formControlNames.address"></address-control>
+      <address-control
+        [formControlName]="form.formControlNames.address"
+      ></address-control>
     </form>
-  `,
+  `
 })
 export class PersonForm {
   private input$: Subject<Person | undefined> = new Subject();

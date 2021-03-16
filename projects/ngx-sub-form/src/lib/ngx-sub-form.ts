@@ -2,7 +2,7 @@ import { ɵmarkDirty as markDirty } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
+import { combineLatest, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
 import {
   delay,
   exhaustMap,
@@ -231,6 +231,10 @@ export function createForm<ControlInterface, FormInterface>(
       tap(() => {
         formGroup.updateValueAndValidity({ emitEvent: false });
       }),
+    ),
+    bindTouched$: combineLatest([componentHooks.registerOnTouched$, options.touched$ ?? EMPTY]).pipe(
+      delay(0),
+      tap(([onTouched]) => onTouched()),
     ),
   };
 

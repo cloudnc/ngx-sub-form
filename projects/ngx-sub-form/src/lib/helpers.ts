@@ -35,7 +35,7 @@ export const getControlValueAccessorBindings = <ControlInterface>(
 ): FormBindings<ControlInterface> => {
   const writeValue$$: ReplaySubject<Nilable<ControlInterface>> = new ReplaySubject(1);
   const registerOnChange$$: ReplaySubject<(formValue: ControlInterface | null) => void> = new ReplaySubject(1);
-  const registerOnTouched$$: ReplaySubject<(_: any) => void> = new ReplaySubject(1);
+  const registerOnTouched$$: ReplaySubject<() => void> = new ReplaySubject(1);
   const setDisabledState$$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   const controlValueAccessorPatch: Required<ControlValueAccessor> = {

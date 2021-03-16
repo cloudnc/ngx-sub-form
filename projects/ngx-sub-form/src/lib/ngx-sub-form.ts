@@ -2,7 +2,7 @@ import { ɵmarkDirty as markDirty } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { EMPTY, forkJoin, merge, Observable, of, timer } from 'rxjs';
+import { EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
 import {
   delay,
   exhaustMap,
@@ -148,27 +148,21 @@ export function createForm<ControlInterface, FormInterface>(
       if (!isRoot<ControlInterface, FormInterface>(options)) {
         return formGroup.valueChanges.pipe(delay(0));
       } else {
-        // @todo following could probably be refactored a bit to avoid code duplication
         if (options.manualSave$) {
           return options.manualSave$.pipe(
             withLatestFrom(formGroup.valueChanges),
             map(([_, formValue]) => formValue),
+            filter(() => formGroup.valid),
             delay(0),
-            filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
+            filter(formValue => !isEqual(transformedValue, formValue)),
           );
         } else {
-          if (options.handleEmissionRate) {
-            return formGroup.valueChanges.pipe(
-              options.handleEmissionRate,
-              delay(0),
-              filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
-            );
-          } else {
-            return formGroup.valueChanges.pipe(
-              delay(0),
-              filter(formValue => formGroup.valid && !isEqual(transformedValue, formValue)),
-            );
-          }
+          return formGroup.valueChanges.pipe(
+            filter(() => formGroup.valid),
+            delay(0),
+            filter(formValue => !isEqual(transformedValue, formValue)),
+            options.handleEmissionRate ?? identity,
+          );
         }
       }
     }),

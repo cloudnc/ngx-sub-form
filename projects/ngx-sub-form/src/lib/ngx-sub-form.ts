@@ -155,10 +155,18 @@ export function createForm<ControlInterface, FormInterface>(
             )
           : formGroup.valueChanges;
 
+        // it might be surprising to see formGroup.valid being checked twice
+        // here, however this is intentional. The delay(0) allows any sub form
+        // components to populate values into the form, and it is possible for
+        // the form to be invalid after this process. In which case we suppress
+        // outputting an invalid value, and wait for the user to make the value
+        // become valid.
         return formValues$.pipe(
           filter(() => formGroup.valid),
           delay(0),
-          filter(formValue => (options.outputFilterPredicate ?? isEqual)(transformedValue, formValue)),
+          filter(
+            formValue => formGroup.valid && (options.outputFilterPredicate ?? isEqual)(transformedValue, formValue),
+          ),
           options.handleEmissionRate ?? identity,
         );
       }

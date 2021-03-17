@@ -19,7 +19,7 @@ export interface ComponentHooks {
 export interface FormBindings<ControlInterface> {
   readonly writeValue$: Observable<Nilable<ControlInterface>>;
   readonly registerOnChange$: Observable<(formValue: ControlInterface | null) => void>;
-  readonly registerOnTouched$: Observable<(_: any) => void>;
+  readonly registerOnTouched$: Observable<() => void>;
   readonly setDisabledState$: Observable<boolean>;
 }
 
@@ -75,6 +75,8 @@ export type NgxSubFormOptions<ControlInterface, FormInterface = ControlInterface
   formGroupOptions?: FormGroupOptions<FormInterface>;
   emitNullOnDestroy?: boolean;
   componentHooks?: ComponentHooks;
+  // emit on this observable to mark the control as touched
+  touched$?: Observable<void>;
 } & NgxSubFormRemap<ControlInterface, FormInterface> &
   NgxSubFormArray<FormInterface>;
 

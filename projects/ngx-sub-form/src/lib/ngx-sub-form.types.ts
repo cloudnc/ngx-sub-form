@@ -91,8 +91,12 @@ export type NgxRootFormOptions<ControlInterface, FormInterface = ControlInterfac
   // if you want to transform it into a manual root form, provide the
   // following observable which trigger a save every time a value is emitted
   manualSave$?: Observable<void>;
-  // @todo it should either be `manualSave$` OR `handleEmissionRate` OR none of them
-  // if you're creating an automatic root form, you can customise the emission rate
+  // The default behavior is to compare the current transformed value of input$ with the current value of the form, and
+  // if these are equal emission on output$ is suppressed to prevent the from broadcasting the current value.
+  // Configure this option to provide your own custom predicate whether or not the form should emit.
+  outputFilterPredicate?: (currentInputValue: FormInterface, outputValue: FormInterface) => boolean;
+  // if you want to control how frequently the form emits on the output$, you can customise the emission rate with this
+  // option. e.g. `handleEmissionRate: formValue$ => formValue$.pipe(debounceTime(300)),`
   handleEmissionRate?: (obs$: Observable<FormInterface>) => Observable<FormInterface>;
 };
 

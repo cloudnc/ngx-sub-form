@@ -148,22 +148,19 @@ export function createForm<ControlInterface, FormInterface>(
       if (!isRoot<ControlInterface, FormInterface>(options)) {
         return formGroup.valueChanges.pipe(delay(0));
       } else {
-        if (options.manualSave$) {
-          return options.manualSave$.pipe(
-            withLatestFrom(formGroup.valueChanges),
-            map(([_, formValue]) => formValue),
-            filter(() => formGroup.valid),
-            delay(0),
-            filter(formValue => !isEqual(transformedValue, formValue)),
-          );
-        } else {
-          return formGroup.valueChanges.pipe(
-            filter(() => formGroup.valid),
-            delay(0),
-            filter(formValue => !isEqual(transformedValue, formValue)),
-            options.handleEmissionRate ?? identity,
-          );
-        }
+        const formValues$ = options.manualSave$
+          ? options.manualSave$.pipe(
+              withLatestFrom(formGroup.valueChanges),
+              map(([_, formValue]) => formValue),
+            )
+          : formGroup.valueChanges;
+
+        return formValues$.pipe(
+          filter(() => formGroup.valid),
+          delay(0),
+          filter(formValue => (options.outputFilterPredicate ?? isEqual)(transformedValue, formValue)),
+          options.handleEmissionRate ?? identity,
+        );
       }
     }),
     map(value =>

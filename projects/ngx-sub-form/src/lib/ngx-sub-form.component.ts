@@ -119,7 +119,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         this.formGroup.updateValueAndValidity({ emitEvent: false });
 
         if (this.controlDisabled) {
-          this.formGroup.disable();
+          this.formGroup.disable({ emitEvent: false });
         }
       }
     }, 0);

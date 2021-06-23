@@ -84,9 +84,9 @@ export type NgxRootFormOptions<ControlInterface, FormInterface = ControlInterfac
   ControlInterface,
   FormInterface
 > & {
-  disabled$: Observable<boolean>;
   input$: Observable<ControlInterface | undefined>;
   output$: Subject<ControlInterface>;
+  disabled$?: Observable<boolean>;
   // by default, a root form is considered as an automatic root form
   // if you want to transform it into a manual root form, provide the
   // following observable which trigger a save every time a value is emitted

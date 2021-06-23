@@ -124,7 +124,7 @@ export function createForm<ControlInterface, FormInterface>(
     ControlInterface,
     FormInterface
   >(options)
-    ? options.disabled$
+    ? options.disabled$ ?? EMPTY
     : componentHooks.setDisabledState$;
 
   const transformedValue$: Observable<FormInterface> = writeValue$.pipe(

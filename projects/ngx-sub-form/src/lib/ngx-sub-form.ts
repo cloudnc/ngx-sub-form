@@ -238,6 +238,10 @@ export function createForm<ControlInterface, FormInterface>(
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
         shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });
+        // without emitting an event the form is not marked as dirty which can cause issues with the display not updating
+        // to indicate that form elements are disabled, especially with `changeDetection: ChangeDetectionStrategy.OnPush`
+        // @related https://github.com/cloudnc/ngx-sub-form/issues/143
+        markDirty(componentInstance);
       }),
     ),
     updateValue$: updateValueAndValidity$.pipe(

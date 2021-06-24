@@ -2,11 +2,14 @@ import { ɵmarkDirty as markDirty } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { combineLatest, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
+import { combineLatest, concat, defer, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
 import {
+  catchError,
   delay,
   exhaustMap,
   filter,
+  finalize,
+  ignoreElements,
   map,
   mapTo,
   shareReplay,
@@ -217,31 +220,21 @@ export function createForm<ControlInterface, FormInterface>(
         formGroup.reset(value, { emitEvent: false });
       }),
     ),
-    supportChangeDetectionStrategyOnPush:
-      // we need to wait first for the view to have been initialised
-      // otherwise calling `markDirty` previous to that throws an error
-      // `Cannot read property 'nodeIndex' of null`
-      // and the `delay(0)` doesn't give us that guarantee on its own
-      lifecyleHooks.afterViewInit.pipe(
-        exhaustMap(() =>
-          controlValue$.pipe(
-            delay(0),
-            tap(() =>
-              // support `changeDetection: ChangeDetectionStrategy.OnPush`
-              // on the component hosting a form
-              // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
-              markDirty(componentInstance),
-            ),
-          ),
-        ),
+    supportChangeDetectionStrategyOnPush: concat(
+      lifecyleHooks.afterViewInit.pipe(take(1)),
+      merge(controlValue$, setDisabledState$).pipe(
+        delay(0),
+        tap(() => {
+          // support `changeDetection: ChangeDetectionStrategy.OnPush`
+          // on the component hosting a form
+          // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
+          markDirty(componentInstance);
+        }),
       ),
+    ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
         shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });
-        // without emitting an event the form is not marked as dirty which can cause issues with the display not updating
-        // to indicate that form elements are disabled, especially with `changeDetection: ChangeDetectionStrategy.OnPush`
-        // @related https://github.com/cloudnc/ngx-sub-form/issues/143
-        markDirty(componentInstance);
       }),
     ),
     updateValue$: updateValueAndValidity$.pipe(
@@ -255,7 +248,7 @@ export function createForm<ControlInterface, FormInterface>(
     ),
   };
 
-  forkJoin(sideEffects)
+  merge(...Object.values(sideEffects))
     .pipe(takeUntil(lifecyleHooks.onDestroy))
     .subscribe();
 

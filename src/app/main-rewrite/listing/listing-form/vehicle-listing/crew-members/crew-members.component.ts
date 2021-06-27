@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
@@ -18,7 +18,12 @@ export class CrewMembersComponent {
   public form = createForm<CrewMember[], CrewMembersForm>(this, {
     formType: FormType.SUB,
     formControls: {
-      crewMembers: new FormArray([]),
+      crewMembers: new FormArray(
+        [],
+        // the following validator is here to make sure we have a proper fix to
+        // https://github.com/cloudnc/ngx-sub-form/issues/161
+        this.minLengthArray(3),
+      ),
     },
     toFormGroup: (obj: CrewMember[]): CrewMembersForm => {
       return {
@@ -49,5 +54,20 @@ export class CrewMembersComponent {
         lastName: '',
       }),
     );
+  }
+
+  private minLengthArray(minimumLength: number) {
+    return (c: AbstractControl): { [key: string]: any } | null => {
+      if (c.value.length >= minimumLength) {
+        return null;
+      }
+
+      return {
+        minLengthArray: {
+          currentLength: c.value.length,
+          minimumLength,
+        },
+      };
+    };
   }
 }

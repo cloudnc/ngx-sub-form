@@ -24,7 +24,9 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   implements NgxFormWithArrayControls<CrewMembersForm> {
   protected getFormControls(): Controls<CrewMembersForm> {
     return {
-      crewMembers: new FormArray([]),
+      crewMembers: new FormArray([], {
+        validators: formControl => (formControl.value.length >= 2 ? null : { minimumCrewMemberCount: 2 }),
+      }),
     };
   }
 

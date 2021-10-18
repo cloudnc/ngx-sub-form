@@ -242,6 +242,7 @@ context(`EJawa demo`, () => {
                   },
                   crewMembers: {
                     crewMembers: {
+                      minimumCrewMemberCount: 2,
                       0: {
                         firstName: {
                           required: true,

@@ -74,7 +74,7 @@ export class PersonForm {
       <input type="number" [formControlName]="form.formControlNames.zipCode" />
     </div>
   `,
-  providers: subformComponentProviders(forwardRef(() => PersonForm)),
+  providers: subformComponentProviders(PersonForm),
 })
 export class PersonForm {
   public form = createForm<Address>(this, {

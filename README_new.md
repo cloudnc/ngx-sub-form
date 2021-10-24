@@ -105,6 +105,35 @@ For root forms, the helper `DataInput` has been removed. It is now by default sl
 
 You can also have a look into our demo app located here: `src/app`. You'll find `main` and `main-rewrite` which are exactly the same applications but `main` is using the deprecated API (the one with inheritance) while `main-rewrite` is using the new one. As those 2 applications showcase all the features of ngx-sub-form you can easily find what you're looking for and compare both if we forgot to cover anything. Just as an FYI, we've kept both apps for now which are tested by the same E2E test suite to make sure that nothing got broken on the old API during the rewrite. When we decide to remove the old API we'll of course remove the demo implementation which is using the old API.
 
+# API
+
+There's one function available to create all your forms: `createForm`.
+
+This function takes as parameter a configuration object and returns an object ready to be used to use your form and all its new utilities. In this section we'll discover what configuration we can pass to `createForm` and what exactly we'll be getting back.
+
+## `createForm` configuration object:
+
+<!-- ❌✅ -->
+
+| Key           | Type                                        | Optional or required | Root form | Sub form | What is it for?                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------- | ------------------------------------------- | -------------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formType`    | `FormType`                                  | Required             | ✅        | ✅       | Defines the type of the form. Can either be `FormType.ROOT` or `FormType.SUB`                                                                                                                                                                                                                                                                                                                                    |
+| `disabled$`   | `Observable<boolean>`                       | Required             | ✅        | ❌       | When this observable emits `true`, the whole form (including the root form and all the sub forms) will be disabled                                                                                                                                                                                                                                                                                               |
+| `input$`      | `Observable<ControlInterface \| undefined>` | Required             | ✅        | ❌       | A root form is a component in between the parent passing raw data and the form itself. This property is an observable that you must provide which will be used behind the scenes to update for you the form values                                                                                                                                                                                               |
+| `output$`     | `Subject<ControlInterface>`                 | Required             | ✅        | ❌       | A root form is a component in between the parent passing raw data and the form itself. This property is an observable that you must provide which will be used behind the scenes to broadcast the form value to the parent when it changes                                                                                                                                                                       |
+| `manualSave$` | `Observable<void>`                          | Optional             | ✅        | ❌       | By default a root form will automatically broadcast all the form updates (through the `output$`) as soon as there's a change. If you wish to "save" the form only when you click on a save button for example, you can create a subject on your side and pass it here. Whenever you call `next` on your subject, assuming the form is valid, it'll broadcast te form value to the parent (through the `output$`) |
+| a             | a                                           | Required             | ✅        | ✅       | a                                                                                                                                                                                                                                                                                                                                                                                                                |
+| a             | a                                           | Required             | ✅        | ✅       | a                                                                                                                                                                                                                                                                                                                                                                                                                |
+| a             | a                                           | Required             | ✅        | ✅       | a                                                                                                                                                                                                                                                                                                                                                                                                                |
+
+// by default, a root form is considered as an automatic root form
+// if you want to transform it into a manual root form, provide the
+// following observable which trigger a save every time a value is emitted
+?: Observable<void>;
+// @todo it should either be `manualSave$` OR `handleEmissionRate` OR none of them
+// if you're creating an automatic root form, you can customise the emission rate
+handleEmissionRate?: (obs\$: Observable<FormInterface>) => Observable<FormInterface>;
+
 # Principles
 
 As simple as forms can look when they only have a few fields, their complexity can increase quite quickly. In order to keep your code as simple as possible and isolate the different concepts, **we do recommend to write forms in complete isolation from the rest of your app**.
@@ -278,12 +307,78 @@ Our `createForm` function will return an object of type `NgxRootForm`. It means 
 
 ## Sub forms
 
-When you've got a form represented by an object containing not one level of info but multiple ones _(like a person which has an address, the address contains itself multiple fields)_, you should create a sub form to manage the address in isolation.
+When you've got a form represented by an object containing not one level of info but multiple ones _(like a person which has an address, the address contains itself multiple fields)_, you should create a sub form to manage the `address` in isolation.
 
-This is great for multiple reasons:
+This is great for a couple of reasons:
 
 - You can break down the complexity of your forms into smaller components
 - You can reuse sub forms into other sub forms and root forms. It becomes easy to compose different bits of sub forms to create a bigger one
-- You can
+
+Here's a full example:
+
+```ts
+@Component({
+  selector: 'address-control',
+  template: `
+    <div [formGroup]="form.formGroup">
+      <input type="text" [formControlName]="form.formControlNames.street" />
+      <input type="text" [formControlName]="form.formControlNames.city" />
+      <input type="text" [formControlName]="form.formControlNames.state" />
+      <input type="number" [formControlName]="form.formControlNames.zipCode" />
+    </div>
+  `,
+  providers: subformComponentProviders(PersonForm),
+})
+export class PersonForm {
+  public form = createForm<Address>(this, {
+    formType: FormType.SUB,
+    formControls: {
+      street: new FormControl(null, Validators.required),
+      city: new FormControl(null, Validators.required),
+      state: new FormControl(null, Validators.required),
+      zipCode: new FormControl(null, Validators.required),
+    },
+  });
+}
+```
+
+A sub form looks very much like a root form but with an API that is even simpler.  
+When you call the `createForm` function, start by setting the `formType` to `FormType.SUB` and then define your `formControls`.
+
+One important thing to note:
+
+```ts
+providers: subformComponentProviders(PersonForm);
+```
+
+`subformComponentProviders` is only here to help reduce the number of lines needed for each sub form component. It returns the following providers:
+
+```ts
+return [
+  {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: component,
+    multi: true,
+  },
+  {
+    provide: NG_VALIDATORS,
+    useExisting: component,
+    multi: true,
+  },
+];
+```
+
+Behind the scenes those providers are allowing us to have a component considered as a [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor).  
+If you've ever created a `ControlValueAccessor` yourself, you can probably appreciate the amount of boilerplate `ngx-sub-form` is removing while adding features on top of it.
+
+Just like the root form, the `createForm` function will return an object containing the following:
+
+- `formGroup`
+- `formControlNames`
+- `formGroupErrors`
+- `createFormArrayControl`
+- `controlValue$`
+
+As they're exactly the same as the ones in the root form we're not going to go over them again, feel free to check the previous section.
 
 ## Remap

@@ -90,13 +90,6 @@
             "scripts": [],
             "assets": ["src/favicon.ico", "src/assets"]
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
-          }
         }
       }
     },
@@ -124,13 +117,6 @@
             "main": "projects/ngx-sub-form/src/test.ts",
             "tsConfig": "projects/ngx-sub-form/tsconfig.spec.json",
             "karmaConfig": "projects/ngx-sub-form/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["projects/ngx-sub-form/tsconfig.lib.json", "projects/ngx-sub-form/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
           }
         }
       }

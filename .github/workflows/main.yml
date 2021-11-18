@@ -7,7 +7,6 @@ on: [push]
 
 jobs:
   build:
-
     # Machine environment:
     # https://help.github.com/en/articles/software-in-virtual-environments-for-github-actions#ubuntu-1804-lts
     # We specify the Node.js version manually below, and use versioned Chrome from Puppeteer.
@@ -15,10 +14,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js 12.8
+      - name: Use Node.js 14.17
         uses: actions/setup-node@v1
         with:
-          node-version: 12.8
+          node-version: 14.17
       - name: Install dependencies
         run: yarn --frozen-lockfile --non-interactive --no-progress
       - name: Lint Demo
@@ -30,7 +29,7 @@ jobs:
       - name: Test
         run: yarn lib:test:ci
       - name: Build Lib
-        run: yarn lib:build:prod:view-engine
+        run: yarn lib:build:prod
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:

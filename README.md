@@ -128,11 +128,11 @@ export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, 
   // another solution would be to ask you to use a setter and call a hook but
   // this is too verbose, that's why we created a decorator `@DataInput`
   @DataInput()
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('listing')
   public dataInput: OneListing | null | undefined;
 
-  // tslint:disable-next-line:no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('listingUpdated') public dataOutput: EventEmitter<OneListing> = new EventEmitter();
 
   // to access it from the view

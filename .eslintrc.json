@@ -1,0 +1,51 @@
+{
+  "root": true,
+  "ignorePatterns": ["projects/**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["tsconfig.json", "e2e/tsconfig.json"],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/ng-cli-compat",
+        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "prettier"
+      ],
+      "rules": {
+        // @todo: restore this one once the one below to turn it off temporarily is there
+        // "@typescript-eslint/consistent-type-definitions": "error",
+        "@typescript-eslint/dot-notation": "off",
+        "@typescript-eslint/explicit-member-accessibility": [
+          "off",
+          {
+            "accessibility": "explicit"
+          }
+        ],
+        "@typescript-eslint/no-unused-expressions": "off",
+        "id-blacklist": "off",
+        "id-match": "off",
+        "no-underscore-dangle": "off",
+        // @todo: restore following
+        // during the migration to ng 13, did remove tslint in favor of eslint
+        // but don't want to have to deal with loads of errors during the upgrade
+        "@typescript-eslint/naming-convention": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/member-ordering": "off",
+        "prefer-arrow/prefer-arrow-functions": "off",
+        "object-shorthand": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "prefer-const": "off",
+        "arrow-body-style": "off",
+        "@typescript-eslint/consistent-type-definitions": "off"
+      }
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {}
+    }
+  ]
+}

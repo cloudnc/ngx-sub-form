@@ -61,11 +61,11 @@ class TestWrapperComponent {
 })
 class AutomaticRootFormComponent extends NgxAutomaticRootFormComponent<Vehicle> {
   @DataInput()
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('vehicle')
   public dataInput: Required<Vehicle> | null = null;
 
-  // tslint:disable-next-line:no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('vehicleUpdated')
   public dataOutput: EventEmitter<Vehicle> = new EventEmitter();
 

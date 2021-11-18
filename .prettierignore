@@ -2,3 +2,4 @@ package.json
 dist
 node_modules
 .history
+.angular

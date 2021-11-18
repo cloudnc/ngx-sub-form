@@ -10,16 +10,19 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot([
-      {
-        path: 'rewrite',
-        loadChildren: () => import('./main-rewrite/main.module').then(x => x.MainModule),
-      },
-      {
-        path: '',
-        loadChildren: () => import('./main/main.module').then(x => x.MainModule),
-      },
-    ]),
+    RouterModule.forRoot(
+      [
+        {
+          path: 'rewrite',
+          loadChildren: () => import('./main-rewrite/main.module').then(x => x.MainModule),
+        },
+        {
+          path: '',
+          loadChildren: () => import('./main/main.module').then(x => x.MainModule),
+        },
+      ],
+      { relativeLinkResolution: 'legacy' },
+    ),
     SharedModule,
   ],
   providers: [],

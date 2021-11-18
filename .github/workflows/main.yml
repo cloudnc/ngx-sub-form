@@ -7,7 +7,6 @@ on: [push]
 
 jobs:
   build:
-
     # Machine environment:
     # https://help.github.com/en/articles/software-in-virtual-environments-for-github-actions#ubuntu-1804-lts
     # We specify the Node.js version manually below, and use versioned Chrome from Puppeteer.
@@ -30,7 +29,7 @@ jobs:
       - name: Test
         run: yarn lib:test:ci
       - name: Build Lib
-        run: yarn lib:build:prod:view-engine
+        run: yarn lib:build:prod
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:

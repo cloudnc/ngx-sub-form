@@ -90,6 +90,12 @@
             "scripts": [],
             "assets": ["src/favicon.ico", "src/assets"]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         }
       }
     },
@@ -118,9 +124,18 @@
             "tsConfig": "projects/ngx-sub-form/tsconfig.spec.json",
             "karmaConfig": "projects/ngx-sub-form/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/ngx-sub-form/**/*.ts", "projects/ngx-sub-form/**/*.html"]
+          }
         }
       }
     }
   },
-  "defaultProject": "ngx-sub-form-demo"
+  "defaultProject": "ngx-sub-form-demo",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

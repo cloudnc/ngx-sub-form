@@ -36,7 +36,7 @@ type FilterControlFunction<FormInterface> = (
   isCtrlWithinFormArray: boolean,
 ) => boolean;
 
-// tslint:disable:directive-class-suffix
+/* eslint-disable @angular-eslint/directive-class-suffix */
 @Directive()
 /**
  * @deprecated
@@ -55,7 +55,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   public get formGroupValues(): Required<FormInterface> {
     // see @note form-group-undefined for non-null assertion reason
-    // tslint:disable-next-line:no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.mapControls(ctrl => ctrl.value)!;
   }
 

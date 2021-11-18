@@ -1,7 +1,7 @@
 import { OnInit, Directive } from '@angular/core';
 import { NgxRootFormComponent } from './ngx-root-form.component';
 
-// tslint:disable:directive-class-suffix
+/* eslint-disable @angular-eslint/directive-class-suffix */
 @Directive()
 /**
  * @deprecated

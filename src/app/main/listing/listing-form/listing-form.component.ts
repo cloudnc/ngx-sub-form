@@ -36,11 +36,11 @@ interface OneListingForm {
 // export class ListingFormComponent extends NgxAutomaticRootFormComponent<OneListing, OneListingForm>
 export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneListingForm> {
   @DataInput()
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('listing')
   public dataInput: Required<OneListing> | null | undefined;
 
-  // tslint:disable-next-line:no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('listingUpdated')
   public dataOutput: EventEmitter<OneListing> = new EventEmitter();
 

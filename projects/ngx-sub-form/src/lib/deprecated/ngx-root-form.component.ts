@@ -5,7 +5,7 @@ import { filter, tap } from 'rxjs/operators';
 import { isNullOrUndefined, takeUntilDestroyed } from '../shared/ngx-sub-form-utils';
 import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
 
-// tslint:disable:directive-class-suffix
+/* eslint-disable @angular-eslint/directive-class-suffix */
 @Directive()
 /**
  * @deprecated

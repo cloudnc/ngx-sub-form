@@ -59,11 +59,11 @@ class TestWrapperComponent {
 })
 class RootFormComponent extends NgxRootFormComponent<Vehicle> {
   @DataInput()
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('vehicle')
   public dataInput: Required<Vehicle> | null | undefined = null;
 
-  // tslint:disable-next-line:no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('vehicleUpdated')
   public dataOutput: EventEmitter<Vehicle> = new EventEmitter();
 
@@ -191,11 +191,11 @@ interface VehiclesArrayForm {
 class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArrayForm>
   implements NgxFormWithArrayControls<VehiclesArrayForm> {
   @DataInput()
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('vehicles')
   public dataInput: Required<Vehicle[]> | null | undefined = null;
 
-  // tslint:disable-next-line:no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('vehiclesUpdated')
   public dataOutput: EventEmitter<Vehicle[]> = new EventEmitter();
 

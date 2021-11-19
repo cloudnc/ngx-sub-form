@@ -1,4 +1,4 @@
-import { OnInit, Directive } from '@angular/core';
+import { Directive, OnInit } from '@angular/core';
 import { NgxRootFormComponent } from './ngx-root-form.component';
 
 /* eslint-disable @angular-eslint/directive-class-suffix */

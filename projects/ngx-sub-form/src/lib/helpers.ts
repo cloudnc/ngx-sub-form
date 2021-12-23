@@ -164,7 +164,11 @@ export const handleFormArrays = <FormInterface>(
     }
 
     for (let i = control.length; i < value.length; i++) {
-      control.insert(i, createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]));
+      const newControl = createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]);
+      if (control.disabled) {
+        newControl.disable();
+      }
+      control.insert(i, newControl);
     }
   });
 };

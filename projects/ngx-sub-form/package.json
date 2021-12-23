@@ -10,7 +10,8 @@
     "@angular/common": ">= 10 < 13",
     "@angular/core": ">= 10 < 13",
     "@angular/forms": ">= 10 < 13",
-    "ngx-observable-lifecycle": "^2.1.4"
+    "ngx-observable-lifecycle": "^2.1.4",
+    "rxjs": "^6.5.4 || ^7.4.0"
   },
   "keywords": [
     "Angular",

@@ -44,7 +44,7 @@ export const getControlValueAccessorBindings = <ControlInterface>(
       registerOnTouched$$.next(fn);
     },
     setDisabledState: (shouldDisable: boolean | undefined): void => {
-      setDisabledState$$.next(shouldDisable);
+      setDisabledState$$.next(!!shouldDisable);
     },
   };
 

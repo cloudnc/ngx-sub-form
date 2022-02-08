@@ -6,10 +6,10 @@
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "fast-deep-equal": "^3.0.1",
-    "@angular/common": ">= 10 < 13",
-    "@angular/core": ">= 10 < 13",
-    "@angular/forms": ">= 10 < 13",
+    "fast-deep-equal": "^3.1.1",
+    "@angular/common": "^13.1.1",
+    "@angular/core": "^13.1.1",
+    "@angular/forms": "^13.1.1",
     "ngx-observable-lifecycle": "^2.2.1",
     "rxjs": "^6.5.4 || ^7.4.0",
     "tsdef": "0.0.13"

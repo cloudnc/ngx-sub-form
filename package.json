@@ -91,7 +91,7 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-packagr": "^13.0.5",
     "prettier": "1.19.1",
-    "semantic-release": "17.1.1",
+    "semantic-release": "19.0.3",
     "ts-node": "8.6.2",
     "tsconfig-paths-webpack-plugin": "3.2.0",
     "tsdef": "0.0.13",

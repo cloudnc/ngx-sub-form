@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/droid.interface';
 
 @Component({
@@ -8,22 +8,18 @@ import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/d
   templateUrl: './protocol-droid.component.html',
   styleUrls: ['./protocol-droid.component.scss'],
   providers: subformComponentProviders(ProtocolDroidComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProtocolDroidComponent extends NgxSubFormComponent<ProtocolDroid> {
+export class ProtocolDroidComponent {
   public Languages = Languages;
 
-  protected getFormControls(): Controls<ProtocolDroid> {
-    return {
+  public form = createForm<ProtocolDroid>(this, {
+    formType: FormType.SUB,
+    formControls: {
       color: new UntypedFormControl(null, { validators: [Validators.required] }),
       name: new UntypedFormControl(null, { validators: [Validators.required] }),
-      droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
+      droidType: new UntypedFormControl(DroidType.PROTOCOL, { validators: [Validators.required] }),
       spokenLanguages: new UntypedFormControl(null, { validators: [Validators.required] }),
-    };
-  }
-
-  public getDefaultValues(): Partial<ProtocolDroid> | null {
-    return {
-      droidType: DroidType.PROTOCOL,
-    };
-  }
+    },
+  });
 }

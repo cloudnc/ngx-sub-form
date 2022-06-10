@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
 
 export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } = {
@@ -15,25 +15,20 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   templateUrl: './assassin-droid.component.html',
   styleUrls: ['./assassin-droid.component.scss'],
   providers: subformComponentProviders(AssassinDroidComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssassinDroidComponent extends NgxSubFormComponent<AssassinDroid> {
+export class AssassinDroidComponent {
   public AssassinDroidWeapon = AssassinDroidWeapon;
 
   public assassinDroidWeaponText = ASSASSIN_DROID_WEAPON_TEXT;
 
-  protected getFormControls(): Controls<AssassinDroid> {
-    return {
+  public form = createForm<AssassinDroid>(this, {
+    formType: FormType.SUB,
+    formControls: {
       color: new UntypedFormControl(null, { validators: [Validators.required] }),
       name: new UntypedFormControl(null, { validators: [Validators.required] }),
-      droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
-      weapons: new UntypedFormControl(null, { validators: [Validators.required] }),
-    };
-  }
-
-  public getDefaultValues(): Partial<AssassinDroid> | null {
-    return {
-      droidType: DroidType.ASSASSIN,
-      weapons: [],
-    };
-  }
+      droidType: new UntypedFormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
+      weapons: new UntypedFormControl([], { validators: [Validators.required] }),
+    },
+  });
 }

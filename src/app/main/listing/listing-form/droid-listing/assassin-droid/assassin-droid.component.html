@@ -1,4 +1,4 @@
-<fieldset [formGroup]="formGroup" class="container">
+<fieldset [formGroup]="form.formGroup" class="container">
   <legend>Assassin Droid form</legend>
 
   <mat-form-field>
@@ -7,7 +7,7 @@
       data-input-color
       type="color"
       placeholder="Color"
-      [formControlName]="formControlNames.color"
+      [formControlName]="form.formControlNames.color"
       autocomplete="off"
     />
   </mat-form-field>
@@ -18,13 +18,18 @@
       data-input-name
       type="text"
       placeholder="Name"
-      [formControlName]="formControlNames.name"
+      [formControlName]="form.formControlNames.name"
       autocomplete="off"
     />
   </mat-form-field>
 
   <mat-form-field>
-    <mat-select data-select-weapons placeholder="Select weapons" multiple [formControlName]="formControlNames.weapons">
+    <mat-select
+      data-select-weapons
+      placeholder="Select weapons"
+      multiple
+      [formControlName]="form.formControlNames.weapons"
+    >
       <mat-option
         data-select-weapons-option
         *ngFor="let weapon of AssassinDroidWeapon | keyvalue"

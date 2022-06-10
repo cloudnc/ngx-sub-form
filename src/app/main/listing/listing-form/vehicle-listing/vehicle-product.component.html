@@ -1,11 +1,11 @@
-<fieldset [formGroup]="formGroup" class="container">
+<fieldset [formGroup]="form.formGroup" class="container">
   <legend>Vehicle form</legend>
 
   <mat-form-field>
     <mat-select
       data-select-vehicle-type
       placeholder="Select vehicle type"
-      [formControlName]="formControlNames.vehicleType"
+      [formControlName]="form.formControlNames.vehicleType"
     >
       <mat-option
         data-select-vehicle-type-option
@@ -17,9 +17,12 @@
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="formGroupValues.vehicleType">
-    <app-spaceship *ngSwitchCase="VehicleType.SPACESHIP" [formControlName]="formControlNames.spaceship"></app-spaceship>
+  <div [ngSwitch]="form.formGroup.value.vehicleType">
+    <app-spaceship
+      *ngSwitchCase="VehicleType.SPACESHIP"
+      [formControlName]="form.formControlNames.spaceship"
+    ></app-spaceship>
 
-    <app-speeder *ngSwitchCase="VehicleType.SPEEDER" [formControlName]="formControlNames.speeder"></app-speeder>
+    <app-speeder *ngSwitchCase="VehicleType.SPEEDER" [formControlName]="form.formControlNames.speeder"></app-speeder>
   </div>
 </fieldset>

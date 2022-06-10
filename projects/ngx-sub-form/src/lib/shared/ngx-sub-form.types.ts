@@ -1,16 +1,6 @@
 import { UntypedFormControl, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { ArrayPropertyKey, ArrayPropertyValue, FormUpdate, TypedFormGroup } from './ngx-sub-form-utils';
-
-/**
- * @deprecated
- */
-export interface OnFormUpdate<FormInterface> {
-  /**
-   * @deprecated
-   */
-  onFormUpdate?: (formUpdate: FormUpdate<FormInterface>) => void;
-}
+import { ArrayPropertyKey, ArrayPropertyValue, TypedFormGroup } from './ngx-sub-form-utils';
 
 type Nullable<T> = T | null;
 

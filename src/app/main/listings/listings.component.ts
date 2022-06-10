@@ -1,12 +1,13 @@
-import { Component, Input } from '@angular/core';
-import { OneListing, ListingType } from '../../interfaces/listing.interface';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DroidType } from 'src/app/interfaces/droid.interface';
 import { VehicleType } from 'src/app/interfaces/vehicle.interface';
+import { ListingType, OneListing } from '../../interfaces/listing.interface';
 
 @Component({
   selector: 'app-listings',
   templateUrl: './listings.component.html',
   styleUrls: ['./listings.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListingsComponent {
   @Input() listings: OneListing[] = [];

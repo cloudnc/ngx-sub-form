@@ -30,9 +30,7 @@
 
       <!-- this is useful to make sure the type of the error is correct -->
       <!-- as it could be either an object or an array and AoT would notice if not correctly typed -->
-      <mat-error data-input-id-error *ngIf="form.formGroupErrors?.id?.required">
-        ID is required
-      </mat-error>
+      <mat-error data-input-id-error *ngIf="form.formGroupErrors?.id?.required">ID is required</mat-error>
 
       <mat-form-field>
         <input
@@ -45,9 +43,7 @@
         />
       </mat-form-field>
 
-      <mat-error data-input-title-error *ngIf="form.formGroupErrors?.title?.required">
-        Title is required
-      </mat-error>
+      <mat-error data-input-title-error *ngIf="form.formGroupErrors?.title?.required">Title is required</mat-error>
 
       <mat-form-field>
         <input
@@ -75,9 +71,7 @@
         />
       </mat-form-field>
 
-      <mat-error data-input-price-error *ngIf="form.formGroupErrors?.price?.required">
-        Price is required
-      </mat-error>
+      <mat-error data-input-price-error *ngIf="form.formGroupErrors?.price?.required">Price is required</mat-error>
 
       <mat-form-field>
         <mat-select
@@ -134,9 +128,7 @@
         Upsert
       </button>
 
-      <div *ngIf="form.formGroup.invalid" class="invalid-form">
-        Form is invalid
-      </div>
+      <div *ngIf="form.formGroup.invalid" class="invalid-form">Form is invalid</div>
     </div>
   </mat-card-actions>
 </mat-card>
@@ -152,9 +144,7 @@
     <pre *ngIf="form.formGroupErrors as errors; else noError" data-errors>{{ errors | json }}</pre>
 
     <ng-template #noError>
-      <span data-no-error>
-        Form is valid, no error!
-      </span>
+      <span data-no-error>Form is valid, no error!</span>
     </ng-template>
   </mat-card-content>
 </mat-card>

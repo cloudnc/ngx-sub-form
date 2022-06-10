@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
 
@@ -23,10 +23,10 @@ export class AssassinDroidComponent extends NgxSubFormComponent<AssassinDroid> {
 
   protected getFormControls(): Controls<AssassinDroid> {
     return {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(null, { validators: [Validators.required] }),
-      weapons: new FormControl(null, { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      name: new UntypedFormControl(null, { validators: [Validators.required] }),
+      droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
+      weapons: new UntypedFormControl(null, { validators: [Validators.required] }),
     };
   }
 

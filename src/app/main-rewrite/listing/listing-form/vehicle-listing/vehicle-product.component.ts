@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { OneVehicle, Spaceship, Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 import { UnreachableCase } from 'src/app/shared/utils';
@@ -23,9 +23,9 @@ export class VehicleProductComponent {
   public form = createForm<OneVehicle, OneVehicleForm>(this, {
     formType: FormType.SUB,
     formControls: {
-      speeder: new FormControl(null),
-      spaceship: new FormControl(null),
-      vehicleType: new FormControl(null, { validators: [Validators.required] }),
+      speeder: new UntypedFormControl(null),
+      spaceship: new UntypedFormControl(null),
+      vehicleType: new UntypedFormControl(null, { validators: [Validators.required] }),
     },
     toFormGroup: (obj: OneVehicle): OneVehicleForm => {
       return {

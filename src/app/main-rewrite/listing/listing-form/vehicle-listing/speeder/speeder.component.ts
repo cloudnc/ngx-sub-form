@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
 
@@ -14,11 +14,11 @@ export class SpeederComponent {
   public form = createForm<Speeder>(this, {
     formType: FormType.SUB,
     formControls: {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      canFire: new FormControl(false, { validators: [Validators.required] }),
-      crewMembers: new FormControl(null, { validators: [Validators.required] }),
-      vehicleType: new FormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
-      maximumSpeed: new FormControl(null, { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      canFire: new UntypedFormControl(false, { validators: [Validators.required] }),
+      crewMembers: new UntypedFormControl(null, { validators: [Validators.required] }),
+      vehicleType: new UntypedFormControl(VehicleType.SPEEDER, { validators: [Validators.required] }),
+      maximumSpeed: new UntypedFormControl(null, { validators: [Validators.required] }),
     },
   });
 }

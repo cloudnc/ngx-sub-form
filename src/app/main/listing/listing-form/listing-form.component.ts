@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import {
   Controls,
   // NgxAutomaticRootFormComponent,
@@ -52,13 +52,13 @@ export class ListingFormComponent extends NgxRootFormComponent<OneListing, OneLi
 
   protected getFormControls(): Controls<OneListingForm> {
     return {
-      vehicleProduct: new FormControl(null),
-      droidProduct: new FormControl(null),
-      listingType: new FormControl(null, Validators.required),
-      id: new FormControl(null, Validators.required),
-      title: new FormControl(null, Validators.required),
-      imageUrl: new FormControl(null, Validators.required),
-      price: new FormControl(null, Validators.required),
+      vehicleProduct: new UntypedFormControl(null),
+      droidProduct: new UntypedFormControl(null),
+      listingType: new UntypedFormControl(null, Validators.required),
+      id: new UntypedFormControl(null, Validators.required),
+      title: new UntypedFormControl(null, Validators.required),
+      imageUrl: new UntypedFormControl(null, Validators.required),
+      price: new UntypedFormControl(null, Validators.required),
     };
   }
 

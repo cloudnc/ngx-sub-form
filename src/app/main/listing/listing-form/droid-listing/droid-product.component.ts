@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
 import {
   AssassinDroid,
@@ -30,11 +30,11 @@ export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, On
 
   protected getFormControls(): Controls<OneDroidForm> {
     return {
-      protocolDroid: new FormControl(null),
-      medicalDroid: new FormControl(null),
-      astromechDroid: new FormControl(null),
-      assassinDroid: new FormControl(null),
-      droidType: new FormControl(null, { validators: [Validators.required] }),
+      protocolDroid: new UntypedFormControl(null),
+      medicalDroid: new UntypedFormControl(null),
+      astromechDroid: new UntypedFormControl(null),
+      assassinDroid: new UntypedFormControl(null),
+      droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
     };
   }
 

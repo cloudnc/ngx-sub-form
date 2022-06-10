@@ -1,6 +1,6 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { ArrayPropertyKey, ArrayPropertyValue, Controls } from '../shared/ngx-sub-form-utils';
@@ -69,9 +69,9 @@ class RootFormComponent extends NgxRootFormComponent<Vehicle> {
 
   protected getFormControls(): Controls<Vehicle> {
     return {
-      color: new FormControl(null),
-      canFire: new FormControl(null, [Validators.required]),
-      crewMemberCount: new FormControl(null, [
+      color: new UntypedFormControl(null),
+      canFire: new UntypedFormControl(null, [Validators.required]),
+      crewMemberCount: new UntypedFormControl(null, [
         Validators.min(MIN_CREW_MEMBER_COUNT),
         Validators.max(MAX_CREW_MEMBER_COUNT),
       ]),
@@ -201,7 +201,7 @@ class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArr
 
   protected getFormControls(): Controls<VehiclesArrayForm> {
     return {
-      vehicles: new FormArray([]),
+      vehicles: new UntypedFormArray([]),
     };
   }
 
@@ -218,8 +218,8 @@ class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArr
   public createFormArrayControl(
     key: ArrayPropertyKey<VehiclesArrayForm> | undefined,
     value: ArrayPropertyValue<VehiclesArrayForm>,
-  ): FormControl {
-    return new FormControl(value, [Validators.required]);
+  ): UntypedFormControl {
+    return new UntypedFormControl(value, [Validators.required]);
   }
 }
 

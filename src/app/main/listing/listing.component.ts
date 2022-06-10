@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NullableObject } from 'ngx-sub-form';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { UuidService } from '../../services/uuid.service';
   styleUrls: ['./listing.component.scss'],
 })
 export class ListingComponent {
-  public readonlyFormControl: FormControl = new FormControl(false);
+  public readonlyFormControl: UntypedFormControl = new UntypedFormControl(false);
 
   constructor(
     private route: ActivatedRoute,

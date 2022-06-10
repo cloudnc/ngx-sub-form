@@ -1,5 +1,5 @@
 import { ɵmarkDirty as markDirty } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { combineLatest, concat, defer, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
@@ -207,7 +207,7 @@ export function createForm<ControlInterface, FormInterface>(
   const createFormArrayControl: Required<NgxSubFormArrayOptions<FormInterface>>['createFormArrayControl'] =
     optionsHaveInstructionsToCreateArrays<ControlInterface, FormInterface>(options) && options.createFormArrayControl
       ? options.createFormArrayControl
-      : (key, initialValue) => new FormControl(initialValue);
+      : (key, initialValue) => new UntypedFormControl(initialValue);
 
   const sideEffects = {
     broadcastValueToParent$: registerOnChange$.pipe(

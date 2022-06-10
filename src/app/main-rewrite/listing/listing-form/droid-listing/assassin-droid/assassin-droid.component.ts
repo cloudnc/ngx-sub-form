@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { AssassinDroid, AssassinDroidWeapon, DroidType } from 'src/app/interfaces/droid.interface';
 
@@ -25,10 +25,10 @@ export class AssassinDroidComponent {
   public form = createForm<AssassinDroid>(this, {
     formType: FormType.SUB,
     formControls: {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
-      weapons: new FormControl([], { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      name: new UntypedFormControl(null, { validators: [Validators.required] }),
+      droidType: new UntypedFormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
+      weapons: new UntypedFormControl([], { validators: [Validators.required] }),
     },
   });
 }

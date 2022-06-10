@@ -1,6 +1,6 @@
 /// <reference types="jasmine" />
 
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {
   ArrayPropertyKey,
@@ -39,9 +39,9 @@ class SubComponent extends NgxSubFormComponent<Vehicle> {
   protected getFormControls() {
     // even though optional, if we comment out color there should be a TS error
     return {
-      color: new FormControl(getDefaultValues().color),
-      canFire: new FormControl(getDefaultValues().canFire),
-      crewMemberCount: new FormControl(getDefaultValues().crewMemberCount, [
+      color: new UntypedFormControl(getDefaultValues().color),
+      canFire: new UntypedFormControl(getDefaultValues().canFire),
+      crewMemberCount: new UntypedFormControl(getDefaultValues().crewMemberCount, [
         Validators.min(MIN_CREW_MEMBER_COUNT),
         Validators.max(MAX_CREW_MEMBER_COUNT),
       ]),
@@ -62,9 +62,9 @@ class DebouncedSubComponent extends SubComponent {
 class SubFormWithDefaultValuesComponent extends NgxSubFormComponent<Vehicle> {
   protected getFormControls() {
     return {
-      color: new FormControl(),
-      canFire: new FormControl(),
-      crewMemberCount: new FormControl(null, [
+      color: new UntypedFormControl(),
+      canFire: new UntypedFormControl(),
+      crewMemberCount: new UntypedFormControl(null, [
         Validators.min(MIN_CREW_MEMBER_COUNT),
         Validators.max(MAX_CREW_MEMBER_COUNT),
       ]),
@@ -181,7 +181,7 @@ describe(`NgxSubFormComponent`, () => {
   describe(`validation`, () => {
     it(`should validate the field and return an object containing the errors if the formGroup is defined and invalid`, () => {
       // set one of the control to be invalid
-      (subComponent.formGroup.get(subComponent.formControlNames.crewMemberCount) as FormControl).setValue(
+      (subComponent.formGroup.get(subComponent.formControlNames.crewMemberCount) as UntypedFormControl).setValue(
         MIN_CREW_MEMBER_COUNT - 1,
       );
       expect(subComponent.validate()).toEqual({
@@ -191,7 +191,7 @@ describe(`NgxSubFormComponent`, () => {
 
     it(`should give access to a formGroupErrors property`, () => {
       // set one of the control to be invalid
-      (subComponent.formGroup.get(subComponent.formControlNames.crewMemberCount) as FormControl).setValue(
+      (subComponent.formGroup.get(subComponent.formControlNames.crewMemberCount) as UntypedFormControl).setValue(
         MIN_CREW_MEMBER_COUNT - 1,
       );
       expect(subComponent.formGroupErrors).toEqual({
@@ -457,8 +457,8 @@ describe(`NgxSubFormComponent`, () => {
     class ValidatedSubComponent extends NgxSubFormComponent<Numbered> {
       protected getFormControls() {
         return {
-          numberOne: new FormControl(null, Validators.required),
-          numberTwo: new FormControl(null, Validators.required),
+          numberOne: new UntypedFormControl(null, Validators.required),
+          numberTwo: new UntypedFormControl(null, Validators.required),
         };
       }
 
@@ -490,8 +490,8 @@ describe(`NgxSubFormComponent`, () => {
     class PasswordSubComponent extends NgxSubFormComponent<PasswordForm> {
       protected getFormControls() {
         return {
-          password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
-          passwordRepeat: new FormControl(null, Validators.required),
+          password: new UntypedFormControl(null, [Validators.required, Validators.minLength(8)]),
+          passwordRepeat: new UntypedFormControl(null, Validators.required),
         };
       }
 
@@ -557,9 +557,9 @@ class SubRemapComponent extends NgxSubFormRemapComponent<Vehicle, VehicleForm> {
   getFormControls() {
     // even though optional, if we comment out vehicleColor there should be a TS error
     return {
-      vehicleColor: new FormControl(getDefaultValues().color),
-      vehicleCanFire: new FormControl(getDefaultValues().canFire),
-      vehiclecrewMemberCount: new FormControl(getDefaultValues().crewMemberCount),
+      vehicleColor: new UntypedFormControl(getDefaultValues().color),
+      vehicleCanFire: new UntypedFormControl(getDefaultValues().canFire),
+      vehiclecrewMemberCount: new UntypedFormControl(getDefaultValues().crewMemberCount),
     };
   }
 
@@ -664,7 +664,7 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
   implements NgxFormWithArrayControls<VehiclesArrayForm> {
   protected getFormControls(): Controls<VehiclesArrayForm> {
     return {
-      vehicles: new FormArray([]),
+      vehicles: new UntypedFormArray([]),
     };
   }
 
@@ -681,8 +681,8 @@ class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArra
   public createFormArrayControl(
     key: ArrayPropertyKey<VehiclesArrayForm> | undefined,
     value: ArrayPropertyValue<VehiclesArrayForm>,
-  ): FormControl {
-    return new FormControl(value, [Validators.required]);
+  ): UntypedFormControl {
+    return new UntypedFormControl(value, [Validators.required]);
   }
 }
 
@@ -737,8 +737,8 @@ describe(`SubArrayComponent`, () => {
 
     subArrayComponent.writeValue(values);
 
-    const fc1: FormControl = subArrayComponent.formGroupControls.vehicles.at(0) as FormControl;
-    const fc2: FormControl = subArrayComponent.formGroupControls.vehicles.at(1) as FormControl;
+    const fc1: UntypedFormControl = subArrayComponent.formGroupControls.vehicles.at(0) as UntypedFormControl;
+    const fc2: UntypedFormControl = subArrayComponent.formGroupControls.vehicles.at(1) as UntypedFormControl;
 
     const newValue = { canFire: true, color: 'color-3', crewMemberCount: 3 };
 

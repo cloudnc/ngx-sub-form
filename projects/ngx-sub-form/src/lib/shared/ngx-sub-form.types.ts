@@ -1,4 +1,4 @@
-import { FormControl, ValidationErrors } from '@angular/forms';
+import { UntypedFormControl, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ArrayPropertyKey, ArrayPropertyValue, FormUpdate, TypedFormGroup } from './ngx-sub-form-utils';
 
@@ -40,5 +40,5 @@ export interface FormGroupOptions<T> {
 // Unfortunately due to https://github.com/microsoft/TypeScript/issues/13995#issuecomment-504664533 the initial value
 // cannot be fully type narrowed to the exact type that will be passed.
 export interface NgxFormWithArrayControls<T> {
-  createFormArrayControl(key: ArrayPropertyKey<T>, value: ArrayPropertyValue<T>): FormControl;
+  createFormArrayControl(key: ArrayPropertyKey<T>, value: ArrayPropertyValue<T>): UntypedFormControl;
 }

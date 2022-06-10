@@ -2,9 +2,9 @@ import { InjectionToken, Type } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
@@ -67,29 +67,29 @@ export interface TypedAbstractControl<TValue> extends AbstractControl {
   patchValue(value: Partial<TValue>, options?: Parameters<AbstractControl['patchValue']>[1]): void;
 }
 
-export interface TypedFormGroup<TValue> extends FormGroup {
+export interface TypedFormGroup<TValue> extends UntypedFormGroup {
   value: TValue;
   valueChanges: Observable<TValue>;
   controls: ControlsType<TValue>;
-  setValue(value: TValue, options?: Parameters<FormGroup['setValue']>[1]): void;
-  patchValue(value: Partial<TValue>, options?: Parameters<FormGroup['patchValue']>[1]): void;
+  setValue(value: TValue, options?: Parameters<UntypedFormGroup['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<UntypedFormGroup['patchValue']>[1]): void;
   getRawValue(): TValue;
 }
 
-export interface TypedFormArray<TValue extends any[]> extends FormArray {
+export interface TypedFormArray<TValue extends any[]> extends UntypedFormArray {
   value: TValue;
   valueChanges: Observable<TValue>;
   controls: TypedAbstractControl<TValue[0]>[];
-  setValue(value: TValue, options?: Parameters<FormArray['setValue']>[1]): void;
-  patchValue(value: TValue, options?: Parameters<FormArray['patchValue']>[1]): void;
+  setValue(value: TValue, options?: Parameters<UntypedFormArray['setValue']>[1]): void;
+  patchValue(value: TValue, options?: Parameters<UntypedFormArray['patchValue']>[1]): void;
   getRawValue(): TValue;
 }
 
-export interface TypedFormControl<TValue> extends FormGroup {
+export interface TypedFormControl<TValue> extends UntypedFormGroup {
   value: TValue;
   valueChanges: Observable<TValue>;
-  setValue(value: TValue, options?: Parameters<FormControl['setValue']>[1]): void;
-  patchValue(value: Partial<TValue>, options?: Parameters<FormControl['patchValue']>[1]): void;
+  setValue(value: TValue, options?: Parameters<UntypedFormControl['setValue']>[1]): void;
+  patchValue(value: Partial<TValue>, options?: Parameters<UntypedFormControl['patchValue']>[1]): void;
 }
 
 export type KeysWithType<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];

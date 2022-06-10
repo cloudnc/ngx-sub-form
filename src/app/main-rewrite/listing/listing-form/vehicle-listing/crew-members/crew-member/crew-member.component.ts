@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
 
@@ -14,8 +14,8 @@ export class CrewMemberComponent {
   public form = createForm<CrewMember>(this, {
     formType: FormType.SUB,
     formControls: {
-      firstName: new FormControl(null, [Validators.required]),
-      lastName: new FormControl(null, [Validators.required]),
+      firstName: new UntypedFormControl(null, [Validators.required]),
+      lastName: new UntypedFormControl(null, [Validators.required]),
     },
   });
 }

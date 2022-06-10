@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import {
   Controls,
   NgxSubFormRemapComponent,
@@ -24,7 +24,7 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   implements NgxFormWithArrayControls<CrewMembersForm> {
   protected getFormControls(): Controls<CrewMembersForm> {
     return {
-      crewMembers: new FormArray([], {
+      crewMembers: new UntypedFormArray([], {
         validators: formControl => (formControl.value.length >= 2 ? null : { minimumCrewMemberCount: 2 }),
       }),
     };
@@ -65,13 +65,13 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   public createFormArrayControl(
     key: ArrayPropertyKey<CrewMembersForm> | undefined,
     value: ArrayPropertyValue<CrewMembersForm>,
-  ): FormControl {
+  ): UntypedFormControl {
     switch (key) {
       // note: the following string is type safe based on your form properties!
       case 'crewMembers':
-        return new FormControl(value, [Validators.required]);
+        return new UntypedFormControl(value, [Validators.required]);
       default:
-        return new FormControl(value);
+        return new UntypedFormControl(value);
     }
   }
 }

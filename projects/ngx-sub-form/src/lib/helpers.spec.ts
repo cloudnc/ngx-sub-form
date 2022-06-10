@@ -1,4 +1,4 @@
-import { FormArray, FormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl } from '@angular/forms';
 import { handleFormArrays } from 'ngx-sub-form';
 
 describe(`helpers`, () => {
@@ -8,10 +8,10 @@ describe(`helpers`, () => {
     }
 
     it('should insert as many elements into the form array as there are in the original object', () => {
-      const arrayControls: { key: keyof FormInterface; control: FormArray }[] = [
+      const arrayControls: { key: keyof FormInterface; control: UntypedFormArray }[] = [
         {
           key: 'foo',
-          control: new FormArray([]),
+          control: new UntypedFormArray([]),
         },
       ];
 
@@ -20,16 +20,16 @@ describe(`helpers`, () => {
       };
       expect(arrayControls[0].control.controls.length).toBe(0);
 
-      handleFormArrays<FormInterface>(arrayControls, formValue, () => new FormControl());
+      handleFormArrays<FormInterface>(arrayControls, formValue, () => new UntypedFormControl());
 
       expect(arrayControls[0].control.controls.length).toBe(3);
     });
 
     it('should preserve the disabled state of the array control when creating child array elements', () => {
-      const arrayControls: { key: keyof FormInterface; control: FormArray }[] = [
+      const arrayControls: { key: keyof FormInterface; control: UntypedFormArray }[] = [
         {
           key: 'foo',
-          control: new FormArray([]),
+          control: new UntypedFormArray([]),
         },
       ];
 
@@ -40,7 +40,7 @@ describe(`helpers`, () => {
       };
       expect(arrayControls[0].control.controls.length).toBe(0);
 
-      handleFormArrays<FormInterface>(arrayControls, formValue, () => new FormControl());
+      handleFormArrays<FormInterface>(arrayControls, formValue, () => new UntypedFormControl());
 
       expect(arrayControls[0].control.disabled).toBe(true);
     });

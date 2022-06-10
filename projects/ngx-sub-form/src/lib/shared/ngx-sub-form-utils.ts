@@ -100,9 +100,7 @@ export type ArrayPropertyValue<T, K extends ArrayPropertyKey<T> = ArrayPropertyK
   ? U
   : never;
 
-export function subformComponentProviders(
-  component: any,
-): {
+export function subformComponentProviders(component: any): {
   provide: InjectionToken<ControlValueAccessor>;
   useExisting: Type<any>;
   multi?: boolean;
@@ -134,8 +132,10 @@ export class MissingFormControlsError<T extends string> extends Error {
 }
 
 export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
-  debounce: <T, U>(time: number): ReturnType<NgxSubFormComponent<T, U>['handleEmissionRate']> => obs =>
-    obs.pipe(debounce(() => timer(time))),
+  debounce:
+    <T, U>(time: number): ReturnType<NgxSubFormComponent<T, U>['handleEmissionRate']> =>
+    obs =>
+      obs.pipe(debounce(() => timer(time))),
 };
 
 /**

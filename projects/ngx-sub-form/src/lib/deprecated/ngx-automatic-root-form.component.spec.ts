@@ -87,14 +87,12 @@ describe(`NgxAutomaticRootFormComponent`, () => {
   let component: TestWrapperComponent;
   let componentForm: AutomaticRootFormComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule],
-        declarations: [TestWrapperComponent, AutomaticRootFormComponent],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
+      declarations: [TestWrapperComponent, AutomaticRootFormComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     componentFixture = TestBed.createComponent(TestWrapperComponent);

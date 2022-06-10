@@ -660,8 +660,10 @@ interface VehiclesArrayForm {
 }
 
 @Component({ template: '' })
-class SubArrayComponent extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm>
-  implements NgxFormWithArrayControls<VehiclesArrayForm> {
+class SubArrayComponent
+  extends NgxSubFormRemapComponent<Vehicle[], VehiclesArrayForm>
+  implements NgxFormWithArrayControls<VehiclesArrayForm>
+{
   protected getFormControls(): Controls<VehiclesArrayForm> {
     return {
       vehicles: new UntypedFormArray([]),

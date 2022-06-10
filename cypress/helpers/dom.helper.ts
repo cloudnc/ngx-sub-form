@@ -5,26 +5,16 @@ import { ListingType } from '../../src/app/interfaces/listing.interface';
 import { VehicleType } from '../../src/app/interfaces/vehicle.interface';
 
 const getTextFromTag = (element: HTMLElement, tag: string): string =>
-  Cypress.$(element)
-    .find(`*[data-${tag}]`)
-    .text()
-    .trim();
+  Cypress.$(element).find(`*[data-${tag}]`).text().trim();
 
 const getTextFromInput = (element: HTMLElement, tag: string): string =>
-  Cypress.$(element)
-    .find(`*[data-${tag}]`)
-    .val() + '';
+  Cypress.$(element).find(`*[data-${tag}]`).val() + '';
 
 const getSelectedOptionFromSelect = (element: HTMLElement, tag: string): string =>
-  Cypress.$(element)
-    .find(`*[data-${tag}] .mat-select-value-text`)
-    .text()
-    .trim();
+  Cypress.$(element).find(`*[data-${tag}] .mat-select-value-text`).text().trim();
 
 const getToggleValue = (element: HTMLElement, tag: string): boolean =>
-  Cypress.$(element)
-    .find(`*[data-${tag}]`)
-    .hasClass('mat-checked');
+  Cypress.$(element).find(`*[data-${tag}]`).hasClass('mat-checked');
 
 const getCrewMembers = (element: HTMLElement): { firstName: string; lastName: string }[] =>
   Cypress.$(element)

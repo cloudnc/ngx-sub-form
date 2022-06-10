@@ -42,7 +42,8 @@ type FilterControlFunction<FormInterface> = (
  * @deprecated
  */
 export abstract class NgxSubFormComponent<ControlInterface, FormInterface = ControlInterface>
-  implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface> {
+  implements ControlValueAccessor, Validator, OnDestroy, OnFormUpdate<FormInterface>
+{
   public get formGroupControls(): ControlsType<FormInterface> {
     // @note form-group-undefined we need the return null here because we do not want to expose the fact that
     // the form can be undefined, it's handled internally to contain an Angular bug
@@ -50,7 +51,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return null as any;
     }
 
-    return (this.formGroup.controls as unknown) as ControlsType<FormInterface>;
+    return this.formGroup.controls as unknown as ControlsType<FormInterface>;
   }
 
   public get formGroupValues(): Required<FormInterface> {
@@ -87,10 +88,10 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
-  public formGroup: TypedFormGroup<FormInterface> = (new UntypedFormGroup(
+  public formGroup: TypedFormGroup<FormInterface> = new UntypedFormGroup(
     this._getFormControls(),
     this.getFormGroupControlOptions() as AbstractControlOptions,
-  ) as unknown) as TypedFormGroup<FormInterface>;
+  ) as unknown as TypedFormGroup<FormInterface>;
 
   protected onChange: Function | undefined = undefined;
   protected onTouched: Function | undefined = undefined;
@@ -133,7 +134,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   private _getFormControls(): Controls<FormInterface> {
     const controls: Controls<FormInterface> = this.getFormControls();
 
-    this.controlKeys = (Object.keys(controls) as unknown) as (keyof FormInterface)[];
+    this.controlKeys = Object.keys(controls) as unknown as (keyof FormInterface)[];
 
     return controls;
   }
@@ -309,7 +310,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   }
 
   private formIsFormWithArrayControls(): this is NgxFormWithArrayControls<FormInterface> {
-    return typeof ((this as unknown) as NgxFormWithArrayControls<FormInterface>).createFormArrayControl === 'function';
+    return typeof (this as unknown as NgxFormWithArrayControls<FormInterface>).createFormArrayControl === 'function';
   }
 
   private getMissingKeys(transformedValue: FormInterface | null) {
@@ -338,13 +339,13 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     obj: ControlInterface | null,
     defaultValues: Partial<FormInterface> | null,
   ): FormInterface | null {
-    return (obj as any) as FormInterface;
+    return obj as any as FormInterface;
   }
 
   // that method can be overridden if the
   // shape of the form needs to be modified
   protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as any) as ControlInterface;
+    return formValue as any as ControlInterface;
   }
 
   public registerOnChange(fn: (_: any) => void): void {
@@ -362,7 +363,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
     const formControlNames: (keyof FormInterface)[] = Object.keys(this.formControlNames) as (keyof FormInterface)[];
 
     const formValues: Observable<KeyValueForm>[] = formControlNames.map(key =>
-      ((this.formGroup.controls[key] as unknown) as AbstractControl).valueChanges.pipe(
+      (this.formGroup.controls[key] as unknown as AbstractControl).valueChanges.pipe(
         startWith(this.formGroup.controls[key].value),
         map(value => ({ key, value })),
       ),

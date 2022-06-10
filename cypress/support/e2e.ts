@@ -1,5 +1,5 @@
 // ***********************************************************
-// This example support/index.js is processed and
+// This example support/e2e.ts is processed and
 // loaded automatically before your test files.
 //
 // This is a great place to put global configuration and
@@ -14,18 +14,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
+import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
-Cypress.on('window:before:load', win => {
-  cy.stub(win.console, 'error', msg => {
-    cy.now('task', 'error', msg);
-    throw new Error(msg); // all we needed to add!
-  });
-
-  cy.stub(win.console, 'warn', msg => {
-    cy.now('task', 'warn', msg);
-  });
-});

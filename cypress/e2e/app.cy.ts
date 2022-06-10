@@ -1,11 +1,9 @@
-/// <reference types="Cypress" />
-
 import { extractErrors, FormElement, hardcodedElementsToTestList } from '../../cypress/helpers/data.helper';
 import { DOM, getFormList, getFormValue } from '../../cypress/helpers/dom.helper';
-import { DroidType } from './interfaces/droid.interface';
-import { ListingType, VehicleListing } from './interfaces/listing.interface';
-import { Spaceship, Speeder, VehicleType } from './interfaces/vehicle.interface';
-import { hardCodedListings } from './services/listings.data';
+import { DroidType } from '../../src/app/interfaces/droid.interface';
+import { ListingType, VehicleListing } from '../../src/app/interfaces/listing.interface';
+import { Spaceship, Speeder, VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { hardCodedListings } from '../../src/app/services/listings.data';
 
 context(`EJawa demo`, () => {
   const testContexts = [

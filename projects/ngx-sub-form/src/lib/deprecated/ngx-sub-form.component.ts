@@ -3,9 +3,9 @@ import {
   AbstractControl,
   AbstractControlOptions,
   ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
@@ -87,7 +87,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   // when developing the lib it's a good idea to set the formGroup type
   // to current + `| undefined` to catch a bunch of possible issues
   // see @note form-group-undefined
-  public formGroup: TypedFormGroup<FormInterface> = (new FormGroup(
+  public formGroup: TypedFormGroup<FormInterface> = (new UntypedFormGroup(
     this._getFormControls(),
     this.getFormGroupControlOptions() as AbstractControlOptions,
   ) as unknown) as TypedFormGroup<FormInterface>;
@@ -163,7 +163,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       if (this.formGroup.controls.hasOwnProperty(key)) {
         const control = formControls[key];
 
-        if (recursiveIfArray && control instanceof FormArray) {
+        if (recursiveIfArray && control instanceof UntypedFormArray) {
           const values: MapValue[] = [];
 
           for (let i = 0; i < control.length; i++) {
@@ -286,8 +286,8 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
 
   private handleFormArrayControls(obj: any) {
     Object.entries(obj).forEach(([key, value]) => {
-      if (this.formGroup.get(key) instanceof FormArray && Array.isArray(value)) {
-        const formArray: FormArray = this.formGroup.get(key) as FormArray;
+      if (this.formGroup.get(key) instanceof UntypedFormArray && Array.isArray(value)) {
+        const formArray: UntypedFormArray = this.formGroup.get(key) as UntypedFormArray;
 
         // instead of creating a new array every time and push a new FormControl
         // we just remove or add what is necessary so that:
@@ -301,7 +301,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
           if (this.formIsFormWithArrayControls()) {
             formArray.insert(i, this.createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]));
           } else {
-            formArray.insert(i, new FormControl(value[i]));
+            formArray.insert(i, new UntypedFormControl(value[i]));
           }
         }
       }

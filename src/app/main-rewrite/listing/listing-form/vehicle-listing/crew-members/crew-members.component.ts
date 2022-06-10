@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
@@ -18,7 +18,7 @@ export class CrewMembersComponent {
   public form = createForm<CrewMember[], CrewMembersForm>(this, {
     formType: FormType.SUB,
     formControls: {
-      crewMembers: new FormArray([], {
+      crewMembers: new UntypedFormArray([], {
         validators: formControl => (formControl.value.length >= 2 ? null : { minimumCrewMemberCount: 2 }),
       }),
     },
@@ -33,9 +33,9 @@ export class CrewMembersComponent {
     createFormArrayControl: (key, value) => {
       switch (key) {
         case 'crewMembers':
-          return new FormControl(value, [Validators.required]);
+          return new UntypedFormControl(value, [Validators.required]);
         default:
-          return new FormControl(value);
+          return new UntypedFormControl(value);
       }
     },
   });

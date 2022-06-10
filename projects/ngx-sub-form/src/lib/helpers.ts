@@ -1,4 +1,4 @@
-import { AbstractControlOptions, ControlValueAccessor, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControlOptions, ControlValueAccessor, UntypedFormArray, UntypedFormGroup, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { Nilable } from 'tsdef';
 import {
@@ -70,7 +70,7 @@ export const getFormGroupErrors = <ControlInterface, FormInterface>(
       accumulatedGenericError[key as keyof ControlInterface] = control.errors;
     }
 
-    if (control instanceof FormArray) {
+    if (control instanceof UntypedFormArray) {
       // errors within an array are represented as a map
       // with the index and the error
       // this way, we avoid holding a lot of potential `null`
@@ -106,13 +106,13 @@ export const getFormGroupErrors = <ControlInterface, FormInterface>(
 
 interface FormArrayWrapper<FormInterface> {
   key: keyof FormInterface;
-  control: FormArray;
+  control: UntypedFormArray;
 }
 
 export function createFormDataFromOptions<ControlInterface, FormInterface>(
   options: NgxSubFormOptions<ControlInterface, FormInterface>,
 ) {
-  const formGroup: TypedFormGroup<FormInterface> = new FormGroup(
+  const formGroup: TypedFormGroup<FormInterface> = new UntypedFormGroup(
     options.formControls,
     options.formGroupOptions as AbstractControlOptions,
   ) as TypedFormGroup<FormInterface>;
@@ -129,7 +129,7 @@ export function createFormDataFromOptions<ControlInterface, FormInterface>(
   const formArrays: FormArrayWrapper<FormInterface>[] = formGroupKeys.reduce<FormArrayWrapper<FormInterface>[]>(
     (acc, key) => {
       const control = formGroup.get(key as string);
-      if (control instanceof FormArray) {
+      if (control instanceof UntypedFormArray) {
         acc.push({ key, control });
       }
       return acc;

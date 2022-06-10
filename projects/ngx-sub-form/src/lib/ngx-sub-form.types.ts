@@ -1,4 +1,4 @@
-import { ControlValueAccessor, FormControl, Validator } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormControl, Validator } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { Nilable } from 'tsdef';
 import {
@@ -41,7 +41,7 @@ export interface NgxSubForm<ControlInterface, FormInterface> {
 export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayPropertyKey<FormInterface>>(
   key: K,
   initialValue: ArrayPropertyValue<FormInterface, K>,
-) => FormControl;
+) => UntypedFormControl;
 
 export interface NgxRootForm<ControlInterface, FormInterface> extends NgxSubForm<ControlInterface, FormInterface> {
   // @todo: anything else needed here?

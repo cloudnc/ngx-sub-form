@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../interfaces/droid.interface';
 
@@ -14,11 +14,11 @@ export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid>
 
   protected getFormControls(): Controls<AstromechDroid> {
     return {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(null, { validators: [Validators.required] }),
-      toolCount: new FormControl(null, { validators: [Validators.required] }),
-      shape: new FormControl(null, { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      name: new UntypedFormControl(null, { validators: [Validators.required] }),
+      droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
+      toolCount: new UntypedFormControl(null, { validators: [Validators.required] }),
+      shape: new UntypedFormControl(null, { validators: [Validators.required] }),
     };
   }
 

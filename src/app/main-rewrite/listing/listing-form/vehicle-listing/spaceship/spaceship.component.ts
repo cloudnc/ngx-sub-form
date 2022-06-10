@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
 
@@ -14,11 +14,11 @@ export class SpaceshipComponent {
   public form = createForm<Spaceship>(this, {
     formType: FormType.SUB,
     formControls: {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      canFire: new FormControl(false, { validators: [Validators.required] }),
-      crewMembers: new FormControl(null, { validators: [Validators.required] }),
-      wingCount: new FormControl(null, { validators: [Validators.required] }),
-      vehicleType: new FormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      canFire: new UntypedFormControl(false, { validators: [Validators.required] }),
+      crewMembers: new UntypedFormControl(null, { validators: [Validators.required] }),
+      wingCount: new UntypedFormControl(null, { validators: [Validators.required] }),
+      vehicleType: new UntypedFormControl(VehicleType.SPACESHIP, { validators: [Validators.required] }),
     },
   });
 }

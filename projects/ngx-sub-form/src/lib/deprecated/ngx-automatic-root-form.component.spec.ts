@@ -1,6 +1,6 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { Controls } from '../shared/ngx-sub-form-utils';
@@ -71,9 +71,9 @@ class AutomaticRootFormComponent extends NgxAutomaticRootFormComponent<Vehicle> 
 
   protected getFormControls(): Controls<Vehicle> {
     return {
-      color: new FormControl(null),
-      canFire: new FormControl(null, [Validators.required]),
-      crewMemberCount: new FormControl(null, [
+      color: new UntypedFormControl(null),
+      canFire: new UntypedFormControl(null, [Validators.required]),
+      crewMemberCount: new UntypedFormControl(null, [
         Validators.min(MIN_CREW_MEMBER_COUNT),
         Validators.max(MAX_CREW_MEMBER_COUNT),
       ]),

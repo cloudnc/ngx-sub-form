@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType } from 'ngx-sub-form';
 import { Subject } from 'rxjs';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
@@ -47,13 +47,13 @@ export class ListingFormComponent {
     output$: this.listingUpdated,
     manualSave$: this.manualSave$$,
     formControls: {
-      vehicleProduct: new FormControl(null),
-      droidProduct: new FormControl(null),
-      listingType: new FormControl(null, Validators.required),
-      id: new FormControl(null, Validators.required),
-      title: new FormControl(null, Validators.required),
-      imageUrl: new FormControl(null, Validators.required),
-      price: new FormControl(null, Validators.required),
+      vehicleProduct: new UntypedFormControl(null),
+      droidProduct: new UntypedFormControl(null),
+      listingType: new UntypedFormControl(null, Validators.required),
+      id: new UntypedFormControl(null, Validators.required),
+      title: new UntypedFormControl(null, Validators.required),
+      imageUrl: new UntypedFormControl(null, Validators.required),
+      price: new UntypedFormControl(null, Validators.required),
     },
     toFormGroup: (obj: OneListing): OneListingForm => {
       const { listingType, product, ...commonValues } = obj;

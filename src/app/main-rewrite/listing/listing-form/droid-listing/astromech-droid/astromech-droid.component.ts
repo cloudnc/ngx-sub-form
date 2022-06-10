@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../interfaces/droid.interface';
 
@@ -16,11 +16,11 @@ export class AstromechDroidComponent {
   public form = createForm<AstromechDroid>(this, {
     formType: FormType.SUB,
     formControls: {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      name: new FormControl(null, { validators: [Validators.required] }),
-      droidType: new FormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
-      toolCount: new FormControl(null, { validators: [Validators.required] }),
-      shape: new FormControl(null, { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      name: new UntypedFormControl(null, { validators: [Validators.required] }),
+      droidType: new UntypedFormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
+      toolCount: new UntypedFormControl(null, { validators: [Validators.required] }),
+      shape: new UntypedFormControl(null, { validators: [Validators.required] }),
     },
   });
 }

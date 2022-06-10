@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
 
@@ -12,11 +12,11 @@ import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
 export class SpaceshipComponent extends NgxSubFormComponent<Spaceship> {
   protected getFormControls(): Controls<Spaceship> {
     return {
-      color: new FormControl(null, { validators: [Validators.required] }),
-      canFire: new FormControl(null, { validators: [Validators.required] }),
-      crewMembers: new FormControl(null, { validators: [Validators.required] }),
-      wingCount: new FormControl(null, { validators: [Validators.required] }),
-      vehicleType: new FormControl(null, { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      canFire: new UntypedFormControl(null, { validators: [Validators.required] }),
+      crewMembers: new UntypedFormControl(null, { validators: [Validators.required] }),
+      wingCount: new UntypedFormControl(null, { validators: [Validators.required] }),
+      vehicleType: new UntypedFormControl(null, { validators: [Validators.required] }),
     };
   }
 

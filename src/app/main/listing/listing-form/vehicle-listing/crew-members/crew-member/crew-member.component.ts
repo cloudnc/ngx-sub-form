@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
 
@@ -12,8 +12,8 @@ import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
 export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
   protected getFormControls(): Controls<CrewMember> {
     return {
-      firstName: new FormControl(null, [Validators.required]),
-      lastName: new FormControl(null, [Validators.required]),
+      firstName: new UntypedFormControl(null, [Validators.required]),
+      lastName: new UntypedFormControl(null, [Validators.required]),
     };
   }
 }

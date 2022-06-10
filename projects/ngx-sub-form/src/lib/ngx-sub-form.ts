@@ -141,7 +141,7 @@ export function createForm<ControlInterface, FormInterface>(
       }
 
       // if it's not a remap component, the ControlInterface === the FormInterface
-      return (value as any) as FormInterface;
+      return value as any as FormInterface;
     }),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
@@ -186,7 +186,7 @@ export function createForm<ControlInterface, FormInterface>(
       options.fromFormGroup
         ? options.fromFormGroup(value)
         : // if it's not a remap component, the ControlInterface === the FormInterface
-          ((value as any) as ControlInterface),
+          (value as any as ControlInterface),
     ),
   );
 

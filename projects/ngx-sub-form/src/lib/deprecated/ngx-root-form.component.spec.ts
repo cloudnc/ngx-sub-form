@@ -85,14 +85,12 @@ describe(`NgxRootFormComponent`, () => {
   let component: TestWrapperComponent;
   let componentForm: RootFormComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule],
-        declarations: [TestWrapperComponent, RootFormComponent],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
+      declarations: [TestWrapperComponent, RootFormComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     componentFixture = TestBed.createComponent(TestWrapperComponent);
@@ -188,8 +186,10 @@ interface VehiclesArrayForm {
   selector: `app-root-form`,
   template: ``,
 })
-class RootFormArrayComponent extends NgxRootFormComponent<Vehicle[], VehiclesArrayForm>
-  implements NgxFormWithArrayControls<VehiclesArrayForm> {
+class RootFormArrayComponent
+  extends NgxRootFormComponent<Vehicle[], VehiclesArrayForm>
+  implements NgxFormWithArrayControls<VehiclesArrayForm>
+{
   @DataInput()
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('vehicles')
@@ -229,14 +229,12 @@ describe(`NgxRootFormComponent with an array`, () => {
   let component: ArrayTestWrapperComponent;
   let componentForm: RootFormArrayComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule],
-        declarations: [ArrayTestWrapperComponent, RootFormArrayComponent],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
+      declarations: [ArrayTestWrapperComponent, RootFormArrayComponent],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     componentFixture = TestBed.createComponent(ArrayTestWrapperComponent);

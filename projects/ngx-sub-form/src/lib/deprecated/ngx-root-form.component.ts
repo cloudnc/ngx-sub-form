@@ -12,7 +12,8 @@ import { NgxSubFormRemapComponent } from './ngx-sub-form.component';
  */
 export abstract class NgxRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxSubFormRemapComponent<ControlInterface, FormInterface>
-  implements OnInit {
+  implements OnInit
+{
   public abstract dataInput: Required<ControlInterface> | null | undefined;
   // `Input` values are set while the `ngOnChanges` hook is ran
   // and it does happen before the `ngOnInit` where we start
@@ -90,11 +91,11 @@ export abstract class NgxRootFormComponent<ControlInterface, FormInterface = Con
     obj: ControlInterface | null,
     defaultValues: Partial<FormInterface> | null,
   ): FormInterface | null {
-    return (obj as unknown) as FormInterface;
+    return obj as unknown as FormInterface;
   }
 
   protected transformFromFormGroup(formValue: FormInterface): ControlInterface | null {
-    return (formValue as unknown) as ControlInterface;
+    return formValue as unknown as ControlInterface;
   }
 
   public manualSave(): void {

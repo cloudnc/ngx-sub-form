@@ -20,8 +20,10 @@ interface CrewMembersForm {
   styleUrls: ['./crew-members.component.scss'],
   providers: subformComponentProviders(CrewMembersComponent),
 })
-export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm>
-  implements NgxFormWithArrayControls<CrewMembersForm> {
+export class CrewMembersComponent
+  extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm>
+  implements NgxFormWithArrayControls<CrewMembersForm>
+{
   protected getFormControls(): Controls<CrewMembersForm> {
     return {
       crewMembers: new UntypedFormArray([], {

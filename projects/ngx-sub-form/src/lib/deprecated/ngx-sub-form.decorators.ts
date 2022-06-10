@@ -15,7 +15,7 @@ export class DataInputUsedOnWrongPropertyError extends Error {
  * @deprecated
  */
 export function DataInput() {
-  return function<ControlInterface, FormInterface = ControlInterface>(
+  return function <ControlInterface, FormInterface = ControlInterface>(
     target: NgxRootFormComponent<ControlInterface, FormInterface>,
     propertyKey: string,
   ) {
@@ -24,7 +24,7 @@ export function DataInput() {
     }
 
     Object.defineProperty(target, propertyKey, {
-      set: function(dataInputValue) {
+      set: function (dataInputValue) {
         (this as NgxRootFormComponent<ControlInterface, FormInterface>).dataInputUpdated(dataInputValue);
       },
     });

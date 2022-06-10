@@ -8,7 +8,8 @@ import { NgxRootFormComponent } from './ngx-root-form.component';
  */
 export abstract class NgxAutomaticRootFormComponent<ControlInterface, FormInterface = ControlInterface>
   extends NgxRootFormComponent<ControlInterface, FormInterface>
-  implements OnInit {
+  implements OnInit
+{
   /** @internal */
   protected onRegisterOnChangeHook(data: ControlInterface | null) {
     if (!super.onRegisterOnChangeHook(data)) {

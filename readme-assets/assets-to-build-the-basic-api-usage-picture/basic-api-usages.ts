@@ -35,7 +35,7 @@ export class PersonContainer {
         [formControlName]="form.formControlNames.address"
       ></address-control>
     </form>
-  `
+  `,
 })
 export class PersonForm {
   private input$: Subject<Person | undefined> = new Subject();

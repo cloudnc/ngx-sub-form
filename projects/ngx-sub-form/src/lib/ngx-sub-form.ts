@@ -239,7 +239,7 @@ export function createForm<ControlInterface, FormInterface>(
     ),
     updateValue$: updateValueAndValidity$.pipe(
       tap(() => {
-        formGroup.updateValueAndValidity({ emitEvent: false });
+        formGroup.updateValueAndValidity({ emitEvent: true });
       }),
     ),
     bindTouched$: combineLatest([componentHooks.registerOnTouched$, options.touched$ ?? EMPTY]).pipe(

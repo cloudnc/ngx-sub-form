@@ -174,6 +174,9 @@ context(`EJawa demo`, () => {
                 },
                 crewMembers: {
                   required: true,
+                  crewMembers: {
+                    minimumCrewMemberCount: 2
+                  },
                 },
                 wingCount: {
                   required: true,
@@ -194,80 +197,42 @@ context(`EJawa demo`, () => {
 
         DOM.form.elements.vehicleForm.addCrewMemberButton.click();
 
-        if (id === 'old') {
-          DOM.form.errors.should($el => {
-            expect(extractErrors($el)).to.eql({
-              vehicleProduct: {
-                spaceship: {
-                  color: {
-                    required: true,
-                  },
-                  crewMembers: {
-                    crewMembers: [
-                      {
-                        firstName: {
-                          required: true,
-                        },
-                        lastName: {
-                          required: true,
-                        },
-                      },
-                    ],
-                  },
-                  wingCount: {
-                    required: true,
-                  },
+        DOM.form.errors.should($el => {
+          expect(extractErrors($el)).to.eql({
+            vehicleProduct: {
+              spaceship: {
+                color: {
+                  required: true,
                 },
-              },
-              title: {
-                required: true,
-              },
-              imageUrl: {
-                required: true,
-              },
-              price: {
-                required: true,
-              },
-            });
-          });
-        } else {
-          DOM.form.errors.should($el => {
-            expect(extractErrors($el)).to.eql({
-              vehicleProduct: {
-                spaceship: {
-                  color: {
-                    required: true,
-                  },
+                crewMembers: {
                   crewMembers: {
-                    crewMembers: {
-                      minimumCrewMemberCount: 2,
-                      0: {
-                        firstName: {
-                          required: true,
-                        },
-                        lastName: {
-                          required: true,
-                        },
+                    minimumCrewMemberCount: 2,
+                    0: {
+                      firstName: {
+                        required: true,
+                      },
+                      lastName: {
+                        required: true,
                       },
                     },
                   },
-                  wingCount: {
-                    required: true,
-                  },
+                },
+                wingCount: {
+                  required: true,
                 },
               },
-              title: {
-                required: true,
-              },
-              imageUrl: {
-                required: true,
-              },
-              price: {
-                required: true,
-              },
-            });
+            },
+            title: {
+              required: true,
+            },
+            imageUrl: {
+              required: true,
+            },
+            price: {
+              required: true,
+            },
           });
-        }
+        });
 
         DOM.form.elements.selectListingTypeByType(ListingType.DROID);
 

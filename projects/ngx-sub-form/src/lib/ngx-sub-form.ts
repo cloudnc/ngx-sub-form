@@ -182,6 +182,7 @@ export function createForm<ControlInterface, FormInterface>(
         );
       }
     }),
+    map(value => (!isNullOrUndefined(options.emitRawValue) && options.emitRawValue) ? formGroup.getRawValue() : value),
     map(value =>
       options.fromFormGroup
         ? options.fromFormGroup(value)

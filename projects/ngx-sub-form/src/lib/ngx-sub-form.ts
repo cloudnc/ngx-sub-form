@@ -234,7 +234,7 @@ export function createForm<ControlInterface, FormInterface>(
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
-        shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });
+        shouldDisable ? formGroup.disable({ emitEvent: true }) : formGroup.enable({ emitEvent: true });
       }),
     ),
     updateValue$: updateValueAndValidity$.pipe(

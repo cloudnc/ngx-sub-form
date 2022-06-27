@@ -303,11 +303,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
         Array.isArray(value)
       ) {
         const formArray: UntypedFormArray = this.formGroup.get(key) as UntypedFormArray;
-        // instead of creating a new array every time and push a new FormControl
-        // we just remove or add what is necessary so that:
-        // - it is as efficient as possible and do not create unnecessary FormControl every time
-        // - validators are not destroyed/created again and eventually fire again for no reason
-        this.removeUnnecassaryObjects(formArray, value);
+        formArray.clear();
         this.addAdditionalObjects(formArray, value, key);
       }
     });
@@ -325,15 +321,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
           value[i]
         )
         : new UntypedFormControl(value[i]);
-      formArray.insert(i, control, { emitEvent: this.emitInitialValueOnInit });
-    }
-  }
-
-  private removeUnnecassaryObjects(formArray: UntypedFormArray, value: Array<any>) {
-    while (formArray.length > value.length) {
-      formArray.removeAt(formArray.length - 1, {
-        emitEvent: this.emitInitialValueOnInit,
-      });
+      formArray.insert(i, control);
     }
   }
 

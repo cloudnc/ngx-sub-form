@@ -161,14 +161,7 @@ export const handleFormArrays = <FormInterface>(
       return;
     }
 
-    // instead of creating a new array every time and push a new FormControl
-    // we just remove or add what is necessary so that:
-    // - it is as efficient as possible and do not create unnecessary FormControl every time
-    // - validators are not destroyed/created again and eventually fire again for no reason
-    while (control.length > value.length) {
-      control.removeAt(control.length - 1);
-    }
-
+    control.clear();
     for (let i = control.length; i < value.length; i++) {
       const newControl = createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]);
       if (control.disabled) {

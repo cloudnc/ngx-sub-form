@@ -439,10 +439,11 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
       return;
     }
 
+    // We have to emit to update and validate the value and propagate it to the parent
     if (shouldDisable) {
-      this.formGroup.disable({ emitEvent: false });
+      this.formGroup.disable({ emitEvent: true });
     } else {
-      this.formGroup.enable({ emitEvent: false });
+      this.formGroup.enable({ emitEvent: true });
     }
   }
 }

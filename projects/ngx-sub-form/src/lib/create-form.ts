@@ -234,6 +234,7 @@ export function createForm<ControlInterface, FormInterface>(
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
+        // We have to emit to update and validate the value and propagate it to the parent
         shouldDisable ? formGroup.disable({ emitEvent: true }) : formGroup.enable({ emitEvent: true });
       }),
     ),

@@ -343,6 +343,65 @@ context(`EJawa demo`, () => {
           });
         });
       });
+
+      it(`should display the (nested) errors from the form after enable/disable`, () => {
+        DOM.createNewButton.click();
+
+        DOM.form.elements.selectListingTypeByType(ListingType.VEHICLE);
+
+        DOM.form.elements.vehicleForm.selectVehicleTypeByType(VehicleType.SPACESHIP);
+
+        DOM.form.elements.vehicleForm.addCrewMemberButton.click();
+
+        const errorsToExpect = {
+          vehicleProduct: {
+            spaceship: {
+              color: {
+                required: true,
+              },
+              crewMembers: {
+                crewMembers: {
+                  minimumCrewMemberCount: 2,
+                  0: {
+                    firstName: {
+                      required: true,
+                    },
+                    lastName: {
+                      required: true,
+                    },
+                  },
+                },
+              },
+              wingCount: {
+                required: true,
+              },
+            },
+          },
+          title: {
+            required: true,
+          },
+          imageUrl: {
+            required: true,
+          },
+          price: {
+            required: true,
+          },
+        };
+
+        DOM.form.errors.should($el => {
+          expect(extractErrors($el)).to.eql(errorsToExpect);
+        });
+
+        DOM.readonlyToggle.click();
+
+        DOM.form.errors.should('not.exist');
+
+        DOM.readonlyToggle.click();
+
+        DOM.form.errors.should($el => {
+          expect(extractErrors($el)).to.eql(errorsToExpect);
+        });
+      });
     });
   });
 });

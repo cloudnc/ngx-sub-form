@@ -20,8 +20,7 @@ import {
   OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-
-export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+import { cloneDeep } from 'lodash';
 
 /** @internal */
 export const patchClassInstance = (componentInstance: any, obj: Object) => {
@@ -122,7 +121,7 @@ export function createFormDataFromOptions<ControlInterface, FormInterface>(
     options.formControls,
     options.formGroupOptions as AbstractControlOptions,
   ) as TypedFormGroup<FormInterface>;
-  const defaultValues: FormInterface = deepCopy(formGroup.value);
+  const defaultValues: FormInterface = cloneDeep(formGroup.value);
   const formGroupKeys: (keyof FormInterface)[] = Object.keys(defaultValues) as (keyof FormInterface)[];
   const formControlNames: ControlsNames<FormInterface> = formGroupKeys.reduce<ControlsNames<FormInterface>>(
     (acc, curr) => {

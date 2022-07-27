@@ -20,8 +20,7 @@ import {
   OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-
-export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+import { cloneDeep } from 'lodash';
 
 /** @internal */
 export const patchClassInstance = (componentInstance: any, obj: Object) => {
@@ -122,7 +121,7 @@ export function createFormDataFromOptions<ControlInterface, FormInterface>(
     options.formControls,
     options.formGroupOptions as AbstractControlOptions,
   ) as TypedFormGroup<FormInterface>;
-  const defaultValues: FormInterface = deepCopy(formGroup.value);
+  const defaultValues: FormInterface = cloneDeep(formGroup.value);
   const formGroupKeys: (keyof FormInterface)[] = Object.keys(defaultValues) as (keyof FormInterface)[];
   const formControlNames: ControlsNames<FormInterface> = formGroupKeys.reduce<ControlsNames<FormInterface>>(
     (acc, curr) => {
@@ -161,14 +160,7 @@ export const handleFormArrays = <FormInterface>(
       return;
     }
 
-    // instead of creating a new array every time and push a new FormControl
-    // we just remove or add what is necessary so that:
-    // - it is as efficient as possible and do not create unnecessary FormControl every time
-    // - validators are not destroyed/created again and eventually fire again for no reason
-    while (control.length > value.length) {
-      control.removeAt(control.length - 1);
-    }
-
+    control.clear();
     for (let i = control.length; i < value.length; i++) {
       const newControl = createFormArrayControl(key as ArrayPropertyKey<FormInterface>, value[i]);
       if (control.disabled) {

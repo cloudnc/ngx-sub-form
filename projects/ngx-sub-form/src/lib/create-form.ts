@@ -182,6 +182,7 @@ export function createForm<ControlInterface, FormInterface>(
         );
       }
     }),
+    map(value => (!isNullOrUndefined(options.emitRawValue) && options.emitRawValue) ? formGroup.getRawValue() : value),
     map(value =>
       options.fromFormGroup
         ? options.fromFormGroup(value)
@@ -234,12 +235,13 @@ export function createForm<ControlInterface, FormInterface>(
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {
-        shouldDisable ? formGroup.disable({ emitEvent: false }) : formGroup.enable({ emitEvent: false });
+        // We have to emit to update and validate the value and propagate it to the parent
+        shouldDisable ? formGroup.disable({ emitEvent: true }) : formGroup.enable({ emitEvent: true });
       }),
     ),
     updateValue$: updateValueAndValidity$.pipe(
       tap(() => {
-        formGroup.updateValueAndValidity({ emitEvent: false });
+        formGroup.updateValueAndValidity({ emitEvent: true });
       }),
     ),
     bindTouched$: combineLatest([componentHooks.registerOnTouched$, options.touched$ ?? EMPTY]).pipe(

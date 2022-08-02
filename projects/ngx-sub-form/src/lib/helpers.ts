@@ -20,7 +20,7 @@ import {
   OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 /** @internal */
 export const patchClassInstance = (componentInstance: any, obj: Object) => {

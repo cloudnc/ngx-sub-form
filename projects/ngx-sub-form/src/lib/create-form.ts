@@ -1,15 +1,10 @@
-import { ɵmarkDirty as markDirty } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { combineLatest, concat, defer, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
+import { combineLatest, concat, EMPTY, identity, merge, Observable, of, timer } from 'rxjs';
 import {
-  catchError,
   delay,
-  exhaustMap,
   filter,
-  finalize,
-  ignoreElements,
   map,
   mapTo,
   shareReplay,
@@ -219,18 +214,6 @@ export function createForm<ControlInterface, FormInterface>(
 
         formGroup.reset(value, { emitEvent: false });
       }),
-    ),
-    supportChangeDetectionStrategyOnPush: concat(
-      lifecyleHooks.afterViewInit.pipe(take(1)),
-      merge(controlValue$, setDisabledState$).pipe(
-        delay(0),
-        tap(() => {
-          // support `changeDetection: ChangeDetectionStrategy.OnPush`
-          // on the component hosting a form
-          // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
-          markDirty(componentInstance);
-        }),
-      ),
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {

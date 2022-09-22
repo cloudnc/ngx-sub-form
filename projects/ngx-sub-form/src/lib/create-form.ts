@@ -3,8 +3,26 @@ import { UntypedFormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { combineLatest, concat, EMPTY, identity, merge, Observable, of, timer } from 'rxjs';
-import { delay, filter, map, mapTo, shareReplay, startWith, switchMap, take, takeUntil, tap, withLatestFrom, } from 'rxjs/operators';
-import { createFormDataFromOptions, getControlValueAccessorBindings, getFormGroupErrors, handleFormArrays, patchClassInstance, } from './helpers';
+import {
+  delay,
+  filter,
+  map,
+  mapTo,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
+import {
+  createFormDataFromOptions,
+  getControlValueAccessorBindings,
+  getFormGroupErrors,
+  handleFormArrays,
+  patchClassInstance,
+} from './helpers';
 import {
   ComponentHooks,
   ControlValueAccessorComponentInstance,

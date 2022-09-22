@@ -3,7 +3,7 @@
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -20,22 +20,22 @@ jobs:
           node-version: 16.10.0
       - name: Install dependencies
         run: yarn --frozen-lockfile --non-interactive --no-progress
-      - name: Lint Demo
-        run: yarn demo:lint:check
-      - name: Format check
-        run: yarn prettier:check
-      - name: Check Readme
-        run: yarn readme:check
-      - name: Test
-        run: yarn lib:test:ci
+      # - name: Lint Demo
+      #   run: yarn demo:lint:check
+      # - name: Format check
+      #   run: yarn prettier:check
+      # - name: Check Readme
+      #   run: yarn readme:check
+      # - name: Test
+      #   run: yarn lib:test:ci
       - name: Build Lib
         run: yarn lib:build:prod
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          browser: chrome
-          start: yarn demo:start --port 4765
-          wait-on: http://localhost:4765/
+      # - name: Cypress run
+      #   uses: cypress-io/github-action@v4
+      #   with:
+      #     browser: chrome
+      #     start: yarn demo:start --port 4765
+      #     wait-on: http://localhost:4765/
       - name: Copy built README & LICENCE into dist
         run: cp README.md LICENSE dist/ngx-sub-form
       - name: Build Demo
@@ -48,7 +48,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/ngx-sub-form-demo
       - name: Release
-        if: contains('refs/heads/master refs/heads/next refs/heads/feat-rewrite', github.ref)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

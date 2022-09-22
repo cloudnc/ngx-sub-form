@@ -1,27 +1,10 @@
+import { ChangeDetectorRef, inject } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { combineLatest, concat, EMPTY, identity, merge, Observable, of, timer } from 'rxjs';
-import {
-  delay,
-  filter,
-  map,
-  mapTo,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
-import {
-  createFormDataFromOptions,
-  getControlValueAccessorBindings,
-  getFormGroupErrors,
-  handleFormArrays,
-  patchClassInstance,
-} from './helpers';
+import { delay, filter, map, mapTo, shareReplay, startWith, switchMap, take, takeUntil, tap, withLatestFrom, } from 'rxjs/operators';
+import { createFormDataFromOptions, getControlValueAccessorBindings, getFormGroupErrors, handleFormArrays, patchClassInstance, } from './helpers';
 import {
   ComponentHooks,
   ControlValueAccessorComponentInstance,
@@ -72,6 +55,8 @@ export function createForm<ControlInterface, FormInterface>(
     onDestroy: getObservableLifecycle(componentInstance).ngOnDestroy,
     afterViewInit: getObservableLifecycle(componentInstance).ngAfterViewInit,
   };
+
+  const changeDetectorRef = inject(ChangeDetectorRef);
 
   lifecyleHooks.onDestroy.pipe(take(1)).subscribe(() => {
     isRemoved = true;
@@ -214,6 +199,15 @@ export function createForm<ControlInterface, FormInterface>(
 
         formGroup.reset(value, { emitEvent: false });
       }),
+    ),
+    supportChangeDetectionStrategyOnPush: concat(
+      lifecyleHooks.afterViewInit.pipe(take(1)),
+      merge(controlValue$, setDisabledState$).pipe(
+        delay(0),
+        tap(() => {
+          changeDetectorRef.markForCheck();
+        }),
+      ),
     ),
     setDisabledState$: setDisabledState$.pipe(
       tap((shouldDisable: boolean) => {

@@ -1,15 +1,11 @@
-import { ɵmarkDirty as markDirty } from '@angular/core';
+import { ChangeDetectorRef, inject } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { combineLatest, concat, defer, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
+import { combineLatest, concat, EMPTY, identity, merge, Observable, of, timer } from 'rxjs';
 import {
-  catchError,
   delay,
-  exhaustMap,
   filter,
-  finalize,
-  ignoreElements,
   map,
   mapTo,
   shareReplay,
@@ -77,6 +73,8 @@ export function createForm<ControlInterface, FormInterface>(
     onDestroy: getObservableLifecycle(componentInstance).ngOnDestroy,
     afterViewInit: getObservableLifecycle(componentInstance).ngAfterViewInit,
   };
+
+  const changeDetectorRef = inject(ChangeDetectorRef);
 
   lifecyleHooks.onDestroy.pipe(take(1)).subscribe(() => {
     isRemoved = true;
@@ -225,10 +223,7 @@ export function createForm<ControlInterface, FormInterface>(
       merge(controlValue$, setDisabledState$).pipe(
         delay(0),
         tap(() => {
-          // support `changeDetection: ChangeDetectionStrategy.OnPush`
-          // on the component hosting a form
-          // fixes https://github.com/cloudnc/ngx-sub-form/issues/93
-          markDirty(componentInstance);
+          changeDetectorRef.markForCheck();
         }),
       ),
     ),

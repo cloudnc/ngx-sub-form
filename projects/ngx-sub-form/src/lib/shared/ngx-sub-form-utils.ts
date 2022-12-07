@@ -12,7 +12,6 @@ import {
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
 import { Observable, Subject, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
-import { NgxSubFormComponent } from '../deprecated/ngx-sub-form.component';
 
 export type Controls<T> = { [K in keyof T]-?: AbstractControl };
 
@@ -25,27 +24,6 @@ export type ControlsType<T> = {
 };
 
 export type OneOfControlsTypes<T = any> = ControlsType<T>[keyof ControlsType<T>];
-
-/**
- * @deprecated
- */
-export type FormErrorsType<T> = {
-  [K in keyof T]-?: T[K] extends any[] ? (null | ValidationErrors)[] : ValidationErrors;
-};
-
-/**
- * @deprecated
- */
-export type FormUpdate<FormInterface> = { [FormControlInterface in keyof FormInterface]?: true };
-
-/**
- * @deprecated
- */
-export type FormErrors<FormInterface> = null | Partial<
-  FormErrorsType<FormInterface> & {
-    formGroup?: ValidationErrors;
-  }
->;
 
 // @todo rename to `FormErrorsType` once the deprecated one is removed
 export type NewFormErrorsType<T> = {
@@ -133,8 +111,8 @@ export class MissingFormControlsError<T extends string> extends Error {
 
 export const NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES = {
   debounce:
-    <T, U>(time: number): ReturnType<NgxSubFormComponent<T, U>['handleEmissionRate']> =>
-    obs =>
+    <T>(time: number) =>
+    (obs: Observable<T>): Observable<T> =>
       obs.pipe(debounce(() => timer(time))),
 };
 

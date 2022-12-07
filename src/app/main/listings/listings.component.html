@@ -1,5 +1,5 @@
 <mat-nav-list>
-  <a data-list-item mat-list-item *ngFor="let listing of listings" [routerLink]="['/', 'listings', listing.id]">
+  <a data-list-item mat-list-item *ngFor="let listing of listings" [routerLink]="['listings', listing.id]">
     <h4 mat-line>
       <span data-title>{{ listing.title }}</span>
       (

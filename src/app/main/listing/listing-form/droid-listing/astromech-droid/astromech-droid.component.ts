@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../interfaces/droid.interface';
 
 @Component({
@@ -8,23 +8,19 @@ import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../i
   templateUrl: './astromech-droid.component.html',
   styleUrls: ['./astromech-droid.component.scss'],
   providers: subformComponentProviders(AstromechDroidComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AstromechDroidComponent extends NgxSubFormComponent<AstromechDroid> {
+export class AstromechDroidComponent {
   public AstromechDroidShape = AstromechDroidShape;
 
-  protected getFormControls(): Controls<AstromechDroid> {
-    return {
+  public form = createForm<AstromechDroid>(this, {
+    formType: FormType.SUB,
+    formControls: {
       color: new UntypedFormControl(null, { validators: [Validators.required] }),
       name: new UntypedFormControl(null, { validators: [Validators.required] }),
-      droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
+      droidType: new UntypedFormControl(DroidType.ASTROMECH, { validators: [Validators.required] }),
       toolCount: new UntypedFormControl(null, { validators: [Validators.required] }),
       shape: new UntypedFormControl(null, { validators: [Validators.required] }),
-    };
-  }
-
-  public getDefaultValues(): Partial<AstromechDroid> | null {
-    return {
-      droidType: DroidType.ASTROMECH,
-    };
-  }
+    },
+  });
 }

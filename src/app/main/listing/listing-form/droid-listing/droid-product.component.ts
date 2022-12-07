@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormRemapComponent, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import {
   AssassinDroid,
   AstromechDroid,
@@ -24,48 +24,44 @@ interface OneDroidForm {
   templateUrl: './droid-product.component.html',
   styleUrls: ['./droid-product.component.scss'],
   providers: subformComponentProviders(DroidProductComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DroidProductComponent extends NgxSubFormRemapComponent<OneDroid, OneDroidForm> {
+export class DroidProductComponent {
   public DroidType = DroidType;
 
-  protected getFormControls(): Controls<OneDroidForm> {
-    return {
+  public form = createForm<OneDroid, OneDroidForm>(this, {
+    formType: FormType.SUB,
+    formControls: {
       protocolDroid: new UntypedFormControl(null),
       medicalDroid: new UntypedFormControl(null),
       astromechDroid: new UntypedFormControl(null),
       assassinDroid: new UntypedFormControl(null),
       droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
-    };
-  }
-
-  protected transformToFormGroup(obj: OneDroid | null): OneDroidForm | null {
-    if (!obj) {
-      return null;
-    }
-
-    return {
-      protocolDroid: obj.droidType === DroidType.PROTOCOL ? obj : null,
-      medicalDroid: obj.droidType === DroidType.MEDICAL ? obj : null,
-      astromechDroid: obj.droidType === DroidType.ASTROMECH ? obj : null,
-      assassinDroid: obj.droidType === DroidType.ASSASSIN ? obj : null,
-      droidType: obj.droidType,
-    };
-  }
-
-  protected transformFromFormGroup(formValue: OneDroidForm): OneDroid | null {
-    switch (formValue.droidType) {
-      case DroidType.PROTOCOL:
-        return formValue.protocolDroid;
-      case DroidType.MEDICAL:
-        return formValue.medicalDroid;
-      case DroidType.ASTROMECH:
-        return formValue.astromechDroid;
-      case DroidType.ASSASSIN:
-        return formValue.assassinDroid;
-      case null:
-        return null;
-      default:
-        throw new UnreachableCase(formValue.droidType);
-    }
-  }
+    },
+    toFormGroup: (obj: OneDroid): OneDroidForm => {
+      return {
+        protocolDroid: obj.droidType === DroidType.PROTOCOL ? obj : null,
+        medicalDroid: obj.droidType === DroidType.MEDICAL ? obj : null,
+        astromechDroid: obj.droidType === DroidType.ASTROMECH ? obj : null,
+        assassinDroid: obj.droidType === DroidType.ASSASSIN ? obj : null,
+        droidType: obj.droidType,
+      };
+    },
+    fromFormGroup: (formValue: OneDroidForm): OneDroid => {
+      switch (formValue.droidType) {
+        case DroidType.PROTOCOL:
+          return formValue.protocolDroid as any; // todo
+        case DroidType.MEDICAL:
+          return formValue.medicalDroid as any; // todo
+        case DroidType.ASTROMECH:
+          return formValue.astromechDroid as any; // todo
+        case DroidType.ASSASSIN:
+          return formValue.assassinDroid as any; // todo
+        case null:
+          return null as any; // todo
+        default:
+          throw new UnreachableCase(formValue.droidType);
+      }
+    },
+  });
 }

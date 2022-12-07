@@ -1,13 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
-import {
-  Controls,
-  NgxSubFormRemapComponent,
-  subformComponentProviders,
-  ArrayPropertyKey,
-  ArrayPropertyValue,
-  NgxFormWithArrayControls,
-} from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
 interface CrewMembersForm {
@@ -19,61 +12,44 @@ interface CrewMembersForm {
   templateUrl: './crew-members.component.html',
   styleUrls: ['./crew-members.component.scss'],
   providers: subformComponentProviders(CrewMembersComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CrewMembersComponent
-  extends NgxSubFormRemapComponent<CrewMember[], CrewMembersForm>
-  implements NgxFormWithArrayControls<CrewMembersForm>
-{
-  protected getFormControls(): Controls<CrewMembersForm> {
-    return {
+export class CrewMembersComponent {
+  public form = createForm<CrewMember[], CrewMembersForm>(this, {
+    formType: FormType.SUB,
+    formControls: {
       crewMembers: new UntypedFormArray([], {
         validators: formControl => (formControl.value.length >= 2 ? null : { minimumCrewMemberCount: 2 }),
       }),
-    };
-  }
-
-  public getDefaultValues(): Partial<CrewMembersForm> | null {
-    return {
-      crewMembers: [],
-    };
-  }
-
-  protected transformToFormGroup(obj: CrewMember[] | null): CrewMembersForm | null {
-    return {
-      crewMembers: !obj ? [] : obj,
-    };
-  }
-
-  protected transformFromFormGroup(formValue: CrewMembersForm): CrewMember[] | null {
-    return formValue.crewMembers;
-  }
+    },
+    toFormGroup: (obj: CrewMember[]): CrewMembersForm => {
+      return {
+        crewMembers: !obj ? [] : obj,
+      };
+    },
+    fromFormGroup: (formValue: CrewMembersForm): CrewMember[] => {
+      return formValue.crewMembers;
+    },
+    createFormArrayControl: (key, value) => {
+      switch (key) {
+        case 'crewMembers':
+          return new UntypedFormControl(value, [Validators.required]);
+        default:
+          return new UntypedFormControl(value);
+      }
+    },
+  });
 
   public removeCrewMember(index: number): void {
-    this.formGroupControls.crewMembers.removeAt(index);
+    this.form.formGroup.controls.crewMembers.removeAt(index);
   }
 
   public addCrewMember(): void {
-    this.formGroupControls.crewMembers.push(
-      this.createFormArrayControl('crewMembers', {
+    this.form.formGroup.controls.crewMembers.push(
+      this.form.createFormArrayControl('crewMembers', {
         firstName: '',
         lastName: '',
       }),
     );
-  }
-
-  // following method is not required and return by default a simple FormControl
-  // if needed, you can use the `createFormArrayControl` hook to customize the creation
-  // of your `FormControl`s that will be added to the `FormArray`
-  public createFormArrayControl(
-    key: ArrayPropertyKey<CrewMembersForm> | undefined,
-    value: ArrayPropertyValue<CrewMembersForm>,
-  ): UntypedFormControl {
-    switch (key) {
-      // note: the following string is type safe based on your form properties!
-      case 'crewMembers':
-        return new UntypedFormControl(value, [Validators.required]);
-      default:
-        return new UntypedFormControl(value);
-    }
   }
 }

@@ -13,10 +13,6 @@ import { SharedModule } from './shared/shared.module';
     RouterModule.forRoot(
       [
         {
-          path: 'rewrite',
-          loadChildren: () => import('./main-rewrite/main.module').then(x => x.MainModule),
-        },
-        {
           path: '',
           loadChildren: () => import('./main/main.module').then(x => x.MainModule),
         },

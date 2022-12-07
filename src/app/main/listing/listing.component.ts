@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NullableObject } from 'ngx-sub-form';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { UuidService } from '../../services/uuid.service';
   selector: 'app-listing',
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListingComponent {
   public readonlyFormControl: UntypedFormControl = new UntypedFormControl(false);

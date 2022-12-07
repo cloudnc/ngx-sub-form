@@ -1,7 +1,7 @@
 <mat-slide-toggle class="readonly" data-readonly [formControl]="readonlyFormControl">Readonly</mat-slide-toggle>
 
 <app-listing-form
-  [disabled]="readonlyFormControl.value"
   [listing]="listing$ | async"
+  [disabled]="readonlyFormControl.value"
   (listingUpdated)="upsertListing($event)"
 ></app-listing-form>

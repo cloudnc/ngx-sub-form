@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { Controls, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
 
 @Component({
@@ -8,12 +8,14 @@ import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
   templateUrl: './crew-member.component.html',
   styleUrls: ['./crew-member.component.scss'],
   providers: subformComponentProviders(CrewMemberComponent),
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CrewMemberComponent extends NgxSubFormComponent<CrewMember> {
-  protected getFormControls(): Controls<CrewMember> {
-    return {
+export class CrewMemberComponent {
+  public form = createForm<CrewMember>(this, {
+    formType: FormType.SUB,
+    formControls: {
       firstName: new UntypedFormControl(null, [Validators.required]),
       lastName: new UntypedFormControl(null, [Validators.required]),
-    };
-  }
+    },
+  });
 }

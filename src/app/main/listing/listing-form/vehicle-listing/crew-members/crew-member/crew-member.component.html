@@ -1,4 +1,4 @@
-<fieldset [formGroup]="formGroup" class="container" data-crew-member>
+<fieldset [formGroup]="form.formGroup" class="container" data-crew-member>
   <legend>Crew member form</legend>
 
   <mat-form-field>
@@ -7,7 +7,7 @@
       data-input-crew-member-first-name
       type="text"
       placeholder="First name"
-      [formControlName]="formControlNames.firstName"
+      [formControlName]="form.formControlNames.firstName"
       autocomplete="off"
     />
   </mat-form-field>
@@ -18,7 +18,7 @@
       data-input-crew-member-last-name
       type="text"
       placeholder="Last name"
-      [formControlName]="formControlNames.lastName"
+      [formControlName]="form.formControlNames.lastName"
       autocomplete="off"
     />
   </mat-form-field>

@@ -314,7 +314,7 @@ context(`EJawa demo`, () => {
     DOM.list.elements.cy.eq(0).click();
 
     DOM.form.cy.within(() => {
-      cy.get(`mat-card`).within(() => {
+      cy.get(`[data-card-form]`).within(() => {
         cy.get(`input`).should('be.enabled');
         cy.get(`mat-select`).should('not.have.class', 'mat-mdc-select-disabled');
         cy.get(`mat-slide-toggle .mdc-switch`).should('not.have.class', 'mdc-switch--disabled');
@@ -325,7 +325,7 @@ context(`EJawa demo`, () => {
     DOM.readonlyToggle.click();
 
     DOM.form.cy.within(() => {
-      cy.get(`mat-card`).within(() => {
+      cy.get(`[data-card-form]`).within(() => {
         cy.get(`input`).should('be.disabled');
         cy.get(`mat-select`).should('have.class', 'mat-mdc-select-disabled');
         cy.get(`mat-slide-toggle .mdc-switch`).should('have.class', 'mdc-switch--disabled');

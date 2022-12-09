@@ -36,7 +36,6 @@ jobs:
           browser: chrome
           start: yarn demo:start --port 4765
           wait-on: http://localhost:4765/
-          wait-on-timeout: 180
       - name: Copy built README & LICENCE into dist
         run: cp README.md LICENSE dist/ngx-sub-form
       - name: Build Demo

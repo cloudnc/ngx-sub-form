@@ -31,11 +31,12 @@ jobs:
       - name: Build Lib
         run: yarn lib:build:prod
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         with:
           browser: chrome
           start: yarn demo:start --port 4765
           wait-on: http://localhost:4765/
+          wait-on-timeout: 180
       - name: Copy built README & LICENCE into dist
         run: cp README.md LICENSE dist/ngx-sub-form
       - name: Build Demo

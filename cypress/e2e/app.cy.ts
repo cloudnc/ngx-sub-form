@@ -2,7 +2,7 @@ import { extractErrors, FormElement, hardcodedElementsToTestList } from '../../c
 import { DOM, getFormList, getFormValue } from '../../cypress/helpers/dom.helper';
 import { DroidType } from '../../src/app/interfaces/droid.interface';
 import { ListingType, VehicleListing } from '../../src/app/interfaces/listing.interface';
-import { Spaceship, Speeder, VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { Spaceship, VehicleType } from '../../src/app/interfaces/vehicle.interface';
 import { hardCodedListings } from '../../src/app/services/listings.data';
 
 context(`EJawa demo`, () => {
@@ -316,8 +316,8 @@ context(`EJawa demo`, () => {
     DOM.form.cy.within(() => {
       cy.get(`mat-card`).within(() => {
         cy.get(`input`).should('be.enabled');
-        cy.get(`mat-select`).should('not.have.class', 'mat-select-disabled');
-        cy.get(`mat-slide-toggle`).should('not.have.class', 'mat-disabled');
+        cy.get(`mat-select`).should('not.have.class', 'mat-mdc-select-disabled');
+        cy.get(`mat-slide-toggle .mdc-switch`).should('not.have.class', 'mdc-switch--disabled');
         cy.get(`button`).should('be.enabled');
       });
     });
@@ -327,8 +327,8 @@ context(`EJawa demo`, () => {
     DOM.form.cy.within(() => {
       cy.get(`mat-card`).within(() => {
         cy.get(`input`).should('be.disabled');
-        cy.get(`mat-select`).should('have.class', 'mat-select-disabled');
-        cy.get(`mat-slide-toggle`).should('have.class', 'mat-disabled');
+        cy.get(`mat-select`).should('have.class', 'mat-mdc-select-disabled');
+        cy.get(`mat-slide-toggle .mdc-switch`).should('have.class', 'mdc-switch--disabled');
         cy.get(`button`).should('be.disabled');
       });
     });

@@ -48,7 +48,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/ngx-sub-form-demo
       - name: Release
-        if: contains('refs/heads/master refs/heads/next', github.ref)
+        if: contains('refs/heads/master refs/heads/next refs/heads/feat-upgrade-angular-15', github.ref)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

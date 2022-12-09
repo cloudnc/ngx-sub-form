@@ -32,7 +32,9 @@
     "commit": "git add . && git-cz",
     "readme:build": "embedme README.md && yarn run prettier README.md --write",
     "readme:check": "yarn readme:build && ! git status | grep README.md || (echo 'You must commit build and commit changes to README.md!' && exit 1)",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "------------------------ CI ------------------------": "",
+    "start-e2e-file-server": "cp -r dist/ngx-sub-form-demo dist/ngx-sub-form-demo-e2e && sed -i 's/base href=\"https:\\/\\/cloudnc.github.io\\/ngx-sub-form\\/\"/base href=\"\\/\"/' dist/ngx-sub-form-demo-e2e/index.html && npx http-server --port 4765 ./dist/ngx-sub-form-demo-e2e"
   },
   "private": true,
   "dependencies": {

@@ -38,7 +38,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
-          start: ls && ls dist && cp -r dist/ngx-sub-form-demo dist/ngx-sub-form-demo-e2e && sed -i 's/base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/"/base href="\/"/' dist/ngx-sub-form-demo-e2e/index.html && npx http-server --port 4765 ./dist/ngx-sub-form-demo-e2e
+          start: yarn start-e2e-file-server
           wait-on: http://localhost:4765/
           wait-on-timeout: 500
       - name: Deploy

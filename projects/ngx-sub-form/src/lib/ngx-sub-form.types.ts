@@ -30,7 +30,7 @@ export type ControlValueAccessorComponentInstance = Object &
   // and this should *never* be overridden by the component
   Partial<Record<keyof ControlValueAccessor, never> & Record<keyof Validator, never>>;
 
-export interface NgxSubForm<ControlInterface, FormInterface> {
+export interface NgxSubForm<ControlInterface, FormInterface extends {}> {
   readonly formGroup: TypedFormGroup<FormInterface>;
   readonly formControlNames: ControlsNames<FormInterface>;
   readonly formGroupErrors: NewFormErrors<FormInterface>;
@@ -43,7 +43,8 @@ export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayProper
   initialValue: ArrayPropertyValue<FormInterface, K>,
 ) => UntypedFormControl;
 
-export interface NgxRootForm<ControlInterface, FormInterface> extends NgxSubForm<ControlInterface, FormInterface> {
+export interface NgxRootForm<ControlInterface, FormInterface extends {}>
+  extends NgxSubForm<ControlInterface, FormInterface> {
   // @todo: anything else needed here?
 }
 
@@ -69,7 +70,10 @@ type NgxSubFormArray<FormInterface> = ArrayPropertyKey<FormInterface> extends ne
   ? {} // no point defining `createFormArrayControl` if there's not a single array in the `FormInterface`
   : NgxSubFormArrayOptions<FormInterface>;
 
-export type NgxSubFormOptions<ControlInterface, FormInterface = ControlInterface> = {
+export type NgxSubFormOptions<
+  ControlInterface,
+  FormInterface extends {} = ControlInterface extends {} ? ControlInterface : never,
+> = {
   formType: FormType;
   formControls: Controls<FormInterface>;
   formGroupOptions?: FormGroupOptions<FormInterface>;
@@ -80,10 +84,10 @@ export type NgxSubFormOptions<ControlInterface, FormInterface = ControlInterface
 } & NgxSubFormRemap<ControlInterface, FormInterface> &
   NgxSubFormArray<FormInterface>;
 
-export type NgxRootFormOptions<ControlInterface, FormInterface = ControlInterface> = NgxSubFormOptions<
+export type NgxRootFormOptions<
   ControlInterface,
-  FormInterface
-> & {
+  FormInterface extends {} = ControlInterface extends {} ? ControlInterface : never,
+> = NgxSubFormOptions<ControlInterface, FormInterface> & {
   input$: Observable<ControlInterface | undefined>;
   output$: Subject<ControlInterface>;
   disabled$?: Observable<boolean>;
@@ -105,6 +109,6 @@ export enum FormType {
   ROOT = 'Root',
 }
 
-export type NgxFormOptions<ControlInterface, FormInterface> =
+export type NgxFormOptions<ControlInterface, FormInterface extends {}> =
   | NgxSubFormOptions<ControlInterface, FormInterface>
   | NgxRootFormOptions<ControlInterface, FormInterface>;

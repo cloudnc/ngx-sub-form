@@ -5,6 +5,7 @@ import {
   UntypedFormGroup,
   ValidationErrors,
 } from '@angular/forms';
+import { cloneDeep } from 'lodash-es';
 import { ReplaySubject } from 'rxjs';
 import { Nilable } from 'tsdef';
 import {
@@ -20,7 +21,6 @@ import {
   OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-import { cloneDeep } from 'lodash-es';
 
 /** @internal */
 export const patchClassInstance = (componentInstance: any, obj: Object) => {
@@ -63,7 +63,7 @@ export const getControlValueAccessorBindings = <ControlInterface>(
   };
 };
 
-export const getFormGroupErrors = <ControlInterface, FormInterface>(
+export const getFormGroupErrors = <ControlInterface, FormInterface extends {}>(
   formGroup: TypedFormGroup<FormInterface>,
 ): NewFormErrors<FormInterface> => {
   const formErrors: NewFormErrors<ControlInterface> = Object.entries<OneOfControlsTypes>(formGroup.controls).reduce<
@@ -114,7 +114,7 @@ interface FormArrayWrapper<FormInterface> {
   control: UntypedFormArray;
 }
 
-export function createFormDataFromOptions<ControlInterface, FormInterface>(
+export function createFormDataFromOptions<ControlInterface, FormInterface extends {}>(
   options: NgxSubFormOptions<ControlInterface, FormInterface>,
 ) {
   const formGroup: TypedFormGroup<FormInterface> = new UntypedFormGroup(

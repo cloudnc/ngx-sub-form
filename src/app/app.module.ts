@@ -10,15 +10,12 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(
-      [
-        {
-          path: '',
-          loadChildren: () => import('./main/main.module').then(x => x.MainModule),
-        },
-      ],
-      { relativeLinkResolution: 'legacy' },
-    ),
+    RouterModule.forRoot([
+      {
+        path: '',
+        loadChildren: () => import('./main/main.module').then(x => x.MainModule),
+      },
+    ]),
     SharedModule,
   ],
   providers: [],

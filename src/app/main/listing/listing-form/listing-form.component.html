@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title data-title [class.not-visible]="!form.formGroup.value.title">
       {{ form.formGroup.value.title }}
@@ -133,7 +133,7 @@
   </mat-card-actions>
 </mat-card>
 
-<mat-card class="errors">
+<mat-card appearance="outlined" class="errors">
   <mat-card-title>Form errors</mat-card-title>
 
   <mat-card-content>
@@ -149,7 +149,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="values">
+<mat-card appearance="outlined" class="values">
   <mat-card-title>Form values</mat-card-title>
 
   <mat-card-content>

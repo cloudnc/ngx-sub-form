@@ -30,17 +30,17 @@ jobs:
         run: yarn lib:test:ci
       - name: Build Lib
         run: yarn lib:build:prod
+      - name: Copy built README & LICENCE into dist
+        run: cp README.md LICENSE dist/ngx-sub-form
+      - name: Build Demo
+        run: yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
-          start: yarn demo:start --port 4765
+          start: ls && ls dist && cp -r dist/ngx-sub-form-demo dist/ngx-sub-form-demo-e2e && sed -i 's/base href="https:\/\/cloudnc.github.io\/ngx-sub-form\/"/base href="\/"/' dist/ngx-sub-form-demo-e2e/index.html && npx http-server --port 4765 ./dist/ngx-sub-form-demo-e2e
           wait-on: http://localhost:4765/
-      - name: Copy built README & LICENCE into dist
-        run: cp README.md LICENSE dist/ngx-sub-form
-      - name: Build Demo
-        if: contains('refs/heads/master', github.ref)
-        run: yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
+          wait-on-timeout: 500
       - name: Deploy
         if: contains('refs/heads/master', github.ref)
         uses: peaceiris/actions-gh-pages@v3

@@ -49,6 +49,7 @@ npm i ngx-sub-form
 | `13.x`               | `5.2.0` (non breaking but new API available as well) |
 | `14.x`               | `6.0.0` (Angular 14 upgrade only)                    |
 | `14.x`               | `7.0.0` (deprecated API is now removed)              |
+| `15.x`               | `8.0.0`                                              |
 
 # API
 

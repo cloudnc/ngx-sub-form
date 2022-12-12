@@ -11,10 +11,10 @@ const getTextFromInput = (element: HTMLElement, tag: string): string =>
   Cypress.$(element).find(`*[data-${tag}]`).val() + '';
 
 const getSelectedOptionFromSelect = (element: HTMLElement, tag: string): string =>
-  Cypress.$(element).find(`*[data-${tag}] .mat-select-value-text`).text().trim();
+  Cypress.$(element).find(`*[data-${tag}] .mat-mdc-select-min-line`).text().trim();
 
 const getToggleValue = (element: HTMLElement, tag: string): boolean =>
-  Cypress.$(element).find(`*[data-${tag}]`).hasClass('mat-checked');
+  Cypress.$(element).find(`*[data-${tag}]`).hasClass('mat-mdc-slide-toggle-checked');
 
 const getCrewMembers = (element: HTMLElement): { firstName: string; lastName: string }[] =>
   Cypress.$(element)
@@ -74,7 +74,7 @@ export const DOM = {
           selectListingTypeByType: (type: ListingType) => {
             DOM.form.elements.selectListingType.click();
 
-            return cy.get(`*[data-select-listing-type-option]`).within(() => cy.contains(type).click());
+            return cy.contains(`*[data-select-listing-type-option]`, type).click();
           },
           get droidForm() {
             return {
@@ -87,7 +87,7 @@ export const DOM = {
               selectDroidTypeByType: (type: DroidType) => {
                 DOM.form.elements.droidForm.selectDroidType.click();
 
-                return cy.get(`*[data-select-droid-type-option]`).within(() => cy.contains(type).click());
+                return cy.contains(`*[data-select-droid-type-option]`, type).click();
               },
             };
           },
@@ -102,7 +102,7 @@ export const DOM = {
               selectVehicleTypeByType: (type: VehicleType) => {
                 DOM.form.elements.vehicleForm.selectVehicleType.click();
 
-                return cy.get(`*[data-select-vehicle-type-option]`).within(() => cy.contains(type).click());
+                return cy.contains(`*[data-select-vehicle-type-option]`, type).click();
               },
               get addCrewMemberButton() {
                 return cy.get(`*[data-btn-add-crew-member]`);

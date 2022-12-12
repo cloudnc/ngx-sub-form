@@ -6,13 +6,13 @@ type Nullable<T> = T | null;
 
 export type NullableObject<T> = { [P in keyof T]: Nullable<T[P]> };
 
-export type TypedValidatorFn<T> = (formGroup: TypedFormGroup<T>) => ValidationErrors | null;
+export type TypedValidatorFn<T extends {}> = (formGroup: TypedFormGroup<T>) => ValidationErrors | null;
 
-export type TypedAsyncValidatorFn<T> = (
+export type TypedAsyncValidatorFn<T extends {}> = (
   formGroup: TypedFormGroup<T>,
 ) => Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
 
-export interface FormGroupOptions<T> {
+export interface FormGroupOptions<T extends {}> {
   /**
    * @description The list of validators applied to a control.
    */

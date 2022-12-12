@@ -2,15 +2,15 @@ import { InjectionToken, Type } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
   UntypedFormArray,
   UntypedFormControl,
   UntypedFormGroup,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
   ValidationErrors,
 } from '@angular/forms';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { Observable, Subject, timer } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
 
 export type Controls<T> = { [K in keyof T]-?: AbstractControl };
@@ -20,7 +20,9 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
 export type ControlsType<T> = {
-  [K in keyof T]-?: T[K] extends any[] ? TypedFormArray<T[K]> : TypedFormControl<T[K]> | TypedFormGroup<T[K]>;
+  [K in keyof T]-?: T[K] extends any[]
+    ? TypedFormArray<T[K]>
+    : TypedFormControl<T[K]> | (T[K] extends {} ? TypedFormGroup<T[K]> : never);
 };
 
 export type OneOfControlsTypes<T = any> = ControlsType<T>[keyof ControlsType<T>];
@@ -45,7 +47,7 @@ export interface TypedAbstractControl<TValue> extends AbstractControl {
   patchValue(value: Partial<TValue>, options?: Parameters<AbstractControl['patchValue']>[1]): void;
 }
 
-export interface TypedFormGroup<TValue> extends UntypedFormGroup {
+export interface TypedFormGroup<TValue extends {}> extends UntypedFormGroup {
   value: TValue;
   valueChanges: Observable<TValue>;
   controls: ControlsType<TValue>;
@@ -63,7 +65,7 @@ export interface TypedFormArray<TValue extends any[]> extends UntypedFormArray {
   getRawValue(): TValue;
 }
 
-export interface TypedFormControl<TValue> extends UntypedFormGroup {
+export interface TypedFormControl<TValue> extends UntypedFormControl {
   value: TValue;
   valueChanges: Observable<TValue>;
   setValue(value: TValue, options?: Parameters<UntypedFormControl['setValue']>[1]): void;

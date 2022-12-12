@@ -10,14 +10,14 @@ jobs:
     # Machine environment:
     # https://help.github.com/en/articles/software-in-virtual-environments-for-github-actions#ubuntu-1804-lts
     # We specify the Node.js version manually below, and use versioned Chrome from Puppeteer.
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 16.10.0
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.10.0
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.10.0
+          node-version: 18.10.0
       - name: Install dependencies
         run: yarn --frozen-lockfile --non-interactive --no-progress
       - name: Lint Demo
@@ -30,17 +30,17 @@ jobs:
         run: yarn lib:test:ci
       - name: Build Lib
         run: yarn lib:build:prod
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          browser: chrome
-          start: yarn demo:start --port 4765
-          wait-on: http://localhost:4765/
       - name: Copy built README & LICENCE into dist
         run: cp README.md LICENSE dist/ngx-sub-form
       - name: Build Demo
-        if: contains('refs/heads/master', github.ref)
         run: yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          browser: chrome
+          start: yarn start-e2e-file-server
+          wait-on: http://localhost:4765/
+          wait-on-timeout: 500
       - name: Deploy
         if: contains('refs/heads/master', github.ref)
         uses: peaceiris/actions-gh-pages@v3
@@ -48,7 +48,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/ngx-sub-form-demo
       - name: Release
-        if: contains('refs/heads/master refs/heads/next', github.ref)
+        if: contains('refs/heads/master refs/heads/next refs/heads/feat-upgrade-angular-15', github.ref)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -37,28 +37,34 @@ import {
 } from './ngx-sub-form.types';
 import { isNullOrUndefined } from './shared/ngx-sub-form-utils';
 
-const optionsHaveInstructionsToCreateArrays = <ControlInterface, FormInterface>(
+const optionsHaveInstructionsToCreateArrays = <ControlInterface, FormInterface extends {}>(
   options: NgxFormOptions<ControlInterface, FormInterface> & Partial<NgxSubFormArrayOptions<FormInterface>>,
 ): options is NgxSubFormOptions<ControlInterface, FormInterface> & NgxSubFormArrayOptions<FormInterface> =>
   !!options.createFormArrayControl;
 
 // @todo find a better name
-const isRoot = <ControlInterface, FormInterface>(
+const isRoot = <ControlInterface, FormInterface extends {}>(
   options: any,
 ): options is NgxRootFormOptions<ControlInterface, FormInterface> => {
   const opt = options as NgxRootFormOptions<ControlInterface, FormInterface>;
   return opt.formType === FormType.ROOT;
 };
 
-export function createForm<ControlInterface, FormInterface = ControlInterface>(
+export function createForm<
+  ControlInterface,
+  FormInterface extends {} = ControlInterface extends {} ? ControlInterface : never,
+>(
   componentInstance: ControlValueAccessorComponentInstance,
   options: NgxRootFormOptions<ControlInterface, FormInterface>,
 ): NgxRootForm<ControlInterface, FormInterface>;
-export function createForm<ControlInterface, FormInterface = ControlInterface>(
+export function createForm<
+  ControlInterface,
+  FormInterface extends {} = ControlInterface extends {} ? ControlInterface : never,
+>(
   componentInstance: ControlValueAccessorComponentInstance,
   options: NgxSubFormOptions<ControlInterface, FormInterface>,
 ): NgxSubForm<ControlInterface, FormInterface>;
-export function createForm<ControlInterface, FormInterface>(
+export function createForm<ControlInterface, FormInterface extends {}>(
   componentInstance: ControlValueAccessorComponentInstance,
   options: NgxFormOptions<ControlInterface, FormInterface>,
 ): NgxSubForm<ControlInterface, FormInterface> {

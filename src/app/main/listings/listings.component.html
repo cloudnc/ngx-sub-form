@@ -1,13 +1,13 @@
 <mat-nav-list>
   <a data-list-item mat-list-item *ngFor="let listing of listings" [routerLink]="['listings', listing.id]">
-    <h4 mat-line>
+    <span matListItemTitle>
       <span data-title>{{ listing.title }}</span>
       (
       <span data-type>{{ listing.listingType }}</span>
       ) £
       <span data-price>{{ listing.price | number }}</span>
-    </h4>
-    <p mat-line [ngSwitch]="listing.listingType">
+    </span>
+    <span matListItemLine [ngSwitch]="listing.listingType">
       <span *ngSwitchCase="ListingType.DROID">
         <span data-sub-type [style.background-color]="listing.product.color">{{ listing.product.droidType }}</span>
         -
@@ -41,7 +41,7 @@
           <span *ngSwitchCase="VehicleType.SPACESHIP">number of wings: {{ listing.product.wingCount }}</span>
         </span>
       </span>
-    </p>
+    </span>
   </a>
 </mat-nav-list>
 

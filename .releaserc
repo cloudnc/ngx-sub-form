@@ -1,6 +1,11 @@
 {
   "pkgRoot": "dist/ngx-sub-form",
   "branches": [
-    "master"
+    "master",
+    {
+      "name": "feat-upgrade-angular-15",
+      "channel": "feat-upgrade-angular-15",
+      "prerelease": true
+    }
   ]
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { createForm, FormType } from 'ngx-sub-form';
-import { Subject } from 'rxjs';
+import { Subject, tap } from 'rxjs';
 import { ListingType, OneListing } from 'src/app/interfaces/listing.interface';
 import { OneDroid } from '../../../interfaces/droid.interface';
 import { OneVehicle } from '../../../interfaces/vehicle.interface';
@@ -39,6 +39,7 @@ export class ListingFormComponent {
   @Output() listingUpdated: Subject<OneListing> = new Subject();
 
   public manualSave$$: Subject<void> = new Subject();
+  public isEqual$$: Subject<boolean> = new Subject();
 
   public form = createForm<OneListing, OneListingForm>(this, {
     formType: FormType.ROOT,
@@ -46,6 +47,8 @@ export class ListingFormComponent {
     input$: this.input$,
     output$: this.listingUpdated,
     manualSave$: this.manualSave$$,
+    isEqual$: this.isEqual$$,
+    outputFilterPredicate: () => true,
     formControls: {
       vehicleProduct: new UntypedFormControl(null),
       droidProduct: new UntypedFormControl(null),

@@ -129,6 +129,7 @@
       </button>
 
       <div *ngIf="form.formGroup.invalid" class="invalid-form">Form is invalid</div>
+      <div *ngIf="isEqual$$ | async" class="invalid-form">Form value is equal</div>
     </div>
   </mat-card-actions>
 </mat-card>

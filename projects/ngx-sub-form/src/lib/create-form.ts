@@ -202,6 +202,18 @@ export function createForm<ControlInterface, FormInterface extends {}>(
     broadcastValueToParent$,
   ).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
+  const isEqual$: Observable<boolean> = formGroup.valueChanges.pipe(
+    startWith(formGroup.value),
+    withLatestFrom(transformedValue$),
+    map(([value, transformedValue]) => {
+      if (!isRoot<ControlInterface, FormInterface>(options)) {
+        return true;
+      } else {
+        return options.isEqual$ ? isEqual(value, transformedValue) : true;
+      }
+    }),
+  );
+
   const emitNullOnDestroy$: Observable<null> =
     // emit null when destroyed by default
     isNullOrUndefined(options.emitNullOnDestroy) || options.emitNullOnDestroy
@@ -246,6 +258,13 @@ export function createForm<ControlInterface, FormInterface extends {}>(
     bindTouched$: combineLatest([componentHooks.registerOnTouched$, options.touched$ ?? EMPTY]).pipe(
       delay(0),
       tap(([onTouched]) => onTouched()),
+    ),
+    isEqual$: isEqual$.pipe(
+      tap(value => {
+        if (isRoot<ControlInterface, FormInterface>(options)) {
+          options.isEqual$?.next(value);
+        }
+      }),
     ),
   };
 

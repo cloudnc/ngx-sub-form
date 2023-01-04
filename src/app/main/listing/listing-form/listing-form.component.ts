@@ -48,7 +48,6 @@ export class ListingFormComponent {
     output$: this.listingUpdated,
     manualSave$: this.manualSave$$,
     isEqual$: this.isEqual$$,
-    outputFilterPredicate: () => true,
     formControls: {
       vehicleProduct: new UntypedFormControl(null),
       droidProduct: new UntypedFormControl(null),

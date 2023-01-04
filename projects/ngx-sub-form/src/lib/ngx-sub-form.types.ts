@@ -102,7 +102,7 @@ export type NgxRootFormOptions<
   // if you want to control how frequently the form emits on the output$, you can customise the emission rate with this
   // option. e.g. `handleEmissionRate: formValue$ => formValue$.pipe(debounceTime(300)),`
   handleEmissionRate?: (obs$: Observable<FormInterface>) => Observable<FormInterface>;
-  // Exposes if the transformed value of input$ equals the current value of the form
+  // Returns true if the transformed value of input$ equals the current value of the form
   isEqual$?: Subject<boolean>;
 };
 

@@ -202,7 +202,7 @@ export function createForm<ControlInterface, FormInterface extends {}>(
     broadcastValueToParent$,
   ).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-  const isEqual$: Observable<boolean> = formGroup.valueChanges.pipe(
+  const isEqual$: Observable<boolean> = merge(formGroup.valueChanges, transformedValue$).pipe(
     startWith(formGroup.value),
     withLatestFrom(transformedValue$),
     map(([value, transformedValue]) => {
@@ -260,6 +260,7 @@ export function createForm<ControlInterface, FormInterface extends {}>(
       tap(([onTouched]) => onTouched()),
     ),
     isEqual$: isEqual$.pipe(
+      delay(0),
       tap(value => {
         if (isRoot<ControlInterface, FormInterface>(options)) {
           options.isEqual$?.next(value);

@@ -2,7 +2,7 @@ import { extractErrors, FormElement, hardcodedElementsToTestList } from '../../c
 import { DOM, getFormList, getFormValue } from '../../cypress/helpers/dom.helper';
 import { DroidType } from '../../src/app/interfaces/droid.interface';
 import { ListingType, VehicleListing } from '../../src/app/interfaces/listing.interface';
-import { Spaceship, VehicleType } from '../../src/app/interfaces/vehicle.interface';
+import { Spaceship, Speeder, VehicleType } from '../../src/app/interfaces/vehicle.interface';
 import { hardCodedListings } from '../../src/app/services/listings.data';
 
 context(`EJawa demo`, () => {
@@ -332,5 +332,25 @@ context(`EJawa demo`, () => {
         cy.get(`button`).should('be.disabled');
       });
     });
+  });
+
+  it(`should display is equal when the form value is equal to the initial value of the form`, () => {
+    // Check initial value after selecting a list item
+    DOM.list.elements.cy.eq(0).click();
+    DOM.form.isEqual.should('exist');
+
+    // Should not show equal when a value in the form has changed
+    DOM.form.elements.price.clear().type('1');
+    DOM.form.isEqual.should('not.exist');
+
+    // Should show equal when all values in the form are equal to the initial value
+    DOM.form.elements.price.clear().type(hardCodedListings[0].price.toString());
+    DOM.form.isEqual.should('exist');
+
+    // Should show equal after changing values and submitting the form, as the changed values now form the new initial value
+    DOM.form.elements.price.clear().type('1');
+    DOM.form.isEqual.should('not.exist');
+    DOM.form.upsertButton.click();
+    DOM.form.isEqual.should('exist');
   });
 });

@@ -51,6 +51,9 @@ export const DOM = {
       get cy() {
         return cy.get('app-listing');
       },
+      get isEqual() {
+        return cy.get(`*[data-is-equal]`);
+      },
       get errors() {
         return cy.get(`*[data-errors]`);
       },
@@ -110,6 +113,9 @@ export const DOM = {
             };
           },
         };
+      },
+      get upsertButton() {
+        return cy.get('*[data-upsert-button]');
       },
     };
   },

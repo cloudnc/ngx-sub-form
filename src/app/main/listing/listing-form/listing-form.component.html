@@ -124,11 +124,13 @@
         color="primary"
         (click)="manualSave$$.next()"
         [disabled]="form.formGroup.invalid || form.formGroup.disabled"
+        data-upsert-button
       >
         Upsert
       </button>
 
       <div *ngIf="form.formGroup.invalid" class="invalid-form">Form is invalid</div>
+      <div *ngIf="isEqual$$ | async" class="invalid-form" data-is-equal>Form value is equal</div>
     </div>
   </mat-card-actions>
 </mat-card>

@@ -78,6 +78,7 @@ export type NgxSubFormOptions<
   formControls: Controls<FormInterface>;
   formGroupOptions?: FormGroupOptions<FormInterface>;
   emitNullOnDestroy?: boolean;
+  emitInitialValueOnInit?: boolean;
   componentHooks?: ComponentHooks;
   // emit on this observable to mark the control as touched
   touched$?: Observable<void>;

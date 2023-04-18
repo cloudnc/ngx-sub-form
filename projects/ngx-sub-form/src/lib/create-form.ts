@@ -153,7 +153,10 @@ export function createForm<ControlInterface, FormInterface extends {}>(
   const broadcastValueToParent$: Observable<ControlInterface> = transformedValue$.pipe(
     switchMap(transformedValue => {
       if (!isRoot<ControlInterface, FormInterface>(options)) {
-        return formGroup.valueChanges.pipe(delay(0));
+        return formGroup.valueChanges.pipe(
+          delay(0),
+          tap(v => console.log('broadcast', v)),
+        );
       } else {
         const formValues$ = options.manualSave$
           ? options.manualSave$.pipe(
@@ -194,6 +197,12 @@ export function createForm<ControlInterface, FormInterface extends {}>(
     ),
   );
 
+  const emitInitialValueOnInit$: Observable<void> =
+    // don't emit initial value by default
+    !isNullOrUndefined(options.emitInitialValueOnInit) || options.emitInitialValueOnInit
+      ? lifecyleHooks.afterViewInit
+      : EMPTY;
+
   // components often need to know what the current value of the FormControl that it is representing is, usually for
   // display purposes in the template. This value is the composition of the value written from the parent, and the
   // transformed current value that was most recently written to the parent
@@ -216,6 +225,18 @@ export function createForm<ControlInterface, FormInterface extends {}>(
   const sideEffects = {
     broadcastValueToParent$: registerOnChange$.pipe(
       switchMap(onChange => broadcastValueToParent$.pipe(tap(value => onChange(value)))),
+    ),
+    emitInitialValueOnInit$: emitInitialValueOnInit$.pipe(
+      tap(_ => console.log('emitInitialValueOnInit', 'emitted')),
+      switchMap(() => registerOnChange$),
+      tap(_ => console.log('emitInitialValueOnInit', 'registerOnChange')),
+      switchMap(onChange =>
+        broadcastValueToParent$.pipe(
+          tap(value => console.log('emitInitialValueOnInit', 'broadcastValueToParent', value)),
+          tap(value => onChange(value)),
+        ),
+      ),
+      tap(_ => console.log('emitInitialValueOnInit', 'broadcast')),
     ),
     applyUpstreamUpdateOnLocalForm$: transformedValue$.pipe(
       tap(value => {

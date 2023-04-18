@@ -38,6 +38,7 @@ export class DroidProductComponent {
       assassinDroid: new UntypedFormControl(null),
       droidType: new UntypedFormControl(null, { validators: [Validators.required] }),
     },
+    emitInitialValueOnInit: true,
     toFormGroup: (obj: OneDroid): OneDroidForm => {
       return {
         protocolDroid: obj.droidType === DroidType.PROTOCOL ? obj : null,

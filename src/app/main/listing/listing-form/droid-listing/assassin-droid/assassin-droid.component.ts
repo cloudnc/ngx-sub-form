@@ -25,11 +25,10 @@ export class AssassinDroidComponent {
   public form = createForm<AssassinDroid>(this, {
     formType: FormType.SUB,
     formControls: {
-      color: new UntypedFormControl('#000000', { validators: [Validators.required] }),
-      name: new UntypedFormControl('r2d2', { validators: [Validators.required] }),
+      color: new UntypedFormControl(null, { validators: [Validators.required] }),
+      name: new UntypedFormControl(null, { validators: [Validators.required] }),
       droidType: new UntypedFormControl(DroidType.ASSASSIN, { validators: [Validators.required] }),
-      weapons: new UntypedFormControl(['Axe'], { validators: [Validators.required] }),
+      weapons: new UntypedFormControl([], { validators: [Validators.required] }),
     },
-    emitInitialValueOnInit: true,
   });
 }

@@ -152,18 +152,18 @@ export function createForm<ControlInterface, FormInterface extends {}>(
 
   const broadcastValueToParent$: Observable<ControlInterface> = transformedValue$.pipe(
     switchMap(transformedValue => {
+      const valueChanges = formGroup.valueChanges.pipe(
+        options.emitInitialValueOnInit ? startWith(transformedValue) : tap(),
+      );
       if (!isRoot<ControlInterface, FormInterface>(options)) {
-        return formGroup.valueChanges.pipe(
-          delay(0),
-          tap(v => console.log('broadcast', v)),
-        );
+        return valueChanges.pipe(delay(0));
       } else {
         const formValues$ = options.manualSave$
           ? options.manualSave$.pipe(
-              withLatestFrom(formGroup.valueChanges),
+              withLatestFrom(valueChanges),
               map(([_, formValue]) => formValue),
             )
-          : formGroup.valueChanges;
+          : valueChanges;
 
         // it might be surprising to see formGroup validity being checked twice
         // here, however this is intentional. The delay(0) allows any sub form
@@ -183,7 +183,7 @@ export function createForm<ControlInterface, FormInterface extends {}>(
               return options.outputFilterPredicate(transformedValue, formValue);
             }
 
-            return !isEqual(transformedValue, formValue);
+            return options.emitInitialValueOnInit ?? !isEqual(transformedValue, formValue);
           }),
           options.handleEmissionRate ?? identity,
         );
@@ -196,12 +196,6 @@ export function createForm<ControlInterface, FormInterface extends {}>(
           (value as any as ControlInterface),
     ),
   );
-
-  const emitInitialValueOnInit$: Observable<void> =
-    // don't emit initial value by default
-    !isNullOrUndefined(options.emitInitialValueOnInit) || options.emitInitialValueOnInit
-      ? lifecyleHooks.afterViewInit
-      : EMPTY;
 
   // components often need to know what the current value of the FormControl that it is representing is, usually for
   // display purposes in the template. This value is the composition of the value written from the parent, and the
@@ -225,18 +219,6 @@ export function createForm<ControlInterface, FormInterface extends {}>(
   const sideEffects = {
     broadcastValueToParent$: registerOnChange$.pipe(
       switchMap(onChange => broadcastValueToParent$.pipe(tap(value => onChange(value)))),
-    ),
-    emitInitialValueOnInit$: emitInitialValueOnInit$.pipe(
-      tap(_ => console.log('emitInitialValueOnInit', 'emitted')),
-      switchMap(() => registerOnChange$),
-      tap(_ => console.log('emitInitialValueOnInit', 'registerOnChange')),
-      switchMap(onChange =>
-        broadcastValueToParent$.pipe(
-          tap(value => console.log('emitInitialValueOnInit', 'broadcastValueToParent', value)),
-          tap(value => onChange(value)),
-        ),
-      ),
-      tap(_ => console.log('emitInitialValueOnInit', 'broadcast')),
     ),
     applyUpstreamUpdateOnLocalForm$: transformedValue$.pipe(
       tap(value => {

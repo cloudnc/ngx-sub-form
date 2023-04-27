@@ -48,7 +48,7 @@ export class ListingFormComponent {
     manualSave$: this.manualSave$$,
     formControls: {
       vehicleProduct: new UntypedFormControl(null),
-      droidProduct: new UntypedFormControl(null),
+      droidProduct: new UntypedFormControl(null, Validators.required),
       listingType: new UntypedFormControl(null, Validators.required),
       id: new UntypedFormControl(null, Validators.required),
       title: new UntypedFormControl(null, Validators.required),

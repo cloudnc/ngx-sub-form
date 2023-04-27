@@ -6,6 +6,7 @@ import { combineLatest, concat, EMPTY, identity, merge, Observable, of, timer } 
 import {
   delay,
   filter,
+  first,
   map,
   mapTo,
   shareReplay,
@@ -150,28 +151,21 @@ export function createForm<ControlInterface, FormInterface extends {}>(
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
-  const broadcastValueToParent$: Observable<ControlInterface> = transformedValue$.pipe(
+  const broadcastDefaultValueToParent$: Observable<ControlInterface> = transformedValue$.pipe(
+    first(),
+    filter(() => options.emitDefaultValue ?? false),
     switchMap(transformedValue => {
-      const valueChanges = formGroup.valueChanges.pipe(
-        options.emitInitialValueOnInit ? startWith(transformedValue) : tap(),
-      );
+      const defaultValue$ = of(transformedValue);
       if (!isRoot<ControlInterface, FormInterface>(options)) {
-        return valueChanges.pipe(delay(0));
+        return defaultValue$.pipe(delay(0));
       } else {
-        const formValues$ = options.manualSave$
-          ? options.manualSave$.pipe(
-              withLatestFrom(valueChanges),
-              map(([_, formValue]) => formValue),
-            )
-          : valueChanges;
-
         // it might be surprising to see formGroup validity being checked twice
         // here, however this is intentional. The delay(0) allows any sub form
         // components to populate values into the form, and it is possible for
         // the form to be invalid after this process. In which case we suppress
         // outputting an invalid value, and wait for the user to make the value
         // become valid.
-        return formValues$.pipe(
+        return defaultValue$.pipe(
           filter(() => formGroup.valid),
           delay(0),
           filter(formValue => {
@@ -183,7 +177,57 @@ export function createForm<ControlInterface, FormInterface extends {}>(
               return options.outputFilterPredicate(transformedValue, formValue);
             }
 
-            return options.emitInitialValueOnInit ?? !isEqual(transformedValue, formValue);
+            return true;
+          }),
+          options.handleEmissionRate ?? identity,
+        );
+      }
+    }),
+    map(value =>
+      options.fromFormGroup
+        ? options.fromFormGroup(value)
+        : // if it's not a remap component, the ControlInterface === the FormInterface
+          (value as any as ControlInterface),
+    ),
+  );
+
+  const broadcastValueToParent$: Observable<ControlInterface> = transformedValue$.pipe(
+    switchMap(transformedValue => {
+      const valueChanges = formGroup.valueChanges;
+      if (!isRoot<ControlInterface, FormInterface>(options)) {
+        return valueChanges.pipe(
+          delay(0),
+          tap(v => console.log('not root', v)),
+        );
+      } else {
+        const formValues$ = options.manualSave$
+          ? options.manualSave$.pipe(
+              withLatestFrom(valueChanges),
+              tap(console.log),
+              map(([_, formValue]) => formValue),
+            )
+          : valueChanges.pipe(tap(console.log));
+
+        // it might be surprising to see formGroup validity being checked twice
+        // here, however this is intentional. The delay(0) allows any sub form
+        // components to populate values into the form, and it is possible for
+        // the form to be invalid after this process. In which case we suppress
+        // outputting an invalid value, and wait for the user to make the value
+        // become valid.
+        return formValues$.pipe(
+          tap(v => console.log('formValues$', v)),
+          filter(() => formGroup.valid),
+          delay(0),
+          filter(formValue => {
+            if (formGroup.invalid) {
+              return false;
+            }
+
+            if (options.outputFilterPredicate) {
+              return options.outputFilterPredicate(transformedValue, formValue);
+            }
+
+            return !isEqual(transformedValue, formValue);
           }),
           options.handleEmissionRate ?? identity,
         );
@@ -219,6 +263,9 @@ export function createForm<ControlInterface, FormInterface extends {}>(
   const sideEffects = {
     broadcastValueToParent$: registerOnChange$.pipe(
       switchMap(onChange => broadcastValueToParent$.pipe(tap(value => onChange(value)))),
+    ),
+    broadcastDefaultValueToParent$: registerOnChange$.pipe(
+      switchMap(onChange => broadcastDefaultValueToParent$.pipe(tap(value => onChange(value)))),
     ),
     applyUpstreamUpdateOnLocalForm$: transformedValue$.pipe(
       tap(value => {

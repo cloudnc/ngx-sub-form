@@ -8,12 +8,7 @@
         "project": ["tsconfig.json", "e2e/tsconfig.json"],
         "createDefaultProgram": true
       },
-      "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-        "plugin:@angular-eslint/template/process-inline-templates",
-        "prettier"
-      ],
+      "extends": ["plugin:@angular-eslint/template/process-inline-templates", "prettier"],
       "rules": {
         // @todo: restore this one once the one below to turn it off temporarily is there
         // "@typescript-eslint/consistent-type-definitions": "error",
@@ -38,8 +33,7 @@
         "object-shorthand": "off",
         "@typescript-eslint/no-empty-interface": "off",
         "prefer-const": "off",
-        "arrow-body-style": "off",
-        "@typescript-eslint/consistent-type-definitions": "off"
+        "arrow-body-style": "off"
       }
     },
     {

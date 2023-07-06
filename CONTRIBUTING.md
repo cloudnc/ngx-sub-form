@@ -12,12 +12,13 @@ Please note we have a code of conduct, please follow it in all your interactions
 6. Make your changes
 7. Edit, remove or add relevant tests (either unit/integration or E2E with cypress)
 8. Run the tests locally by running `yarn run lib:test:watch` and `yarn run demo:test:e2e:watch`
-9. Update the `README.md` accordingly to your changes if needed
-10. Run `Prettier` on the project: `yarn run prettier:write`
-11. Once you're done and ready to make a commit, please follow those conventions: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit and don't forget to close the related issue either in your commit or the pull request header by writting `This closes cloudnc/ngx-sub-form#X` where `X` is the issue number
-12. Push your branch to your own repository
-13. Raise a pull request on `ngx-sub-form`
-14. If any change is asked on the pull request, try to keep a clean history as much as possible by either using `git rebase` or `git commit --amend` (talk to us on your pull request if you're unsure)
+9. Run linting by running `yarn run lint`
+10. Update the `README.md` accordingly to your changes if needed
+11. Run `Prettier` on the project: `yarn run prettier:write`
+12. Once you're done and ready to make a commit, please follow those conventions: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit and don't forget to close the related issue either in your commit or the pull request header by writting `This closes cloudnc/ngx-sub-form#X` where `X` is the issue number
+13. Push your branch to your own repository
+14. Raise a pull request on `ngx-sub-form`
+15. If any change is asked on the pull request, try to keep a clean history as much as possible by either using `git rebase` or `git commit --amend` (talk to us on your pull request if you're unsure)
 
 ## Code of Conduct
 

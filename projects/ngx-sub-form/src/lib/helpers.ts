@@ -16,6 +16,7 @@ import {
 } from './ngx-sub-form.types';
 import {
   ArrayPropertyKey,
+  Controls,
   ControlsNames,
   NewFormErrors,
   OneOfControlsTypes,
@@ -122,7 +123,9 @@ export function createFormDataFromOptions<ControlInterface, FormInterface extend
     options.formGroupOptions as AbstractControlOptions,
   ) as TypedFormGroup<FormInterface>;
   const defaultValues: FormInterface = cloneDeep(formGroup.value);
-  const formGroupKeys: (keyof FormInterface)[] = Object.keys(defaultValues) as (keyof FormInterface)[];
+  const formGroupKeys: (keyof Controls<FormInterface>)[] = Object.keys(
+    options.formControls,
+  ) as (keyof Controls<FormInterface>)[];
   const formControlNames: ControlsNames<FormInterface> = formGroupKeys.reduce<ControlsNames<FormInterface>>(
     (acc, curr) => {
       acc[curr] = curr;

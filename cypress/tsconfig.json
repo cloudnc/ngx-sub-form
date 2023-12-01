@@ -1,8 +1,8 @@
 /**
-* Cypress 12 has an issue in combination with typescript 5.0.x
-* "Option 'sourceMap' cannot be specified with option 'inlineSourceMap'"
-* https://github.com/cypress-io/cypress/issues/26203
-**/
+ * Cypress 12 has an issue in combination with typescript 5.0.x
+ * "Option 'sourceMap' cannot be specified with option 'inlineSourceMap'"
+ * https://github.com/cypress-io/cypress/issues/26203
+ **/
 {
   "extends": "../tsconfig",
   "compilerOptions": {

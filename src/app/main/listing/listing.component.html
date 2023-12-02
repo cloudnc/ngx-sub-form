@@ -1,5 +1,6 @@
 <mat-slide-toggle class="readonly" data-readonly [formControl]="readonlyFormControl">Readonly</mat-slide-toggle>
 
+{{ listingOutput | json }}
 <app-listing-form
   [listing]="listing$ | async"
   [disabled]="readonlyFormControl.value"

@@ -4,20 +4,40 @@
 
 @include mat.core();
 
-$my-primary: mat.m2-define-palette(mat.$m2-indigo-palette, 500);
-$my-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
-
-$my-theme: mat.m2-define-light-theme(
+$theme: mat.define-theme(
   (
     color: (
-      primary: $my-primary,
-      accent: $my-accent,
+      theme-type: light,
+      primary: mat.$blue-palette,
     ),
-    density: 0,
+    typography: (
+      brand-family: 'Comic Sans',
+      bold-weight: 900,
+    ),
+    density: (
+      scale: -1,
+    ),
   )
 );
 
-@include mat.all-component-themes($my-theme);
+html {
+  @include mat.core-theme($theme);
+
+  // Include styles for all material components used in the application
+  @include mat.button-theme($theme);
+  @include mat.card-theme($theme);
+  @include mat.form-field-theme($theme);
+  @include mat.list-theme($theme);
+  @include mat.option-theme($theme);
+  @include mat.select-theme($theme);
+  @include mat.slide-toggle-theme($theme);
+  @include mat.toolbar-theme($theme);
+}
+
+// Override the theme for a specific component
+.top-toolbar {
+  --mat-toolbar-container-background-color: #3f51b5;
+}
 
 html,
 body,

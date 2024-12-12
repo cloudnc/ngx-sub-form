@@ -16,6 +16,7 @@ export interface OneVehicleForm {
   styleUrls: ['./vehicle-product.component.scss'],
   providers: subformComponentProviders(VehicleProductComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class VehicleProductComponent {
   public VehicleType = VehicleType;

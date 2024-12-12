@@ -8,6 +8,7 @@ import { ListingType, OneListing } from '../../interfaces/listing.interface';
   templateUrl: './listings.component.html',
   styleUrls: ['./listings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ListingsComponent {
   @Input() listings: OneListing[] = [];

@@ -13,6 +13,7 @@ interface CrewMembersForm {
   styleUrls: ['./crew-members.component.scss'],
   providers: subformComponentProviders(CrewMembersComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class CrewMembersComponent {
   public form = createForm<CrewMember[], CrewMembersForm>(this, {

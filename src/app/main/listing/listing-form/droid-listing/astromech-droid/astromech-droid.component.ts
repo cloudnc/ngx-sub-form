@@ -9,6 +9,7 @@ import { AstromechDroid, AstromechDroidShape, DroidType } from '../../../../../i
   styleUrls: ['./astromech-droid.component.scss'],
   providers: subformComponentProviders(AstromechDroidComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class AstromechDroidComponent {
   public AstromechDroidShape = AstromechDroidShape;

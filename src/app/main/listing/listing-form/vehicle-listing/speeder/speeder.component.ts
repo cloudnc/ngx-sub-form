@@ -9,6 +9,7 @@ import { Speeder, VehicleType } from 'src/app/interfaces/vehicle.interface';
   styleUrls: ['./speeder.component.scss'],
   providers: subformComponentProviders(SpeederComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SpeederComponent {
   public form = createForm<Speeder>(this, {

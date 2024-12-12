@@ -13,6 +13,7 @@ import { UuidService } from '../../services/uuid.service';
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ListingComponent {
   public readonlyFormControl: UntypedFormControl = new UntypedFormControl(false);

@@ -9,6 +9,7 @@ import { CrewMember } from '../../../../../../interfaces/crew-member.interface';
   styleUrls: ['./crew-member.component.scss'],
   providers: subformComponentProviders(CrewMemberComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class CrewMemberComponent {
   public form = createForm<CrewMember>(this, {

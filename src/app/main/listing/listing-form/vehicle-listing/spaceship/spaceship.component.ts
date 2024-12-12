@@ -9,6 +9,7 @@ import { Spaceship, VehicleType } from 'src/app/interfaces/vehicle.interface';
   styleUrls: ['./spaceship.component.scss'],
   providers: subformComponentProviders(SpaceshipComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SpaceshipComponent {
   public form = createForm<Spaceship>(this, {

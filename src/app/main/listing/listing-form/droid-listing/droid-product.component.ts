@@ -25,6 +25,7 @@ interface OneDroidForm {
   styleUrls: ['./droid-product.component.scss'],
   providers: subformComponentProviders(DroidProductComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DroidProductComponent {
   public DroidType = DroidType;

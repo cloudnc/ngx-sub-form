@@ -3,6 +3,7 @@ import { CrewMember } from 'src/app/interfaces/crew-member.interface';
 
 @Pipe({
   name: 'displayCrewMembers',
+  standalone: false,
 })
 export class DisplayCrewMembersPipe implements PipeTransform {
   transform(crewMembers: CrewMember[]): string {

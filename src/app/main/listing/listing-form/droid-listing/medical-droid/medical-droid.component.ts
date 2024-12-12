@@ -9,6 +9,7 @@ import { DroidType, MedicalDroid } from 'src/app/interfaces/droid.interface';
   styleUrls: ['./medical-droid.component.scss'],
   providers: subformComponentProviders(MedicalDroidComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MedicalDroidComponent {
   public form = createForm<MedicalDroid>(this, {

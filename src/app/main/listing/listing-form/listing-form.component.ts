@@ -22,6 +22,7 @@ interface OneListingForm {
   templateUrl: './listing-form.component.html',
   styleUrls: ['./listing-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ListingFormComponent {
   public ListingType: typeof ListingType = ListingType;

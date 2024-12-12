@@ -16,6 +16,7 @@ export const ASSASSIN_DROID_WEAPON_TEXT: { [K in AssassinDroidWeapon]: string } 
   styleUrls: ['./assassin-droid.component.scss'],
   providers: subformComponentProviders(AssassinDroidComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class AssassinDroidComponent {
   public AssassinDroidWeapon = AssassinDroidWeapon;

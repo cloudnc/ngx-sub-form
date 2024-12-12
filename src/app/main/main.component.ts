@@ -6,6 +6,7 @@ import { ListingService } from '../services/listing.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MainComponent {
   public listings$ = this.listingService.getListings();

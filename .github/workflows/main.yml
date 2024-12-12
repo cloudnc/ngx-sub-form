@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.14.x
+          node-version: 22.12.x
       - name: Install dependencies
         run: yarn --frozen-lockfile --non-interactive --no-progress
       - name: Lint Demo
@@ -34,7 +34,7 @@ jobs:
       - name: Build Demo
         run: yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           browser: chrome
           start: yarn start-e2e-file-server

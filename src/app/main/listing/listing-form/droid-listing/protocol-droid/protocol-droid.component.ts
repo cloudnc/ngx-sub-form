@@ -9,6 +9,7 @@ import { DroidType, Languages, ProtocolDroid } from '../../../../../interfaces/d
   styleUrls: ['./protocol-droid.component.scss'],
   providers: subformComponentProviders(ProtocolDroidComponent),
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ProtocolDroidComponent {
   public Languages = Languages;

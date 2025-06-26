@@ -2,7 +2,8 @@
 
 @use '@angular/material' as mat;
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 $theme: mat.define-theme(
   (
@@ -21,7 +22,8 @@ $theme: mat.define-theme(
 );
 
 html {
-  @include mat.core-theme($theme);
+  @include mat.elevation-classes();
+  @include mat.app-background();
 
   // Include styles for all material components used in the application
   @include mat.button-theme($theme);

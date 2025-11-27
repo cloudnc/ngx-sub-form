@@ -8,12 +8,9 @@
     </mat-card-subtitle>
   </mat-card-header>
   <div class="img-container">
-    <img
-      *ngIf="form.formGroup.value.imageUrl"
-      mat-card-image
-      [src]="form.formGroup.value.imageUrl"
-      alt="Photo of {{ form.formGroup.value.title }}"
-    />
+    @if (form.formGroup.value.imageUrl) {
+    <img mat-card-image [src]="form.formGroup.value.imageUrl" alt="Photo of {{ form.formGroup.value.title }}" />
+    }
   </div>
   <mat-card-content>
     <form [formGroup]="form.formGroup">
@@ -30,7 +27,9 @@
 
       <!-- this is useful to make sure the type of the error is correct -->
       <!-- as it could be either an object or an array and AoT would notice if not correctly typed -->
-      <mat-error data-input-id-error *ngIf="form.formGroupErrors?.id?.required">ID is required</mat-error>
+      @if (form.formGroupErrors?.id?.required) {
+      <mat-error data-input-id-error>ID is required</mat-error>
+      }
 
       <mat-form-field>
         <input
@@ -43,7 +42,9 @@
         />
       </mat-form-field>
 
-      <mat-error data-input-title-error *ngIf="form.formGroupErrors?.title?.required">Title is required</mat-error>
+      @if (form.formGroupErrors?.title?.required) {
+      <mat-error data-input-title-error>Title is required</mat-error>
+      }
 
       <mat-form-field>
         <input
@@ -56,9 +57,9 @@
         />
       </mat-form-field>
 
-      <mat-error data-input-image-url-error *ngIf="form.formGroupErrors?.imageUrl?.required">
-        Image url is required
-      </mat-error>
+      @if (form.formGroupErrors?.imageUrl?.required) {
+      <mat-error data-input-image-url-error>Image url is required</mat-error>
+      }
 
       <mat-form-field>
         <input
@@ -71,7 +72,9 @@
         />
       </mat-form-field>
 
-      <mat-error data-input-price-error *ngIf="form.formGroupErrors?.price?.required">Price is required</mat-error>
+      @if (form.formGroupErrors?.price?.required) {
+      <mat-error data-input-price-error>Price is required</mat-error>
+      }
 
       <mat-form-field>
         <mat-select
@@ -79,45 +82,40 @@
           placeholder="Select listing type"
           [formControlName]="form.formControlNames.listingType"
         >
-          <mat-option
-            data-select-listing-type-option
-            *ngFor="let listingType of ListingType | keyvalue"
-            [value]="listingType.value"
-          >
+          @for (listingType of ListingType | keyvalue; track listingType) {
+          <mat-option data-select-listing-type-option [value]="listingType.value">
             {{ listingType.value }}
           </mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
-      <div [ngSwitch]="form.formGroup.value.listingType">
-        <app-droid-product
-          *ngSwitchCase="ListingType.DROID"
-          [formControlName]="form.formControlNames.droidProduct"
-        ></app-droid-product>
-
-        <app-vehicle-product
-          *ngSwitchCase="ListingType.VEHICLE"
-          [formControlName]="form.formControlNames.vehicleProduct"
-        ></app-vehicle-product>
+      <div>
+        @switch (form.formGroup.value.listingType) { @case (ListingType.DROID) {
+        <app-droid-product [formControlName]="form.formControlNames.droidProduct"></app-droid-product>
+        } @case (ListingType.VEHICLE) {
+        <app-vehicle-product [formControlName]="form.formControlNames.vehicleProduct"></app-vehicle-product>
+        } }
       </div>
     </form>
   </mat-card-content>
   <mat-card-actions>
     <!--
-      `<div *ngIf="true">`... You could legitimely think that we're crazy or that ngx-sub-form
-      is messing up with your form. In fact, it is not related to the lib at all. It has to do
-      with how Angular analyze the DOM and the priorities during change detection.
-      "But will I have to do that in my app too?" -*-*-> YES if you need to make a check based
-      on the form validity.
-      Please see that issue for more info
-      https://github.com/angular/angular/issues/18004
-      and that comment in particular
-      https://github.com/angular/angular/issues/18004#issuecomment-328806479
-      "But what if I don't do that?" -*-*-> Well you'll end up with the error we all know:
-      `ExpressionChangedAfterItHasBeenCheckedError`. Please refer to comment if you want to
-      know why
-    -->
-    <div *ngIf="true">
+            `<div *ngIf="true">`... You could legitimely think that we're crazy or that ngx-sub-form
+            is messing up with your form. In fact, it is not related to the lib at all. It has to do
+            with how Angular analyze the DOM and the priorities during change detection.
+            "But will I have to do that in my app too?" -*-*-> YES if you need to make a check based
+            on the form validity.
+            Please see that issue for more info
+            https://github.com/angular/angular/issues/18004
+            and that comment in particular
+            https://github.com/angular/angular/issues/18004#issuecomment-328806479
+            "But what if I don't do that?" -*-*-> Well you'll end up with the error we all know:
+            `ExpressionChangedAfterItHasBeenCheckedError`. Please refer to comment if you want to
+            know why
+            -->
+    @if (true) {
+    <div>
       <!-- @todo -->
       <button
         mat-raised-button
@@ -127,9 +125,11 @@
       >
         Upsert
       </button>
-
-      <div *ngIf="form.formGroup.invalid" class="invalid-form">Form is invalid</div>
+      @if (form.formGroup.invalid) {
+      <div class="invalid-form">Form is invalid</div>
+      }
     </div>
+    }
   </mat-card-actions>
 </mat-card>
 
@@ -138,14 +138,14 @@
 
   <mat-card-content>
     <!--
-      this is an important test as we want to make sure that `formGroupErrors` is null when there's no error
-      if we return an empty object the `*ngIf` condition would be considered valid
-    -->
-    <pre *ngIf="form.formGroupErrors as errors; else noError" data-errors>{{ errors | json }}</pre>
-
-    <ng-template #noError>
-      <span data-no-error>Form is valid, no error!</span>
-    </ng-template>
+            this is an important test as we want to make sure that `formGroupErrors` is null when there's no error
+            if we return an empty object the `*ngIf` condition would be considered valid
+            -->
+    @if (form.formGroupErrors; as errors) {
+    <pre data-errors>{{ errors | json }}</pre>
+    } @else {
+    <span data-no-error>Form is valid, no error!</span>
+    }
   </mat-card-content>
 </mat-card>
 

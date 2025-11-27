@@ -1,5 +1,6 @@
 <mat-nav-list>
-  <a data-list-item mat-list-item *ngFor="let listing of listings" [routerLink]="['listings', listing.id]">
+  @for (listing of listings; track listing.id) {
+  <a data-list-item mat-list-item [routerLink]="['listings', listing.id]">
     <span matListItemTitle>
       <span data-title>{{ listing.title }}</span>
       (
@@ -7,42 +8,45 @@
       ) £
       <span data-price>{{ listing.price | number }}</span>
     </span>
-    <span matListItemLine [ngSwitch]="listing.listingType">
-      <span *ngSwitchCase="ListingType.DROID">
+    <span matListItemLine>
+      @switch (listing.listingType) { @case (ListingType.DROID) {
+      <span>
         <span data-sub-type [style.background-color]="listing.product.color">{{ listing.product.droidType }}</span>
         -
-
-        <span data-details [ngSwitch]="listing.product.droidType">
-          <span *ngSwitchCase="DroidType.ASSASSIN">Weapons: {{ listing.product.weapons.join(', ') }}</span>
-
-          <span *ngSwitchCase="DroidType.ASTROMECH">Number of tools: {{ listing.product.toolCount }}</span>
-
-          <span *ngSwitchCase="DroidType.MEDICAL">
+        <span data-details>
+          @switch (listing.product.droidType) { @case (DroidType.ASSASSIN) {
+          <span>Weapons: {{ listing.product.weapons.join(', ') }}</span>
+          } @case (DroidType.ASTROMECH) {
+          <span>Number of tools: {{ listing.product.toolCount }}</span>
+          } @case (DroidType.MEDICAL) {
+          <span>
             {{ listing.product.canHealHumans ? 'Can' : "Can't" }} heal humans,
             {{ listing.product.canFixRobots ? 'can' : "can't" }} fix robots
           </span>
-
-          <span *ngSwitchCase="DroidType.PROTOCOL">
-            Spoken languages: {{ listing.product.spokenLanguages.join(', ') }}
-          </span>
+          } @case (DroidType.PROTOCOL) {
+          <span>Spoken languages: {{ listing.product.spokenLanguages.join(', ') }}</span>
+          } }
         </span>
       </span>
-
-      <span *ngSwitchCase="ListingType.VEHICLE">
+      } @case (ListingType.VEHICLE) {
+      <span>
         <span data-sub-type [style.background-color]="listing.product.color">{{ listing.product.vehicleType }}</span>
         -
 
-        <span data-details [ngSwitch]="listing.product.vehicleType">
+        <span data-details>
           Crew members: {{ listing.product.crewMembers | displayCrewMembers }},
-          {{ listing.product.canFire ? 'can' : "can't" }} fire,
-
-          <span *ngSwitchCase="VehicleType.SPEEDER">maximum speed: {{ listing.product.maximumSpeed }}kph</span>
-
-          <span *ngSwitchCase="VehicleType.SPACESHIP">number of wings: {{ listing.product.wingCount }}</span>
+          {{ listing.product.canFire ? 'can' : "can't" }} fire, @switch (listing.product.vehicleType) { @case
+          (VehicleType.SPEEDER) {
+          <span>maximum speed: {{ listing.product.maximumSpeed }}kph</span>
+          } @case (VehicleType.SPACESHIP) {
+          <span>number of wings: {{ listing.product.wingCount }}</span>
+          } }
         </span>
       </span>
+      } }
     </span>
   </a>
+  }
 </mat-nav-list>
 
 <a mat-raised-button data-create-new [routerLink]="['listings', 'new']" color="primary">Create new</a>

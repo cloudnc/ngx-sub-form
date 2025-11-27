@@ -4,17 +4,14 @@
     <small>(Minimum 2)</small>
   </legend>
 
-  <div
-    class="crew-member"
-    [formArrayName]="form.formControlNames.crewMembers"
-    *ngFor="let crewMember of form.formGroup.controls.crewMembers.controls; let i = index"
-  >
+  @for (crewMember of form.formGroup.controls.crewMembers.controls; track crewMember; let i = $index) {
+  <div class="crew-member" [formArrayName]="form.formControlNames.crewMembers">
     <app-crew-member [formControl]="crewMember"></app-crew-member>
-
     <button mat-mini-fab color="primary" (click)="removeCrewMember(i)" [disabled]="form.formGroup.disabled">
       <mat-icon>delete</mat-icon>
     </button>
   </div>
+  }
 
   <button
     mat-raised-button

@@ -7,32 +7,23 @@
       placeholder="Select droid type"
       [formControlName]="form.formControlNames.droidType"
     >
-      <mat-option
-        data-select-droid-type-option
-        *ngFor="let droidType of DroidType | keyvalue"
-        [value]="droidType.value"
-      >
+      @for (droidType of DroidType | keyvalue; track droidType) {
+      <mat-option data-select-droid-type-option [value]="droidType.value">
         {{ droidType.value }}
       </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="form.formGroup.value.droidType">
-    <app-protocol-droid
-      *ngSwitchCase="DroidType.PROTOCOL"
-      [formControlName]="form.formControlNames.protocolDroid"
-    ></app-protocol-droid>
-    <app-medical-droid
-      *ngSwitchCase="DroidType.MEDICAL"
-      [formControlName]="form.formControlNames.medicalDroid"
-    ></app-medical-droid>
-    <app-astromech-droid
-      *ngSwitchCase="DroidType.ASTROMECH"
-      [formControlName]="form.formControlNames.astromechDroid"
-    ></app-astromech-droid>
-    <app-assassin-droid
-      *ngSwitchCase="DroidType.ASSASSIN"
-      [formControlName]="form.formControlNames.assassinDroid"
-    ></app-assassin-droid>
+  <div>
+    @switch (form.formGroup.value.droidType) { @case (DroidType.PROTOCOL) {
+    <app-protocol-droid [formControlName]="form.formControlNames.protocolDroid"></app-protocol-droid>
+    } @case (DroidType.MEDICAL) {
+    <app-medical-droid [formControlName]="form.formControlNames.medicalDroid"></app-medical-droid>
+    } @case (DroidType.ASTROMECH) {
+    <app-astromech-droid [formControlName]="form.formControlNames.astromechDroid"></app-astromech-droid>
+    } @case (DroidType.ASSASSIN) {
+    <app-assassin-droid [formControlName]="form.formControlNames.assassinDroid"></app-assassin-droid>
+    } }
   </div>
 </fieldset>

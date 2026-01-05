@@ -21,9 +21,11 @@
       multiple
       [formControlName]="form.formControlNames.spokenLanguages"
     >
-      <mat-option *ngFor="let language of Languages | keyvalue" [value]="language.value">
+      @for (language of Languages | keyvalue; track language) {
+      <mat-option [value]="language.value">
         {{ language.value }}
       </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </fieldset>

@@ -7,22 +7,19 @@
       placeholder="Select vehicle type"
       [formControlName]="form.formControlNames.vehicleType"
     >
-      <mat-option
-        data-select-vehicle-type-option
-        *ngFor="let vehicleType of VehicleType | keyvalue"
-        [value]="vehicleType.value"
-      >
+      @for (vehicleType of VehicleType | keyvalue; track vehicleType) {
+      <mat-option data-select-vehicle-type-option [value]="vehicleType.value">
         {{ vehicleType.value }}
       </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
-  <div [ngSwitch]="form.formGroup.value.vehicleType">
-    <app-spaceship
-      *ngSwitchCase="VehicleType.SPACESHIP"
-      [formControlName]="form.formControlNames.spaceship"
-    ></app-spaceship>
-
-    <app-speeder *ngSwitchCase="VehicleType.SPEEDER" [formControlName]="form.formControlNames.speeder"></app-speeder>
+  <div>
+    @switch (form.formGroup.value.vehicleType) { @case (VehicleType.SPACESHIP) {
+    <app-spaceship [formControlName]="form.formControlNames.spaceship"></app-spaceship>
+    } @case (VehicleType.SPEEDER) {
+    <app-speeder [formControlName]="form.formControlNames.speeder"></app-speeder>
+    } }
   </div>
 </fieldset>

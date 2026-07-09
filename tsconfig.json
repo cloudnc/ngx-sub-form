@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "esModuleInterop": true,
@@ -11,6 +12,7 @@
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
+    "strict": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
@@ -21,5 +23,8 @@
       "ngx-sub-form": ["projects/ngx-sub-form/src/public_api"]
     },
     "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": false
   }
 }

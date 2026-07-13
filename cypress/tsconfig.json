@@ -6,6 +6,7 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    "sourceMap": false
+    "sourceMap": false,
+    "rootDir": ".."
   }
 }

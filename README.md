@@ -1,5 +1,13 @@
 # NgxSubForm
 
+> **⚠️ `ngx-sub-form` is deprecated and no longer maintained.**
+>
+> This library was created to fill gaps in Angular forms: type safety, breaking big forms into smaller components without writing a `ControlValueAccessor` by hand, and binding a form to an input and an output like any other component.
+>
+> Angular now covers all of this out of the box with [Signal Forms](https://angular.dev/guide/forms/signals/overview) (`@angular/forms/signals`), stable since Angular 22. Please use them for new forms and migrate your existing ones. There won't be any new features or Angular upgrades for `ngx-sub-form`.
+>
+> See [Migrating to Angular Signal Forms](#migrating-to-angular-signal-forms) below for the Signal Forms equivalent of every `ngx-sub-form` feature.
+
 ![ngx-sub-form logo](https://user-images.githubusercontent.com/4950209/53812385-45f48900-3f53-11e9-8687-b57cd335f26e.png)
 
 Utility library to improve the robustness of your Angular forms.
@@ -14,6 +22,7 @@ _Please note one thing: If your goal is to generate forms dynamically (based on 
 
 # Table of contents
 
+- [Migrating to Angular Signal Forms](#migrating-to-angular-signal-forms)
 - [Basic API usage](#basic-api-usage)
 - [Setup](#setup)
 - [Migration guide to the new API](#migration-guide-to-the-new-api)
@@ -24,6 +33,213 @@ _Please note one thing: If your goal is to generate forms dynamically (based on 
   - [Dealing with arrays](#dealing-with-arrays)
 - [Contribution](#contribution)
 - [Tell us about your experience with ngx-sub-form](#tell-us-about-your-experience-with-ngx-sub-form)
+
+# Migrating to Angular Signal Forms
+
+Everything below uses `@angular/forms/signals` (Angular 22+) and mirrors the `ngx-sub-form` examples further down this page, so you can compare both side by side. The [official Signal Forms guide](https://angular.dev/guide/forms/signals/overview) covers everything in more depth.
+
+| `ngx-sub-form`                                         | Signal Forms                                                                  |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `createForm<T>()` with `formControls`                  | `form(model)`, where `model` is a `WritableSignal<T>`                         |
+| `TypedFormGroup` and `formControlNames`                | `FieldTree<T>`, typed out of the box: `personForm.firstName`                  |
+| `Validators.required` and co                           | Schema rules: `required(person.firstName)`, `email()`, `min()`, `validate()`… |
+| Root form `input$`                                     | `input()` + `linkedSignal()`                                                  |
+| Root form `output$` and `manualSave$`                  | `output()` + the `submission` option and `<form [formRoot]>`                  |
+| `disabled$`                                            | `disabled(path, { when: () => ... })`                                         |
+| Sub form: `FormType.SUB` + `subformComponentProviders` | A component taking a `FieldTree<T>` input, plus a reusable `schema<T>()`      |
+| Writing a `ControlValueAccessor` for a custom control  | Implementing `FormValueControl<T>`, which only needs a `value = model<T>()`   |
+| Remap: `toFormGroup` / `fromFormGroup`                 | Plain functions called in `linkedSignal()` and before emitting the output     |
+| `FormArray` and `createFormArrayControl`               | Plain arrays in the model, `applyEach()` and `@for`                           |
+| `formGroupErrors`                                      | `personForm().errorSummary()`                                                 |
+| `controlValue$`                                        | `personForm().value()`                                                        |
+
+## Root form with Signal Forms
+
+The root form receives a value through an input, lets the user edit a local copy of it and emits the updated value through an output when the form is submitted.
+
+```ts
+import { Component, input, linkedSignal, output } from '@angular/core';
+import { FormField, FormRoot, apply, disabled, form, required } from '@angular/forms/signals';
+import { AddressForm, addressSchema } from './address-form';
+
+@Component({
+  selector: 'person-form',
+  imports: [FormField, FormRoot, AddressForm],
+  template: `
+    <form [formRoot]="personForm">
+      <input type="text" [formField]="personForm.firstName" />
+      <input type="text" [formField]="personForm.lastName" />
+      <address-form [address]="personForm.address" />
+
+      <button type="submit">Save</button>
+    </form>
+  `,
+})
+export class PersonForm {
+  readonly person = input.required<Person>();
+  readonly isDisabled = input(false);
+  readonly personUpdate = output<Person>();
+
+  // local, editable copy of the input which is reset whenever the parent passes a new person
+  private readonly model = linkedSignal(() => this.person());
+
+  protected readonly personForm = form(
+    this.model,
+    person => {
+      required(person.firstName);
+      required(person.lastName);
+      apply(person.address, addressSchema);
+      disabled(person, { when: () => this.isDisabled() });
+    },
+    {
+      submission: {
+        action: async personForm => this.personUpdate.emit(personForm().value()),
+      },
+    },
+  );
+}
+```
+
+The container component stays exactly the same as before: `<person-form [person]="person" (personUpdate)="save($event)" />`.
+
+When the form is submitted, every field is marked as touched and the `action` only runs if the form is valid. If you'd rather have the parent receive every single change instead, drop the local copy and use a `model()` for two-way binding:
+
+```ts
+export class PersonForm {
+  readonly person = model.required<Person>();
+
+  protected readonly personForm = form(this.person, person => {
+    required(person.firstName);
+    // ...
+  });
+}
+```
+
+```html
+<person-form [(person)]="person" />
+```
+
+## Sub forms with Signal Forms
+
+There's no `ControlValueAccessor` and no providers anymore. A sub form is a component that receives a part of the parent's `FieldTree` as an input, and its validation rules live in a reusable `schema` that the parent applies with `apply()` (see `apply(person.address, addressSchema)` above). The sub form's validity is part of the parent form, just like it was with `ngx-sub-form`.
+
+```ts
+import { Component, input } from '@angular/core';
+import { FieldTree, FormField, required, schema } from '@angular/forms/signals';
+
+export const addressSchema = schema<Address>(address => {
+  required(address.street);
+  required(address.city);
+  required(address.state);
+  required(address.zipCode);
+});
+
+@Component({
+  selector: 'address-form',
+  imports: [FormField],
+  template: `
+    <input type="text" [formField]="address().street" />
+    <input type="text" [formField]="address().city" />
+    <input type="text" [formField]="address().state" />
+    <input type="number" [formField]="address().zipCode" />
+  `,
+})
+export class AddressForm {
+  readonly address = input.required<FieldTree<Address>>();
+}
+```
+
+## Custom form controls with Signal Forms
+
+For a control that edits a single value (a date picker, a rating, etc.), implement `FormValueControl<T>`. The only requirement is a `value` model, and `[formField]` takes care of the rest:
+
+<!-- prettier-ignore -->
+```ts
+@Component({
+  selector: 'rating-input',
+  template: `
+    @for (star of [1, 2, 3, 4, 5]; track star) {
+      <button type="button" [disabled]="disabled()" (click)="value.set(star)">
+        {{ star <= value() ? '★' : '☆' }}
+      </button>
+    }
+  `,
+})
+export class RatingInput implements FormValueControl<number> {
+  readonly value = model(0);
+  readonly disabled = input(false);
+}
+```
+
+```html
+<rating-input [formField]="reviewForm.rating" />
+```
+
+## Remap with Signal Forms
+
+The remap functions become plain functions: call one when creating the local copy of the input, and the other one before emitting the output.
+
+```ts
+private readonly model = linkedSignal(() => toFormModel(this.listing()));
+
+protected readonly listingForm = form(this.model, listingSchema, {
+  submission: {
+    action: async listingForm => this.listingUpdate.emit(fromFormModel(listingForm().value())),
+  },
+});
+```
+
+For polymorphic values (like the `vehicle` or `droid` listing of the demo), keep a discriminator in the form model, `@switch` on it in the template and hide the inactive branch so that it doesn't count towards validation:
+
+```ts
+const listingSchema = schema<ListingFormModel>(listing => {
+  hidden(listing.vehicle, { when: ({ valueOf }) => valueOf(listing.type) !== 'vehicle' });
+  hidden(listing.droid, { when: ({ valueOf }) => valueOf(listing.type) !== 'droid' });
+});
+```
+
+## Arrays with Signal Forms
+
+Arrays are plain arrays in the model. Use `applyEach()` to validate every item, `@for` to display them, and update the value to add or remove items:
+
+<!-- prettier-ignore -->
+```ts
+export const crewMemberSchema = schema<CrewMember>(member => {
+  required(member.firstName);
+  required(member.lastName);
+});
+
+// in the parent schema: applyEach(vehicle.crewMembers, crewMemberSchema);
+
+@Component({
+  selector: 'crew-members-form',
+  imports: [FormField],
+  template: `
+    @for (member of crewMembers(); track member) {
+      <input type="text" [formField]="member.firstName" />
+      <input type="text" [formField]="member.lastName" />
+      <button type="button" (click)="remove($index)">Remove</button>
+    }
+
+    <button type="button" (click)="add()">Add a crew member</button>
+  `,
+})
+export class CrewMembersForm {
+  readonly crewMembers = input.required<FieldTree<CrewMember[]>>();
+
+  add(): void {
+    this.crewMembers()().value.update(members => [...members, { firstName: '', lastName: '' }]);
+  }
+
+  remove(index: number): void {
+    this.crewMembers()().value.update(members => members.filter((_, i) => i !== index));
+  }
+}
+```
+
+---
+
+_The rest of this page is the original `ngx-sub-form` documentation, kept for existing users._
 
 # Basic API usage
 

@@ -41,7 +41,7 @@ jobs:
       - name: Build Demo
         run: yarn run demo:build:prod --progress=false --base-href "https://cloudnc.github.io/ngx-sub-form/"
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           browser: chrome
           start: yarn start-e2e-file-server
